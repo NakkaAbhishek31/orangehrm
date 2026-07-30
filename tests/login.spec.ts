@@ -1,0 +1,98 @@
+import { expect } from '@playwright/test';
+import{test} from '../fixtures/baseTest';
+
+
+
+test('TC_LOGIN_001 - Admin should login with valid credentials @smoke @regression',async({loginPage})=>{
+await loginPage.visitPage();
+
+await  loginPage.login('Admin', 'admin123');
+
+await loginPage.verifyLoginSuccessful();
+
+await expect(loginPage.profileMenu).toBeVisible();
+
+});
+
+test('TC_LOGIN_002 - User should see an error for invalid username @negative @regression',async({loginPage})=>{
+await loginPage.visitPage();
+
+await  loginPage.login('InvalidAdmin', 'admin123');
+await expect(loginPage.errorMessage).toHaveText('Invalid credentials');
+await loginPage.verifyLoginUnsuccessful();
+});
+
+
+test('TC_LOGIN_003 - User should see an error for invalid password @negative @regression',async({loginPage})=>{
+await loginPage.visitPage();
+
+await  loginPage.login('Admin', 'WrongPassword123');
+await expect(loginPage.errorMessage).toHaveText('Invalid credentials');
+await loginPage.verifyLoginUnsuccessful();
+});
+
+
+test('TC_LOGIN_004 - Required validation should appear for empty credentials @negative @regression',async({loginPage})=>{
+await loginPage.visitPage();
+
+await  loginPage.login('', '');
+await expect(loginPage.validationMessages).toHaveCount(2);
+await expect(loginPage.validationMessages).toHaveText(['Required','Required',]);
+await loginPage.verifyLoginUnsuccessful();
+});
+
+
+test('TC_LOGIN_005 - Required validation should appear when username is empty @negative @validation @regression',async({loginPage})=>{
+await loginPage.visitPage();
+await  loginPage.login('', 'admin123');
+await expect(loginPage.validationMessages).toHaveCount(1);
+await expect(loginPage.validationMessages).toHaveText('Required');
+await loginPage.verifyLoginUnsuccessful();
+});
+
+
+test('TC_LOGIN_006 - Required validation should appear when password is empty @negative @validation @regression',async({loginPage})=>{
+await loginPage.visitPage();
+await  loginPage.login('Admin', '');
+await expect(loginPage.validationMessages).toHaveCount(1);
+await expect(loginPage.validationMessages).toHaveText('Required');
+await loginPage.verifyLoginUnsuccessful();
+});
+
+
+test('TC_LOGIN_007 - User should navigate to reset password page @smoke @regression',async({loginPage,forgotPage})=>{
+await loginPage.visitPage();
+await loginPage.clickOnForgotPassword();
+await forgotPage.verifyResetRequestSuccessful();
+
+});
+
+
+
+test('TC_LOGIN_008 - Required validation should appear when reset username is empty @negative @validation @regression',async({loginPage,forgotPage})=>{
+await loginPage.visitPage();
+await loginPage.clickOnForgotPassword();
+await forgotPage.verifyResetRequestSuccessful();
+await forgotPage.usernameInput.fill('');
+await forgotPage.submitResetRequest();
+await expect(forgotPage.errorValidation).toHaveText('Required')
+
+});
+
+
+test('TC_LOGIN_009 - User should submit a password reset request with a valid username @positive @regression',async({loginPage,forgotPage})=>{
+await loginPage.visitPage();
+await loginPage.clickOnForgotPassword();
+await forgotPage.verifyResetRequestSuccessful();
+await forgotPage.enterUsername('Admin');
+await forgotPage.submitResetRequest();
+});
+
+
+test('TC_LOGOUT_001 - Admin should logout successfully @smoke @regression',async({loginPage,dashboardPage})=>{
+await loginPage.visitPage();
+await loginPage.login('Admin', 'admin123');
+await loginPage.verifyLoginSuccessful();
+await  dashboardPage.clickOnLogout();
+await loginPage.verifyLoginUnsuccessful();
+});
