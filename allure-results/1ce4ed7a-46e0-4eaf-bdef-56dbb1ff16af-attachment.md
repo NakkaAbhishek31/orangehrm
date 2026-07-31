@@ -1,0 +1,139 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: PIM\pim-attachments.spec.ts >> TC_PIM_012 - Admin should download an employee attachment @positive @download @regression
+- Location: tests\PIM\pim-attachments.spec.ts:65:5
+
+# Error details
+
+```
+Error: expect(locator).toHaveCount(expected) failed
+
+Locator:  locator('.orangehrm-attachment').locator('.oxd-table-body .oxd-table-card').filter({ hasText: 'employee-handbook-template.pdf' })
+Expected: 1
+Received: 0
+
+Call log:
+  - Expect "toHaveCount" with timeout 10000ms
+  - waiting for locator('.orangehrm-attachment').locator('.oxd-table-body .oxd-table-card').filter({ hasText: 'employee-handbook-template.pdf' })
+    7 × locator resolved to 0 elements
+      - unexpected value "0"
+  - Target page, context or browser has been closed
+
+```
+
+# Test source
+
+```ts
+  1   | import { Download, Locator, Page, expect } from "@playwright/test";
+  2   | 
+  3   | export class EmployeeAttachmentsPage{
+  4   |   readonly page: Page;
+  5   |   readonly attachmentsSection: Locator;
+  6   |   readonly attachmentsHeading: Locator;
+  7   |   readonly addAttachmentButton: Locator;
+  8   |   readonly attachmentFileInput: Locator;
+  9   |   readonly attachmentCommentInput: Locator;
+  10  |   readonly attachmentSaveButton: Locator;
+  11  |   readonly attachmentRows: Locator;
+  12  |   readonly successToast:Locator;
+  13  | 
+  14  |   constructor(page: Page) {
+  15  |     this.page = page;
+  16  |     this.attachmentsHeading = page.getByRole("heading", {
+  17  |       name: "Attachments",
+  18  |       exact: true,
+  19  |     });
+  20  | 
+  21  |     this.attachmentsSection = page.locator(".orangehrm-attachment");
+  22  | 
+  23  |     this.addAttachmentButton = this.attachmentsSection.locator('button:has-text("Add")');
+  24  | 
+  25  |     this.attachmentFileInput =
+  26  |       this.attachmentsSection.locator('input[type="file"]');
+  27  | 
+  28  |     this.attachmentCommentInput =
+  29  |       this.attachmentsSection.getByPlaceholder("Type comment here");
+  30  | 
+  31  |     this.attachmentSaveButton = this.attachmentsSection.getByRole("button", {
+  32  |       name: "Save",
+  33  |       exact: true,
+  34  |     });
+  35  | 
+  36  |     this.attachmentRows = this.attachmentsSection.locator(
+  37  |       ".oxd-table-body .oxd-table-card",
+  38  |     );
+  39  |     this.successToast = page
+  40  |   .locator('.oxd-toast')
+  41  |   .filter({
+  42  |     hasText: /Successfully/i,
+  43  |   });
+  44  |   }
+  45  | 
+  46  |   async clickonuploadtheAttachement():Promise<void>
+  47  |   {
+  48  | 
+  49  |    await this.attachmentsHeading.scrollIntoViewIfNeeded();
+  50  |    await expect(this.attachmentsHeading).toBeVisible();
+  51  |    await this.addAttachmentButton.click();
+  52  |    await expect(this.attachmentFileInput).toBeAttached();
+  53  |   await expect(this.attachmentCommentInput).toBeVisible();
+  54  |   await expect(this.attachmentSaveButton).toBeVisible();
+  55  |   
+  56  |   }
+  57  | 
+  58  |     async saveUploadtheAttachement():Promise<void>
+  59  |   {
+  60  | 
+  61  |       const uploadResponse = this.page.waitForResponse(
+  62  |     response =>
+  63  |       response.url().includes('/attachments') &&
+  64  |       response.request().method() === 'POST' &&
+  65  |       response.ok(),
+  66  |     { timeout: 30_000 }
+  67  |   );
+  68  | 
+  69  | 
+  70  |      await this.attachmentSaveButton.click();
+  71  |     await uploadResponse;
+  72  |       await expect(this.successToast).toContainText(
+  73  |     'Successfully Saved'
+  74  |   );
+  75  |   
+  76  |   }
+  77  | 
+  78  |   async verifyUploadedAttachment(
+  79  |   attachmentFileName: string,
+  80  |   comment: string
+  81  | ): Promise<void> {
+  82  |   const attachmentRow = this.attachmentRows.filter({
+  83  |     hasText: attachmentFileName,
+  84  |   });
+  85  | 
+> 86  |   await expect(attachmentRow).toHaveCount(1);
+      |                               ^ Error: expect(locator).toHaveCount(expected) failed
+  87  |   await expect(attachmentRow).toContainText(attachmentFileName);
+  88  |   await expect(attachmentRow).toContainText(comment);
+  89  |    
+  90  | 
+  91  | }
+  92  | 
+  93  | async downloadAttachemnt(fileName:string):Promise<Download>
+  94  | {
+  95  |   const attachmentRow=this.attachmentRows.filter({hasText:fileName});
+  96  |   await expect(attachmentRow).toHaveCount(1);
+  97  |   const downloadPromise=this.page.waitForEvent('download');
+  98  |   await attachmentRow.locator('button').filter({ has: this.page.locator('i.bi-download') }).click();
+  99  |   return await downloadPromise;
+  100 | 
+  101 | }
+  102 | 
+  103 | 
+  104 | 
+  105 | }
+```

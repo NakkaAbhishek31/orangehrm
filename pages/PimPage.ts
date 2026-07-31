@@ -13,13 +13,21 @@ type PersonalDetails = {
   ssnNumber?: string;
 };
 
-type AddEmployeeDetails = {
+export type AddEmployeeDetails = {
   firstName: string;
   lastName: string;
   middleName?: string;
   employeeId?: string;
   profilePicturePath?: string;
 };
+
+export type EmployeeWithLoginDetails = AddEmployeeDetails & {
+  username: string;
+  password: string;
+  status?: 'Enabled' | 'Disabled';
+};
+
+
 
 export class PIMPage {
   readonly page: Page;
@@ -52,6 +60,14 @@ export class PIMPage {
   readonly activePageButton: Locator;
   readonly employeeIdCells: Locator;
   readonly cancelProfilepageButton: Locator;
+ readonly requiredValidationMessages:Locator;
+ readonly createLoginDetailsSwitch: Locator;
+readonly employeeUsernameInput: Locator;
+readonly employeePasswordInput: Locator;
+readonly confirmPasswordInput: Locator;
+readonly enabledStatusRadio: Locator;
+readonly disabledStatusRadio: Locator;
+readonly confirmPasswordValidation:Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -130,6 +146,58 @@ export class PIMPage {
     this.cancelProfilepageButton = page.getByRole("button", {
       name: /Cancel/i,
     });
+
+   this.requiredValidationMessages =
+  page.locator('.oxd-input-field-error-message');
+this.createLoginDetailsSwitch = page
+  .locator('.oxd-form-row')
+  .filter({ hasText: 'Create Login Details' })
+  .locator('.oxd-switch-input');
+this.employeeUsernameInput = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page.getByText('Username', { exact: true }),
+  })
+  .locator('input');
+
+this.employeePasswordInput = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page.getByText('Password', { exact: true }),
+  })
+  .locator('input');
+
+this.confirmPasswordInput = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page.getByText('Confirm Password', {
+      exact: true,
+    }),
+  })
+  .locator('input');
+
+this.enabledStatusRadio = page
+  .getByText('Enabled', { exact: true })
+  .locator('..')
+  .locator('input[type="radio"]');
+
+this.disabledStatusRadio = page
+  .getByText('Disabled', { exact: true })
+  .locator('..')
+  .locator('input[type="radio"]');
+
+  this.confirmPasswordValidation = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page.getByText('Confirm Password', {
+      exact: true,
+    }),
+  })
+  .locator('.oxd-input-field-error-message');
+
+
+
+
   }
 
   async gotoAddEmployee(): Promise<void> {
@@ -409,8 +477,11 @@ export class PIMPage {
     await expect(this.page).toHaveURL(/pim\/viewEmployeeList/);
   }
 
-  async fillAddEmployeeForm(details: AddEmployeeDetails): Promise<void> {
-    await this.firstnameInput.fill(details.firstName);
+
+ async saveEmployeeWithoutRequiredDetails(details: AddEmployeeDetails): Promise<void>
+ {
+
+  await this.firstnameInput.fill(details.firstName);
 
     if (details.middleName !== undefined) {
       await this.middlenameInput.fill(details.middleName);
@@ -425,5 +496,134 @@ export class PIMPage {
     if (details.profilePicturePath !== undefined) {
       await this.profilePictureInput.setInputFiles(details.profilePicturePath);
     }
+ 
+    await this.SaveEmployeeButton.click(); 
+ }
+
+
+ async fillAddEmployeeForm(
+  details: AddEmployeeDetails
+): Promise<void> {
+  
+    if (details.firstName !== undefined) {
+    await this.firstnameInput.fill(details.firstName);
   }
+
+  if (details.middleName !== undefined) {
+    await this.middlenameInput.fill(details.middleName);
+  }
+
+
+    if (details.lastName !== undefined) {
+    await this.lastnameInput.fill(details.lastName);
+  }
+
+  if (details.employeeId !== undefined) {
+    await this.employeeID.fill(details.employeeId);
+    await this.employeeID.blur();
+  }
+
+  if (details.profilePicturePath !== undefined) {
+    await this.profilePictureInput.setInputFiles(
+      details.profilePicturePath
+    );
+  }
+}
+
+
+async resetEmployeeFilters(): Promise<void> {
+  const employeeListResponse = this.page.waitForResponse(
+    response =>
+      response.url().includes('/api/v2/pim/employees') &&
+      response.request().method() === 'GET' &&
+      response.ok(),
+    { timeout: 15_000 }
+  );
+
+  await this.page
+    .getByRole('button', { name: 'Reset', exact: true })
+    .click();
+
+  await employeeListResponse;
+  await expect(this.loadingSpinner).toBeHidden();
+}
+
+async selectEmployeeFromAutocomplete(
+  partialName: string,
+  expectedFullName: string
+): Promise<void> {
+  await this.employeeNameFilterInput.fill(partialName);
+
+  const matchingOption = this.page
+    .locator('.oxd-autocomplete-option')
+    .filter({ hasText: expectedFullName });
+
+  await expect(matchingOption).toBeVisible({ timeout: 15000 });
+  await matchingOption.click();
+}
+
+
+async addEmployeeWithLoginDetails(
+  details: EmployeeWithLoginDetails
+): Promise<string> {
+  await this.fillAddEmployeeForm({
+    firstName: details.firstName,
+    middleName: details.middleName,
+    lastName: details.lastName,
+    employeeId: details.employeeId,
+    profilePicturePath: details.profilePicturePath,
+  });
+
+  const employeeId = await this.employeeID.inputValue();
+
+  await this.createLoginDetailsSwitch.check();
+
+  await expect(this.employeeUsernameInput).toBeVisible();
+  await expect(this.employeePasswordInput).toBeVisible();
+  await expect(this.confirmPasswordInput).toBeVisible();
+
+  await this.employeeUsernameInput.fill(details.username);
+  await this.employeePasswordInput.fill(details.password);
+  await this.confirmPasswordInput.fill(details.password);
+
+  if (details.status === 'Disabled') {
+    await this.disabledStatusRadio.check();
+  } else {
+    await this.enabledStatusRadio.check();
+  }
+
+  await expect(this.employeeUsernameInput).toHaveValue(
+    details.username
+  );
+
+  await expect(this.employeePasswordInput).toHaveValue(
+    details.password
+  );
+
+  await expect(this.confirmPasswordInput).toHaveValue(
+    details.password
+  );
+
+  const createEmployeeResponse = this.page.waitForResponse(
+    response =>
+      response.url().includes('/api/v2/pim/employees') &&
+      response.request().method() === 'POST' &&
+      response.ok(),
+    { timeout: 20_000 }
+  );
+
+  await this.SaveEmployeeButton.click();
+
+  await createEmployeeResponse;
+
+  await this.page.waitForURL(
+    /pim\/viewPersonalDetails\/empNumber\/\d+/,
+    { timeout: 20_000 }
+  );
+
+  await expect(this.loadingSpinner).toBeHidden();
+
+  return employeeId;
+}
+
 }

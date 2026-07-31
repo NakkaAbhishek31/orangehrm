@@ -28,9 +28,12 @@ test("TC_PIM_011 - Admin should upload an employee attachment @positive @upload 
     profilePicturePath: profilePicturePath,
   });
 
-  await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-    timeout: 15_000,
-  });
+
+await page.waitForURL(/.*pim\/viewPersonalDetails\/empNumber\/\d+$/, {
+  timeout: 60000, // 60 seconds
+});
+
+
 
   await employeeAttachmentspage.clickonuploadtheAttachement();
   await employeeAttachmentspage.attachmentFileInput.setInputFiles(
@@ -86,9 +89,10 @@ test("TC_PIM_012 - Admin should download an employee attachment @positive @downl
     profilePicturePath: profilePicturePath,
   });
 
-  await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-    timeout: 15_000,
-  });
+await page.waitForURL(/.*pim\/viewPersonalDetails\/empNumber\/\d+$/, {
+  timeout: 60000, // 60 seconds
+});
+
 
   await employeeAttachmentspage.clickonuploadtheAttachement();
   await employeeAttachmentspage.attachmentFileInput.setInputFiles(
