@@ -1,8 +1,10 @@
+
 pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS'
+        nodejs 'nodejs'
+        allure 'Allure'
     }
 
     parameters {
