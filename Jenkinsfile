@@ -27,9 +27,11 @@ pipeline {
                 '@download',
                 '@delete',
                 '@security',
-                '@account'
+                '@account',
+                '@selection',
+                '@navigation'
             ],
-            description: 'Select the test tag'
+            description: 'Select the Playwright tests to run'
         )
 
         choice(
@@ -43,10 +45,12 @@ pipeline {
 
     options {
         timestamps()
+
         timeout(
             time: 60,
             unit: 'MINUTES'
         )
+
         disableConcurrentBuilds()
     }
 
@@ -57,10 +61,16 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Verify Environment') {
             steps {
                 bat 'node --version'
                 bat 'npm --version'
+                bat 'npx playwright --version'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
                 bat 'npm ci'
             }
         }
@@ -77,38 +87,61 @@ pipeline {
                     def testCommand =
                         'npx playwright test'
 
+                    def requestedFiles =
+                        params.TEST_FILES.trim()
+
                     if (
-                        params.TEST_FILES
-                            .trim()
+                        requestedFiles
                             .toLowerCase() != 'all'
                     ) {
                         def selectedFiles =
-                            params.TEST_FILES
+                            requestedFiles
                                 .split(',')
-                                .collect { it.trim() }
-                                .findAll { it }
+                                .collect {
+                                    it.trim()
+                                }
+                                .findAll {
+                                    it
+                                }
 
                         if (selectedFiles.isEmpty()) {
                             error(
-                                'No valid test files were provided'
+                                'No test files were provided'
                             )
                         }
 
                         selectedFiles.each { file ->
                             if (
-                                !(file ==~
-                                  /tests[\/\\][A-Za-z0-9_.\/\\-]+\.spec\.ts/)
+                                !file.startsWith(
+                                    'tests/'
+                                )
                             ) {
                                 error(
-                                    "Invalid test file: ${file}"
+                                    "Test file must start with tests/: ${file}"
+                                )
+                            }
+
+                            if (
+                                !file.endsWith(
+                                    '.spec.ts'
+                                )
+                            ) {
+                                error(
+                                    "Test file must end with .spec.ts: ${file}"
+                                )
+                            }
+
+                            if (file.contains('..')) {
+                                error(
+                                    "Invalid test file path: ${file}"
                                 )
                             }
                         }
 
                         def fileArguments =
                             selectedFiles
-                                .collect {
-                                    "\"${it}\""
+                                .collect { file ->
+                                    "\"${file}\""
                                 }
                                 .join(' ')
 
@@ -119,7 +152,12 @@ pipeline {
                     testCommand +=
                         " --project=${params.BROWSER}"
 
-                    if (params.TEST_TAG != 'all') {
+                    testCommand +=
+                        ' --workers=1'
+
+                    if (
+                        params.TEST_TAG != 'all'
+                    ) {
                         testCommand +=
                             " --grep \"${params.TEST_TAG}\""
                     }
@@ -128,7 +166,7 @@ pipeline {
                         testCommand
 
                     echo(
-                        "Test command: ${testCommand}"
+                        "Running command: ${testCommand}"
                     )
                 }
             }
@@ -140,7 +178,10 @@ pipeline {
                     buildResult: 'FAILURE',
                     stageResult: 'FAILURE'
                 ) {
-                    bat "${env.PLAYWRIGHT_TEST_COMMAND}"
+                    bat(
+                        script:
+                            "${env.PLAYWRIGHT_TEST_COMMAND}"
+                    )
                 }
             }
         }
@@ -149,29 +190,30 @@ pipeline {
     post {
         always {
             script {
-                if (fileExists('allure-results')) {
+                if (
+                    fileExists(
+                        'allure-results'
+                    )
+                ) {
                     allure(
                         includeProperties: false,
                         jdk: '',
                         results: [
                             [
-                                path: 'allure-results'
+                                path:
+                                    'allure-results'
                             ]
                         ]
                     )
                 } else {
                     echo(
-                        'Allure results were not generated'
+                        'No Allure results were generated'
                     )
                 }
             }
 
             archiveArtifacts(
-                artifacts: '''
-                    playwright-report/**,
-                    test-results/**,
-                    allure-results/**
-                ''',
+                artifacts: 'playwright-report/**,test-results/**,allure-results/**',
                 allowEmptyArchive: true
             )
         }
