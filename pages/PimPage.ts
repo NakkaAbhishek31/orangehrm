@@ -921,4 +921,54 @@ async deselectAllVisibleEmployees(): Promise<void> {
     ).not.toBeChecked();
   }
 }
+
+async cancelEmployeeDeletion(
+  employeeId: string
+): Promise<void> {
+  const employeeRow = this.employeeRows.filter({
+    has: this.page
+      .locator('.oxd-table-cell')
+      .nth(1)
+      .getByText(employeeId, {
+        exact: true,
+      }),
+  });
+
+  await expect(employeeRow).toHaveCount(1);
+
+  const deleteButton = employeeRow
+    .locator('button')
+    .filter({
+      has: this.page.locator(
+        'i.bi-trash'
+      ),
+    });
+
+  await expect(deleteButton).toBeVisible();
+  await deleteButton.click();
+
+  const confirmationDialog =
+    this.page.getByRole('dialog');
+
+  await expect(confirmationDialog).toBeVisible();
+
+  await expect(confirmationDialog).toContainText(
+    'Are you Sure?'
+  );
+
+  await confirmationDialog
+    .getByRole('button', {
+      name: /No, Cancel/i,
+    })
+    .click();
+
+  await expect(confirmationDialog).toBeHidden();
+
+  // Confirm the employee remains in the table.
+  await expect(employeeRow).toHaveCount(1);
+
+  await expect(
+    employeeRow.locator('.oxd-table-cell').nth(1)
+  ).toHaveText(employeeId);
+}
 }
