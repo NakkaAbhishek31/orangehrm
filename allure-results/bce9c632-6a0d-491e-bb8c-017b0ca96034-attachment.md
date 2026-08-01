@@ -1,0 +1,374 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: PIM\pim-employee-list.spec.ts >> TC_PIM_037 - Admin should cancel employee deletion @negative @delete @regression
+- Location: tests\PIM\pim-employee-list.spec.ts:227:5
+
+# Error details
+
+```
+TimeoutError: page.waitForResponse: Timeout 20000ms exceeded while waiting for event "response"
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=f3e3]:
+  - generic:
+    - complementary [ref=f3e4]:
+      - navigation "Sidepanel" [ref=f3e5]:
+        - generic [ref=f3e6]:
+          - link [ref=f3e7] [cursor=pointer]:
+            - /url: https://www.orangehrm.com/
+            - img "client brand banner" [ref=f3e9]
+          - text: 
+        - generic [ref=f3e10]:
+          - generic [ref=f3e11]:
+            - generic [ref=f3e12]:
+              - textbox "Search" [ref=f3e15]
+              - button "" [ref=f3e16] [cursor=pointer]
+            - separator [ref=f3e18]
+          - list [ref=f3e19]:
+            - listitem [ref=f3e20]:
+              - link "Admin" [ref=f3e21] [cursor=pointer]:
+                - /url: /web/index.php/admin/viewAdminModule
+            - listitem [ref=f3e25]:
+              - link "PIM" [ref=f3e26] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewPimModule
+            - listitem [ref=f3e41]:
+              - link "Leave" [ref=f3e42] [cursor=pointer]:
+                - /url: /web/index.php/leave/viewLeaveModule
+            - listitem [ref=f3e46]:
+              - link "Time" [ref=f3e47] [cursor=pointer]:
+                - /url: /web/index.php/time/viewTimeModule
+            - listitem [ref=f3e54]:
+              - link "Recruitment" [ref=f3e55] [cursor=pointer]:
+                - /url: /web/index.php/recruitment/viewRecruitmentModule
+            - listitem [ref=f3e62]:
+              - link "My Info" [ref=f3e63] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewMyDetails
+            - listitem [ref=f3e70]:
+              - link "Performance" [ref=f3e71] [cursor=pointer]:
+                - /url: /web/index.php/performance/viewPerformanceModule
+            - listitem [ref=f3e80]:
+              - link "Dashboard" [ref=f3e81] [cursor=pointer]:
+                - /url: /web/index.php/dashboard/index
+            - listitem [ref=f3e85]:
+              - link "Directory" [ref=f3e86] [cursor=pointer]:
+                - /url: /web/index.php/directory/viewDirectory
+            - listitem [ref=f3e90]:
+              - link "Maintenance" [ref=f3e91] [cursor=pointer]:
+                - /url: /web/index.php/maintenance/viewMaintenanceModule
+            - listitem [ref=f3e96]:
+              - link "Claim" [ref=f3e97] [cursor=pointer]:
+                - /url: /web/index.php/claim/viewClaimModule
+            - listitem [ref=f3e105]:
+              - link "Buzz" [ref=f3e106] [cursor=pointer]:
+                - /url: /web/index.php/buzz/viewBuzz
+    - banner [ref=f3e110]:
+      - generic [ref=f3e111]:
+        - generic [ref=f3e112]:
+          - text: 
+          - heading "PIM" [level=6] [ref=f3e114]
+        - link [ref=f3e116]:
+          - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+          - button "Upgrade" [ref=f3e117] [cursor=pointer]
+        - list [ref=f3e123]:
+          - listitem [ref=f3e124]:
+            - generic [ref=f3e125] [cursor=pointer]:
+              - img "profile picture" [ref=f3e126]
+              - paragraph [ref=f3e127]: manda user
+              - generic [ref=f3e128]: 
+      - navigation "Topbar Menu" [ref=f3e130]:
+        - list [ref=f3e131]:
+          - listitem [ref=f3e132] [cursor=pointer]:
+            - generic [ref=f3e133]:
+              - text: Configuration
+              - generic [ref=f3e134]: 
+          - listitem [ref=f3e135] [cursor=pointer]:
+            - link "Employee List" [ref=f3e136]:
+              - /url: "#"
+          - listitem [ref=f3e137] [cursor=pointer]:
+            - link "Add Employee" [ref=f3e138]:
+              - /url: "#"
+          - listitem [ref=f3e139] [cursor=pointer]:
+            - link "Reports" [ref=f3e140]:
+              - /url: "#"
+          - button "" [ref=f3e142] [cursor=pointer]
+  - generic [ref=f3e144]:
+    - generic [ref=f3e147]:
+      - heading "Add Employee" [level=6] [ref=f3e148]
+      - separator [ref=f3e149]
+      - generic [ref=f3e150]:
+        - generic [ref=f3e151]:
+          - generic [ref=f3e152]:
+            - generic [ref=f3e154]:
+              - button "Choose File"
+              - generic [ref=f3e155]:
+                - img "profile picture" [ref=f3e157]
+                - button "" [ref=f3e158] [cursor=pointer]
+            - paragraph [ref=f3e160]: "Accepts jpg, .png, .gif up to 1MB. Recommended dimensions: 200px X 200px"
+          - generic [ref=f3e161]:
+            - generic [ref=f3e162]:
+              - generic [ref=f3e165]:
+                - generic [ref=f3e166]: Employee Full Name*
+                - generic [ref=f3e168]:
+                  - textbox "First Name" [ref=f3e171]: Auto1785570674554
+                  - textbox "Middle Name" [ref=f3e174]: Test
+                  - textbox "Last Name" [ref=f3e177]: User
+              - generic [ref=f3e180]:
+                - generic [ref=f3e181]: Employee Id
+                - textbox [ref=f3e184]: "0476"
+                - generic [ref=f3e185]: Employee Id already exists
+            - separator [ref=f3e186]
+            - generic [ref=f3e187]:
+              - paragraph [ref=f3e188]: Create Login Details
+              - checkbox [checked] [ref=f3e191]
+            - generic [ref=f3e194]:
+              - generic [ref=f3e196]:
+                - generic [ref=f3e197]: Username*
+                - textbox [ref=f3e200]: user1785570674554
+              - generic [ref=f3e202]:
+                - generic [ref=f3e203]: Status
+                - generic [ref=f3e205]:
+                  - generic [ref=f3e209] [cursor=pointer]:
+                    - radio "Enabled" [checked] [ref=f3e210]
+                    - text: Enabled
+                  - generic [ref=f3e215] [cursor=pointer]:
+                    - radio "Disabled" [ref=f3e216]
+                    - text: Disabled
+            - generic [ref=f3e219]:
+              - generic [ref=f3e220]:
+                - generic [ref=f3e221]: Better
+                - generic [ref=f3e222]:
+                  - generic [ref=f3e223]: Password*
+                  - textbox [ref=f3e226]: Test@12345
+                - paragraph [ref=f3e227]: For a strong password, please use a hard to guess combination of text with upper and lower case characters, symbols and numbers
+              - generic [ref=f3e229]:
+                - generic [ref=f3e230]: Confirm Password*
+                - textbox [ref=f3e233]: Test@12345
+        - separator [ref=f3e234]
+        - generic [ref=f3e235]:
+          - paragraph [ref=f3e236]: "* Required"
+          - button "Cancel" [ref=f3e237] [cursor=pointer]
+          - button "Save" [active] [ref=f3e238] [cursor=pointer]
+    - generic [ref=f3e239]:
+      - paragraph [ref=f3e240]: OrangeHRM OS 5.9
+      - paragraph [ref=f3e241]:
+        - text: © 2005 - 2026
+        - link "OrangeHRM, Inc" [ref=f3e242] [cursor=pointer]:
+          - /url: http://www.orangehrm.com
+        - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  540 |   }
+  541 | 
+  542 |   async fillAddEmployeeForm(details: AddEmployeeDetails): Promise<void> {
+  543 |     if (details.firstName !== undefined) {
+  544 |       await this.firstnameInput.fill(details.firstName);
+  545 |     }
+  546 | 
+  547 |     if (details.middleName !== undefined) {
+  548 |       await this.middlenameInput.fill(details.middleName);
+  549 |     }
+  550 | 
+  551 |     if (details.lastName !== undefined) {
+  552 |       await this.lastnameInput.fill(details.lastName);
+  553 |     }
+  554 | 
+  555 |     if (details.employeeId !== undefined) {
+  556 |       await this.employeeID.fill(details.employeeId);
+  557 |       await this.employeeID.blur();
+  558 |     }
+  559 | 
+  560 |     if (details.profilePicturePath !== undefined) {
+  561 |       await this.profilePictureInput.setInputFiles(details.profilePicturePath);
+  562 |     }
+  563 |   }
+  564 | 
+  565 |   async resetEmployeeFilters(): Promise<void> {
+  566 |     const employeeListResponse = this.page.waitForResponse(
+  567 |       (response) =>
+  568 |         response.url().includes("/api/v2/pim/employees") &&
+  569 |         response.request().method() === "GET" &&
+  570 |         response.ok(),
+  571 |       { timeout: 15_000 },
+  572 |     );
+  573 | 
+  574 |     await this.page.getByRole("button", { name: "Reset", exact: true }).click();
+  575 | 
+  576 |     await employeeListResponse;
+  577 |     await expect(this.loadingSpinner).toBeHidden();
+  578 |   }
+  579 | 
+  580 |   async selectEmployeeFromAutocomplete(
+  581 |     partialName: string,
+  582 |     expectedFullName: string,
+  583 |   ): Promise<void> {
+  584 |     await this.employeeNameFilterInput.fill(partialName);
+  585 | 
+  586 |     const matchingOption = this.page
+  587 |       .locator(".oxd-autocomplete-option")
+  588 |       .filter({ hasText: expectedFullName });
+  589 | 
+  590 |     await expect(matchingOption).toBeVisible({ timeout: 15000 });
+  591 |     await matchingOption.click();
+  592 |   }
+  593 | 
+  594 |   async addEmployeeWithLoginDetails(
+  595 |     details: EmployeeWithLoginDetails,
+  596 |   ): Promise<string> {
+  597 |     await this.fillAddEmployeeForm({
+  598 |       firstName: details.firstName,
+  599 |       middleName: details.middleName,
+  600 |       lastName: details.lastName,
+  601 |       employeeId: details.employeeId,
+  602 |       profilePicturePath: details.profilePicturePath,
+  603 |     });
+  604 | 
+  605 |     const employeeId = await this.employeeID.inputValue();
+  606 | 
+  607 |     if (!(await this.createLoginDetailsCheckbox.isChecked())) {
+  608 |       await this.createLoginDetailsSwitch.click();
+  609 |     }
+  610 | 
+  611 |     await expect(this.createLoginDetailsCheckbox).toBeChecked();
+  612 | 
+  613 |     await expect(this.employeeUsernameInput).toBeVisible();
+  614 |     await expect(this.employeePasswordInput).toBeVisible();
+  615 |     await expect(this.confirmPasswordInput).toBeVisible();
+  616 | 
+  617 |     await this.employeeUsernameInput.fill(details.username);
+  618 |     await this.employeePasswordInput.fill(details.password);
+  619 |     await this.confirmPasswordInput.fill(details.password);
+  620 | 
+  621 |     if (details.status === "Disabled") {
+  622 |       await this.disabledStatusRadio.check({
+  623 |         force: true,
+  624 |       });
+  625 | 
+  626 |       await expect(this.disabledStatusRadio).toBeChecked();
+  627 |     } else {
+  628 |       await this.enabledStatusRadio.check({
+  629 |         force: true,
+  630 |       });
+  631 | 
+  632 |       await expect(this.enabledStatusRadio).toBeChecked();
+  633 |     }
+  634 |     await expect(this.employeeUsernameInput).toHaveValue(details.username);
+  635 | 
+  636 |     await expect(this.employeePasswordInput).toHaveValue(details.password);
+  637 | 
+  638 |     await expect(this.confirmPasswordInput).toHaveValue(details.password);
+  639 | 
+> 640 |     const createEmployeeResponse = this.page.waitForResponse(
+      |                                              ^ TimeoutError: page.waitForResponse: Timeout 20000ms exceeded while waiting for event "response"
+  641 |       (response) =>
+  642 |         response.url().includes("/api/v2/pim/employees") &&
+  643 |         response.request().method() === "POST" &&
+  644 |         response.ok(),
+  645 |       { timeout: 20_000 },
+  646 |     );
+  647 | 
+  648 |     await this.SaveEmployeeButton.click();
+  649 | 
+  650 |     await createEmployeeResponse;
+  651 | 
+  652 |     await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+  653 |       timeout: 20_000,
+  654 |     });
+  655 | 
+  656 |     await expect(this.loadingSpinner).toBeHidden();
+  657 | 
+  658 |     return employeeId;
+  659 |   }
+  660 | 
+  661 |   async verifyPasswordStrength(expectedStrength: RegExp): Promise<void> {
+  662 |     await expect(this.passwordStrengthIndicator).toBeVisible();
+  663 | 
+  664 |     await expect(this.passwordStrengthIndicator).toHaveText(expectedStrength);
+  665 |   }
+  666 | 
+  667 |   async canceldeleteEmployeeById(employeeId: string): Promise<void> {
+  668 |     await expect(this.loadingSpinner).toBeHidden();
+  669 |     const matchingRow = this.employeeRows.filter({ hasText: employeeId });
+  670 |     await expect(matchingRow).toHaveCount(1);
+  671 |     const deleteButton = matchingRow.locator("button").filter({
+  672 |       has: this.page.locator("i.bi-trash"),
+  673 |     });
+  674 |     await deleteButton.click();
+  675 | 
+  676 |     const confirmationDilaog = this.page.getByRole("dialog");
+  677 |     await expect(confirmationDilaog).toBeVisible();
+  678 | 
+  679 |     await confirmationDilaog.getByText("No, Cancel", { exact: true }).click();
+  680 | 
+  681 |     await expect(this.page).toHaveURL(/pim\/viewEmployeeList/);
+  682 |   }
+  683 | 
+  684 |   async selectEmployeeById(employeeId: string): Promise<void> {
+  685 |     const employeeRow = this.employeeRows.filter({
+  686 |       has: this.page
+  687 |         .locator(".oxd-table-cell")
+  688 |         .nth(1)
+  689 |         .getByText(employeeId, { exact: true }),
+  690 |     });
+  691 | 
+  692 |     await expect(employeeRow).toHaveCount(1);
+  693 | 
+  694 |     const rowCheckbox = employeeRow.locator('input[type="checkbox"]');
+  695 | 
+  696 |     await rowCheckbox.check({
+  697 |       force: true,
+  698 |     });
+  699 | 
+  700 |     await expect(rowCheckbox).toBeChecked();
+  701 |   }
+  702 | 
+  703 |   async deleteSelectedEmployees(): Promise<void> {
+  704 |     const deleteSelectedButton = this.page.getByRole("button", {
+  705 |       name: /Delete Selected/i,
+  706 |     });
+  707 | 
+  708 |     await expect(deleteSelectedButton).toBeVisible();
+  709 |     await deleteSelectedButton.click();
+  710 | 
+  711 |     const confirmationDialog = this.page.getByRole("dialog");
+  712 | 
+  713 |     await expect(confirmationDialog).toBeVisible();
+  714 | 
+  715 |     const deleteResponse = this.page.waitForResponse(
+  716 |       (response) =>
+  717 |         response.url().includes("/api/v2/pim/employees") &&
+  718 |         response.request().method() === "DELETE" &&
+  719 |         response.ok(),
+  720 |       { timeout: 20_000 },
+  721 |     );
+  722 | 
+  723 |     await confirmationDialog
+  724 |       .getByRole("button", {
+  725 |         name: /Yes, Delete/i,
+  726 |       })
+  727 |       .click();
+  728 | 
+  729 |     await deleteResponse;
+  730 | 
+  731 |     await expect(confirmationDialog).toBeHidden();
+  732 | 
+  733 |     await expect(this.successToast).toContainText("Successfully Deleted");
+  734 | 
+  735 |     await expect(this.loadingSpinner).toBeHidden();
+  736 |   }
+  737 | 
+  738 | async selectAllVisibleEmployees(): Promise<void> {
+  739 |   await expect(this.loadingSpinner).toBeHidden({
+  740 |     timeout: 20_000,
+```

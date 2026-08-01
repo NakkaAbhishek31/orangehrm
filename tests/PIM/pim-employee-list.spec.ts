@@ -445,7 +445,7 @@ await pimPage.gotoEmployeeList();
   await pimPage.verifyNoEmployeeRecordsFound(employeeId);
 });
 
-test.only("TC_PIM_040 - Admin should select and deselect all employees on the current page @positive @selection @regression", async ({
+test("TC_PIM_040 - Admin should select and deselect all employees on the current page @positive @selection @regression", async ({
   loginPage,
   navigationPage,
   pimPage,

@@ -2,8 +2,27 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'nodejs'
-        allure 'Allure'
+        nodejs 'NodeJS'
+    }
+
+    parameters {
+        choice(
+            name: 'TEST_TAG',
+            choices: [
+                'all',
+                '@smoke',
+                '@regression',
+                '@validation',
+                '@positive',
+                '@negative',
+                '@search',
+                '@pagination',
+                '@upload',
+                '@download',
+                '@security'
+            ],
+            description: 'Select the Playwright tests to run'
+        )
     }
 
     stages {
@@ -20,13 +39,21 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Playwright Tests') {
             steps {
-                catchError(
-                    buildResult: 'FAILURE',
-                    stageResult: 'FAILURE'
-                ) {
-                    bat 'npx playwright test --project=chromium'
+                script {
+                    catchError(
+                        buildResult: 'FAILURE',
+                        stageResult: 'FAILURE'
+                    ) {
+                        if (params.TEST_TAG == 'all') {
+                            bat 'npx playwright test --project=chromium'
+                        } else {
+                            bat """
+                                npx playwright test --project=chromium --grep "${params.TEST_TAG}"
+                            """
+                        }
+                    }
                 }
             }
         }
@@ -34,11 +61,11 @@ pipeline {
 
     post {
         always {
-            allure([
+            allure(
                 includeProperties: false,
                 jdk: '',
                 results: [[path: 'allure-results']]
-            ])
+            )
 
             archiveArtifacts(
                 artifacts: 'playwright-report/**, test-results/**',

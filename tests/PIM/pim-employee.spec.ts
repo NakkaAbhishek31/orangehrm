@@ -248,31 +248,6 @@ test("TC_PIM_026 - Required validation should appear when employee first name is
   await expect(page).toHaveURL(/pim\/addEmployee/);
 });
 
-test("'TC_PIM_027 - Duplicate validation should appear for an existing employee ID @negative @validation @regression", async ({
-  page,
-  loginPage,
-  navigationPage,
-  pimPage,
-}) => {
-  const middleName = "Test";
-  const lastName = `User${Date.now()}`;
-
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
-  await navigationPage.gotoPIM();
-  await pimPage.gotoAddEmployee();
-  const employeeId = await pimPage.saveEmployeeWithoutRequiredDetails({
-    firstName: " ",
-    middleName: middleName,
-    lastName: lastName,
-  });
-  await expect(pimPage.requiredValidationMessages).toHaveCount(1);
-  await expect(pimPage.requiredValidationMessages).toHaveText(["Required"]);
-
-  await expect(page).toHaveURL(/pim\/addEmployee/);
-});
-
 test("TC_PIM_027 - Duplicate validation should appear for an existing employee ID @negative @validation @regression", async ({
   page,
   loginPage,
@@ -729,12 +704,5 @@ test("TC_PIM_036 - Enabled employee account should login successfully @positive 
 
     await loginPage.verifyLoginSuccessful();
 
-
-  // await pimPage.deleteEmployeeById(employeeId);
-
-  // await pimPage.filterEmployeeList({ employeeId });
-  // await pimPage.clickOnFilterSearch();
-
-  // await pimPage.verifyNoEmployeeRecordsFound(employeeId);
 });
 
