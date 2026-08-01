@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'nodejs'
+        nodejs 'NodeJS'
     }
 
     parameters {
         string(
             name: 'TEST_FILES',
             defaultValue: 'all',
-            description: 'Enter all, one spec file, or comma-separated spec files'
+            description: 'Enter all, one spec file, folder, or comma-separated spec files'
         )
 
         choice(
@@ -44,53 +44,149 @@ pipeline {
     }
 
     options {
+        skipDefaultCheckout(true)
+        disableConcurrentBuilds()
         timestamps()
 
         timeout(
             time: 60,
             unit: 'MINUTES'
         )
-
-        disableConcurrentBuilds()
     }
 
-  stages {
-    stage('Clean and Checkout') {
-        steps {
-            deleteDir()
-            checkout scm
+    stages {
+        stage('Clean and Checkout') {
+            steps {
+                deleteDir()
+                checkout scm
+            }
         }
-    }
 
-    stage('Install Dependencies') {
-        steps {
-            bat 'npm ci'
+        stage('Verify Environment') {
+            steps {
+                bat 'node --version'
+                bat 'npm --version'
+            }
         }
-    }
 
-    stage('Install Playwright Browser') {
-        steps {
-            bat 'npx playwright install chromium'
+        stage('Install Dependencies') {
+            steps {
+                bat 'npm ci'
+            }
         }
-    }
 
-    stage('List Tests') {
-        steps {
-            bat 'npx playwright test --list --project=chromium'
+        stage('Install Playwright Browser') {
+            steps {
+                bat 'npx playwright install chromium'
+            }
         }
-    }
 
-    stage('Run Playwright Tests') {
-        steps {
-            catchError(
-                buildResult: 'FAILURE',
-                stageResult: 'FAILURE'
-            ) {
-                bat "${env.PLAYWRIGHT_TEST_COMMAND}"
+        stage('List Tests') {
+            steps {
+                bat(
+                    'npx playwright test --list --project=chromium'
+                )
+            }
+        }
+
+        stage('Run Playwright Tests') {
+            steps {
+                script {
+                    def testCommand =
+                        'npx playwright test'
+
+                    def requestedFiles =
+                        params.TEST_FILES?.trim()
+
+                    if (
+                        requestedFiles == null ||
+                        requestedFiles == ''
+                    ) {
+                        requestedFiles = 'all'
+                    }
+
+                    if (
+                        requestedFiles
+                            .toLowerCase() != 'all'
+                    ) {
+                        def selectedFiles =
+                            requestedFiles
+                                .split(',')
+                                .collect {
+                                    it.trim()
+                                }
+                                .findAll {
+                                    it
+                                }
+
+                        if (selectedFiles.isEmpty()) {
+                            error(
+                                'No test files were provided'
+                            )
+                        }
+
+                        selectedFiles.each { file ->
+                            if (
+                                !file.startsWith(
+                                    'tests/'
+                                )
+                            ) {
+                                error(
+                                    "Test path must start with tests/: ${file}"
+                                )
+                            }
+
+                            if (file.contains('..')) {
+                                error(
+                                    "Invalid test path: ${file}"
+                                )
+                            }
+                        }
+
+                        def fileArguments =
+                            selectedFiles
+                                .collect { file ->
+                                    "\"${file}\""
+                                }
+                                .join(' ')
+
+                        testCommand +=
+                            " ${fileArguments}"
+                    }
+
+                    def selectedBrowser =
+                        params.BROWSER ?: 'chromium'
+
+                    testCommand +=
+                        " --project=${selectedBrowser}"
+
+                    testCommand +=
+                        ' --workers=1'
+
+                    def selectedTag =
+                        params.TEST_TAG ?: 'all'
+
+                    if (selectedTag != 'all') {
+                        testCommand +=
+                            " --grep \"${selectedTag}\""
+                    }
+
+                    echo(
+                        "Running command: ${testCommand}"
+                    )
+
+                    catchError(
+                        buildResult: 'FAILURE',
+                        stageResult: 'FAILURE'
+                    ) {
+                        bat(
+                            script: testCommand
+                        )
+                    }
+                }
             }
         }
     }
-}
 
     post {
         always {
