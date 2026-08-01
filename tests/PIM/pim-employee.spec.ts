@@ -625,7 +625,7 @@ test("TC_PIM_035 - Disabled employee account should not be able to login @negati
 
   await expect(loginPage.errorMessage).toBeVisible();
 
-  await expect(loginPage.errorMessage).toHaveText("Invalid credentials");
+  await expect(loginPage.errorMessage).toHaveText("Account disabled");
 
   await loginPage.verifyLoginUnsuccessful();
 

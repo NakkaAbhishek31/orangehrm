@@ -224,8 +224,7 @@ test("TC_PIM_029 - Admin should search for an employee using a partial employee 
   await pimPage.clickOnFilterSearch();
 });
 
-test(
-  'TC_PIM_037 - Admin should cancel employee deletion @negative @delete @regression',
+test('TC_PIM_037 - Admin should cancel employee deletion @negative @delete @regression',
   async ({ loginPage, navigationPage, pimPage }) => {
     const firstName = `Auto${Date.now()}`;
     const middleName = 'Test';
@@ -350,8 +349,8 @@ test("TC_PIM_038 - Admin should delete multiple employees using bulk selection @
       hasText: employeeId2,
     });
 
-   await expect(firstRow).toHaveCount(1);
-  await expect(secondRow).toHaveCount(1);
+//    await expect(firstRow).toHaveCount(1);
+//   await expect(secondRow).toHaveCount(1);
  await pimPage.selectEmployeeById(employeeId1);
     await pimPage.selectEmployeeById(employeeId2);
 

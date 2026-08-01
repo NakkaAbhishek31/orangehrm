@@ -650,9 +650,11 @@ export class PIMPage {
   ): Promise<void> {
     await this.employeeNameFilterInput.fill(partialName);
 
-    const matchingOption = this.page
-      .locator(".oxd-autocomplete-option")
-      .filter({ hasText: expectedFullName });
+  const matchingOption = this.page
+  .locator(".oxd-autocomplete-option")
+  .filter({ hasText: expectedFullName });
+
+  await matchingOption.waitFor({ state: "visible" });
 
     await expect(matchingOption).toBeVisible({ timeout: 15000 });
     await matchingOption.click();
