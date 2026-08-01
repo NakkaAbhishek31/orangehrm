@@ -224,61 +224,59 @@ test("TC_PIM_029 - Admin should search for an employee using a partial employee 
   await pimPage.clickOnFilterSearch();
 });
 
-test("TC_PIM_037 - Admin should cancel employee deletion @negative @delete @regression", async ({
-  page,
-  loginPage,
-  navigationPage,dashboardPage,
-  pimPage,
-}) => {
-  const firstName = `Auto${Date.now()}`;
-  const middleName = "Test";
-  const lastName = "User";
-  const username = `user${Date.now()}`;
-  const password = "Test@12345";
+test(
+  'TC_PIM_037 - Admin should cancel employee deletion @negative @delete @regression',
+  async ({ loginPage, navigationPage, pimPage }) => {
+    const firstName = `Auto${Date.now()}`;
+    const middleName = 'Test';
+    const lastName = 'User';
 
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
+    await loginPage.visitPage();
+    await loginPage.login('Admin', 'admin123');
+    await loginPage.verifyLoginSuccessful();
 
-  await navigationPage.gotoPIM();
-  await pimPage.gotoAddEmployee();
+    await navigationPage.gotoPIM();
+    await pimPage.gotoAddEmployee();
 
-  const employeeId = await pimPage.addEmployeeWithLoginDetails({
-    firstName,
-    middleName,
-    lastName,
-    username,
-    password,
-    status: "Enabled",
-  });
-  await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-    timeout: 15_000,
-  });
+    const employeeId = await pimPage.addEmployee({
+      firstName,
+      middleName,
+      lastName,
+    });
 
-  await expect(pimPage.personalDetailsHeading).toBeVisible();
+    await pimPage.gotoEmployeeList();
 
-  await expect(pimPage.firstnameInput).toHaveValue(firstName);
+    await pimPage.filterEmployeeList({ employeeId });
+    await pimPage.clickOnFilterSearch();
 
-  await expect(pimPage.middlenameInput).toHaveValue(middleName);
+    await pimPage.verifyEmployeeSearchResult(
+      employeeId,
+      firstName,
+      lastName
+    );
 
-  await expect(pimPage.lastnameInput).toHaveValue(lastName);
+    await pimPage.cancelEmployeeDeletion(
+      employeeId
+    );
 
-  await expect(pimPage.employeeID).toHaveValue(employeeId);
+    // Verify the employee remains after cancellation.
+    await pimPage.verifyEmployeeSearchResult(
+      employeeId,
+      firstName,
+      lastName
+    );
 
-  await pimPage.gotoEmployeeList();
+    // Final cleanup.
+    await pimPage.deleteEmployeeById(employeeId);
 
-  await pimPage.filterEmployeeList({ employeeId });
-  await pimPage.clickOnFilterSearch();
+    await pimPage.filterEmployeeList({ employeeId });
+    await pimPage.clickOnFilterSearch();
 
-  await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
-  await pimPage.canceldeleteEmployeeById(employeeId);
-
-   await pimPage.deleteEmployeeById(employeeId);
-
-   await pimPage.filterEmployeeList({ employeeId });
-   await pimPage.clickOnFilterSearch();
-   await pimPage.verifyNoEmployeeRecordsFound(employeeId);
-});
+    await pimPage.verifyNoEmployeeRecordsFound(
+      employeeId
+    );
+  }
+);
 
 
 test("TC_PIM_038 - Admin should delete multiple employees using bulk selection @positive @bulk-delete @regression", async ({
