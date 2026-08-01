@@ -24,10 +24,8 @@ export type AddEmployeeDetails = {
 export type EmployeeWithLoginDetails = AddEmployeeDetails & {
   username: string;
   password: string;
-  status?: 'Enabled' | 'Disabled';
+  status?: "Enabled" | "Disabled";
 };
-
-
 
 export class PIMPage {
   readonly page: Page;
@@ -60,14 +58,19 @@ export class PIMPage {
   readonly activePageButton: Locator;
   readonly employeeIdCells: Locator;
   readonly cancelProfilepageButton: Locator;
- readonly requiredValidationMessages:Locator;
- readonly createLoginDetailsSwitch: Locator;
-readonly employeeUsernameInput: Locator;
-readonly employeePasswordInput: Locator;
-readonly confirmPasswordInput: Locator;
-readonly enabledStatusRadio: Locator;
-readonly disabledStatusRadio: Locator;
-readonly confirmPasswordValidation:Locator;
+  readonly requiredValidationMessages: Locator;
+  readonly createLoginDetailsSwitch: Locator;
+  readonly employeeUsernameInput: Locator;
+  readonly employeePasswordInput: Locator;
+  readonly confirmPasswordInput: Locator;
+  readonly enabledStatusRadio: Locator;
+  readonly disabledStatusRadio: Locator;
+  readonly confirmPasswordValidation: Locator;
+  readonly passwordValidation: Locator;
+  readonly passwordStrengthIndicator: Locator;
+  readonly createLoginDetailsCheckbox: Locator;
+  readonly usernameValidation: Locator;
+  readonly canceldeletiondilogbutton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -147,57 +150,94 @@ readonly confirmPasswordValidation:Locator;
       name: /Cancel/i,
     });
 
-   this.requiredValidationMessages =
-  page.locator('.oxd-input-field-error-message');
-this.createLoginDetailsSwitch = page
-  .locator('.oxd-form-row')
-  .filter({ hasText: 'Create Login Details' })
-  .locator('.oxd-switch-input');
-this.employeeUsernameInput = page
-  .locator('.oxd-input-group')
-  .filter({
-    has: page.getByText('Username', { exact: true }),
-  })
-  .locator('input');
+    this.requiredValidationMessages = page.locator(
+      ".oxd-input-field-error-message",
+    );
+    this.createLoginDetailsSwitch = page
+      .locator(".oxd-form-row")
+      .filter({ hasText: "Create Login Details" })
+      .locator(".oxd-switch-input");
+    this.employeeUsernameInput = page
+      .locator(".oxd-input-group")
+      .filter({
+        has: page.getByText("Username", { exact: true }),
+      })
+      .locator("input");
 
-this.employeePasswordInput = page
-  .locator('.oxd-input-group')
-  .filter({
-    has: page.getByText('Password', { exact: true }),
-  })
-  .locator('input');
+    this.employeePasswordInput = page
+      .locator(".oxd-input-group")
+      .filter({
+        has: page.getByText("Password", { exact: true }),
+      })
+      .locator("input");
 
-this.confirmPasswordInput = page
-  .locator('.oxd-input-group')
-  .filter({
-    has: page.getByText('Confirm Password', {
-      exact: true,
-    }),
-  })
-  .locator('input');
+    this.confirmPasswordInput = page
+      .locator(".oxd-input-group")
+      .filter({
+        has: page.getByText("Confirm Password", {
+          exact: true,
+        }),
+      })
+      .locator("input");
 
-this.enabledStatusRadio = page
-  .getByText('Enabled', { exact: true })
-  .locator('..')
-  .locator('input[type="radio"]');
+    this.enabledStatusRadio = page
+      .getByText("Enabled", { exact: true })
+      .locator("..")
+      .locator('input[type="radio"]');
 
-this.disabledStatusRadio = page
-  .getByText('Disabled', { exact: true })
-  .locator('..')
-  .locator('input[type="radio"]');
+    this.disabledStatusRadio = page
+      .getByText("Disabled", { exact: true })
+      .locator("..")
+      .locator('input[type="radio"]');
 
-  this.confirmPasswordValidation = page
-  .locator('.oxd-input-group')
-  .filter({
-    has: page.getByText('Confirm Password', {
-      exact: true,
-    }),
-  })
-  .locator('.oxd-input-field-error-message');
+    this.confirmPasswordValidation = page
+      .locator(".oxd-input-group")
+      .filter({
+        has: page.getByText("Confirm Password", {
+          exact: true,
+        }),
+      })
+      .locator(".oxd-input-field-error-message");
 
+    this.passwordValidation = page
+      .locator(".oxd-input-group")
+      .filter({
+        has: page.getByText("Password", { exact: true }),
+      })
+      .locator(".oxd-input-field-error-message");
 
+    this.passwordStrengthIndicator = page
+      .locator(".oxd-input-group")
+      .filter({
+        has: page.getByText("Password", { exact: true }),
+      })
+      .locator("span")
+      .filter({
+        hasText: /Weak|Better|Medium|Strong/i,
+      });
 
+    const createLoginDetailsRow = page
+      .locator(".oxd-form-row")
+      .filter({ hasText: "Create Login Details" });
 
+    this.createLoginDetailsCheckbox = createLoginDetailsRow.locator(
+      'input[type="checkbox"]',
+    );
+
+    this.createLoginDetailsSwitch = createLoginDetailsRow.locator(
+      "span.oxd-switch-input",
+    );
+
+    this.usernameValidation = page
+      .locator(".oxd-input-group")
+      .filter({
+        has: page.getByText("Username", { exact: true }),
+      })
+      .locator(".oxd-input-field-error-message");
+
+    this.canceldeletiondilogbutton = page.getByRole("button", {
+      name: /No, Cancel/i,
+    });
   }
 
   async gotoAddEmployee(): Promise<void> {
@@ -477,11 +517,10 @@ this.disabledStatusRadio = page
     await expect(this.page).toHaveURL(/pim\/viewEmployeeList/);
   }
 
-
- async saveEmployeeWithoutRequiredDetails(details: AddEmployeeDetails): Promise<void>
- {
-
-  await this.firstnameInput.fill(details.firstName);
+  async saveEmployeeWithoutRequiredDetails(
+    details: AddEmployeeDetails,
+  ): Promise<void> {
+    await this.firstnameInput.fill(details.firstName);
 
     if (details.middleName !== undefined) {
       await this.middlenameInput.fill(details.middleName);
@@ -496,134 +535,272 @@ this.disabledStatusRadio = page
     if (details.profilePicturePath !== undefined) {
       await this.profilePictureInput.setInputFiles(details.profilePicturePath);
     }
- 
-    await this.SaveEmployeeButton.click(); 
- }
 
+    await this.SaveEmployeeButton.click();
+  }
 
- async fillAddEmployeeForm(
-  details: AddEmployeeDetails
-): Promise<void> {
-  
+  async fillAddEmployeeForm(details: AddEmployeeDetails): Promise<void> {
     if (details.firstName !== undefined) {
-    await this.firstnameInput.fill(details.firstName);
-  }
+      await this.firstnameInput.fill(details.firstName);
+    }
 
-  if (details.middleName !== undefined) {
-    await this.middlenameInput.fill(details.middleName);
-  }
-
+    if (details.middleName !== undefined) {
+      await this.middlenameInput.fill(details.middleName);
+    }
 
     if (details.lastName !== undefined) {
-    await this.lastnameInput.fill(details.lastName);
+      await this.lastnameInput.fill(details.lastName);
+    }
+
+    if (details.employeeId !== undefined) {
+      await this.employeeID.fill(details.employeeId);
+      await this.employeeID.blur();
+    }
+
+    if (details.profilePicturePath !== undefined) {
+      await this.profilePictureInput.setInputFiles(details.profilePicturePath);
+    }
   }
 
-  if (details.employeeId !== undefined) {
-    await this.employeeID.fill(details.employeeId);
-    await this.employeeID.blur();
-  }
-
-  if (details.profilePicturePath !== undefined) {
-    await this.profilePictureInput.setInputFiles(
-      details.profilePicturePath
+  async resetEmployeeFilters(): Promise<void> {
+    const employeeListResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/pim/employees") &&
+        response.request().method() === "GET" &&
+        response.ok(),
+      { timeout: 15_000 },
     );
+
+    await this.page.getByRole("button", { name: "Reset", exact: true }).click();
+
+    await employeeListResponse;
+    await expect(this.loadingSpinner).toBeHidden();
   }
-}
 
+  async selectEmployeeFromAutocomplete(
+    partialName: string,
+    expectedFullName: string,
+  ): Promise<void> {
+    await this.employeeNameFilterInput.fill(partialName);
 
-async resetEmployeeFilters(): Promise<void> {
-  const employeeListResponse = this.page.waitForResponse(
-    response =>
-      response.url().includes('/api/v2/pim/employees') &&
-      response.request().method() === 'GET' &&
-      response.ok(),
-    { timeout: 15_000 }
-  );
+    const matchingOption = this.page
+      .locator(".oxd-autocomplete-option")
+      .filter({ hasText: expectedFullName });
 
-  await this.page
-    .getByRole('button', { name: 'Reset', exact: true })
-    .click();
+    await expect(matchingOption).toBeVisible({ timeout: 15000 });
+    await matchingOption.click();
+  }
 
-  await employeeListResponse;
-  await expect(this.loadingSpinner).toBeHidden();
-}
+  async addEmployeeWithLoginDetails(
+    details: EmployeeWithLoginDetails,
+  ): Promise<string> {
+    await this.fillAddEmployeeForm({
+      firstName: details.firstName,
+      middleName: details.middleName,
+      lastName: details.lastName,
+      employeeId: details.employeeId,
+      profilePicturePath: details.profilePicturePath,
+    });
 
-async selectEmployeeFromAutocomplete(
-  partialName: string,
-  expectedFullName: string
-): Promise<void> {
-  await this.employeeNameFilterInput.fill(partialName);
+    const employeeId = await this.employeeID.inputValue();
 
-  const matchingOption = this.page
-    .locator('.oxd-autocomplete-option')
-    .filter({ hasText: expectedFullName });
+    if (!(await this.createLoginDetailsCheckbox.isChecked())) {
+      await this.createLoginDetailsSwitch.click();
+    }
 
-  await expect(matchingOption).toBeVisible({ timeout: 15000 });
-  await matchingOption.click();
-}
+    await expect(this.createLoginDetailsCheckbox).toBeChecked();
 
+    await expect(this.employeeUsernameInput).toBeVisible();
+    await expect(this.employeePasswordInput).toBeVisible();
+    await expect(this.confirmPasswordInput).toBeVisible();
 
-async addEmployeeWithLoginDetails(
-  details: EmployeeWithLoginDetails
-): Promise<string> {
-  await this.fillAddEmployeeForm({
-    firstName: details.firstName,
-    middleName: details.middleName,
-    lastName: details.lastName,
-    employeeId: details.employeeId,
-    profilePicturePath: details.profilePicturePath,
+    await this.employeeUsernameInput.fill(details.username);
+    await this.employeePasswordInput.fill(details.password);
+    await this.confirmPasswordInput.fill(details.password);
+
+    if (details.status === "Disabled") {
+      await this.disabledStatusRadio.check({
+        force: true,
+      });
+
+      await expect(this.disabledStatusRadio).toBeChecked();
+    } else {
+      await this.enabledStatusRadio.check({
+        force: true,
+      });
+
+      await expect(this.enabledStatusRadio).toBeChecked();
+    }
+    await expect(this.employeeUsernameInput).toHaveValue(details.username);
+
+    await expect(this.employeePasswordInput).toHaveValue(details.password);
+
+    await expect(this.confirmPasswordInput).toHaveValue(details.password);
+
+    const createEmployeeResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/pim/employees") &&
+        response.request().method() === "POST" &&
+        response.ok(),
+      { timeout: 20_000 },
+    );
+
+    await this.SaveEmployeeButton.click();
+
+    await createEmployeeResponse;
+
+    await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+      timeout: 20_000,
+    });
+
+    await expect(this.loadingSpinner).toBeHidden();
+
+    return employeeId;
+  }
+
+  async verifyPasswordStrength(expectedStrength: RegExp): Promise<void> {
+    await expect(this.passwordStrengthIndicator).toBeVisible();
+
+    await expect(this.passwordStrengthIndicator).toHaveText(expectedStrength);
+  }
+
+  async canceldeleteEmployeeById(employeeId: string): Promise<void> {
+    await expect(this.loadingSpinner).toBeHidden();
+    const matchingRow = this.employeeRows.filter({ hasText: employeeId });
+    await expect(matchingRow).toHaveCount(1);
+    const deleteButton = matchingRow.locator("button").filter({
+      has: this.page.locator("i.bi-trash"),
+    });
+    await deleteButton.click();
+
+    const confirmationDilaog = this.page.getByRole("dialog");
+    await expect(confirmationDilaog).toBeVisible();
+
+    await confirmationDilaog.getByText("No, Cancel", { exact: true }).click();
+
+    await expect(this.page).toHaveURL(/pim\/viewEmployeeList/);
+  }
+
+  async selectEmployeeById(employeeId: string): Promise<void> {
+    const employeeRow = this.employeeRows.filter({
+      has: this.page
+        .locator(".oxd-table-cell")
+        .nth(1)
+        .getByText(employeeId, { exact: true }),
+    });
+
+    await expect(employeeRow).toHaveCount(1);
+
+    const rowCheckbox = employeeRow.locator('input[type="checkbox"]');
+
+    await rowCheckbox.check({
+      force: true,
+    });
+
+    await expect(rowCheckbox).toBeChecked();
+  }
+
+  async deleteSelectedEmployees(): Promise<void> {
+    const deleteSelectedButton = this.page.getByRole("button", {
+      name: /Delete Selected/i,
+    });
+
+    await expect(deleteSelectedButton).toBeVisible();
+    await deleteSelectedButton.click();
+
+    const confirmationDialog = this.page.getByRole("dialog");
+
+    await expect(confirmationDialog).toBeVisible();
+
+    const deleteResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/pim/employees") &&
+        response.request().method() === "DELETE" &&
+        response.ok(),
+      { timeout: 20_000 },
+    );
+
+    await confirmationDialog
+      .getByRole("button", {
+        name: /Yes, Delete/i,
+      })
+      .click();
+
+    await deleteResponse;
+
+    await expect(confirmationDialog).toBeHidden();
+
+    await expect(this.successToast).toContainText("Successfully Deleted");
+
+    await expect(this.loadingSpinner).toBeHidden();
+  }
+
+async selectAllVisibleEmployees(): Promise<void> {
+  await expect(this.loadingSpinner).toBeHidden({
+    timeout: 20_000,
   });
 
-  const employeeId = await this.employeeID.inputValue();
+  await expect(this.employeeRows.first()).toBeVisible({
+    timeout: 20_000,
+  });
 
-  await this.createLoginDetailsSwitch.check();
+  const headerCheckbox = this.page.locator(
+    '.oxd-table-header input[type="checkbox"]'
+  );
 
-  await expect(this.employeeUsernameInput).toBeVisible();
-  await expect(this.employeePasswordInput).toBeVisible();
-  await expect(this.confirmPasswordInput).toBeVisible();
+  const rowCheckboxes = this.employeeRows.locator(
+    'input[type="checkbox"]'
+  );
 
-  await this.employeeUsernameInput.fill(details.username);
-  await this.employeePasswordInput.fill(details.password);
-  await this.confirmPasswordInput.fill(details.password);
+  await expect
+    .poll(
+      async () => rowCheckboxes.count(),
+      {
+        timeout: 20_000,
+        message:
+          'Waiting for Employee List rows to load',
+      }
+    )
+    .toBeGreaterThan(0);
 
-  if (details.status === 'Disabled') {
-    await this.disabledStatusRadio.check();
-  } else {
-    await this.enabledStatusRadio.check();
+  const rowCount = await rowCheckboxes.count();
+
+  await headerCheckbox.check({
+    force: true,
+  });
+
+  await expect(headerCheckbox).toBeChecked();
+
+  for (let index = 0; index < rowCount; index++) {
+    await expect(
+      rowCheckboxes.nth(index)
+    ).toBeChecked();
   }
-
-  await expect(this.employeeUsernameInput).toHaveValue(
-    details.username
-  );
-
-  await expect(this.employeePasswordInput).toHaveValue(
-    details.password
-  );
-
-  await expect(this.confirmPasswordInput).toHaveValue(
-    details.password
-  );
-
-  const createEmployeeResponse = this.page.waitForResponse(
-    response =>
-      response.url().includes('/api/v2/pim/employees') &&
-      response.request().method() === 'POST' &&
-      response.ok(),
-    { timeout: 20_000 }
-  );
-
-  await this.SaveEmployeeButton.click();
-
-  await createEmployeeResponse;
-
-  await this.page.waitForURL(
-    /pim\/viewPersonalDetails\/empNumber\/\d+/,
-    { timeout: 20_000 }
-  );
-
-  await expect(this.loadingSpinner).toBeHidden();
-
-  return employeeId;
 }
 
+async deselectAllVisibleEmployees(): Promise<void> {
+  const headerCheckbox = this.page.locator(
+    '.oxd-table-header input[type="checkbox"]'
+  );
+
+  const rowCheckboxes = this.employeeRows.locator(
+    'input[type="checkbox"]'
+  );
+
+  const rowCount = await rowCheckboxes.count();
+
+  expect(rowCount).toBeGreaterThan(0);
+
+  await headerCheckbox.uncheck({
+    force: true,
+  });
+
+  await expect(headerCheckbox).not.toBeChecked();
+
+  for (let index = 0; index < rowCount; index++) {
+    await expect(
+      rowCheckboxes.nth(index)
+    ).not.toBeChecked();
+  }
+}
 }

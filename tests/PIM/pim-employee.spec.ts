@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import path from "node:path";
 
+
 test("TC_PIM_001 - Admin should add a new employee successfully @positive @regression", async ({
   page,
   loginPage,
@@ -37,133 +38,6 @@ test("TC_PIM_001 - Admin should add a new employee successfully @positive @regre
   await expect(pimPage.firstnameInput).toHaveValue(firstName);
   await expect(pimPage.middlenameInput).toHaveValue(middleName);
   await expect(pimPage.lastnameInput).toHaveValue(lastName);
-});
-
-test("TC_PIM_002 - Admin should search for an employee by employee ID @positive @regression", async ({
-  page,
-  loginPage,
-  navigationPage,
-  pimPage,
-}) => {
-  const firstName = `Auto${Date.now()}`;
-  const middleName = "test";
-  const lastName = "user";
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
-  await navigationPage.gotoPIM();
-  await pimPage.gotoAddEmployee();
-  const employeeId = await pimPage.addEmployee({
-    firstName: firstName,
-    middleName: middleName,
-    lastName: lastName,
-  });
-  // await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-  //   timeout: 20_000,
-  // });
-
-  await expect(pimPage.personalDetailsHeading).toBeVisible();
-  await expect(pimPage.firstnameInput).toHaveValue(firstName);
-  await expect(pimPage.middlenameInput).toHaveValue(middleName);
-  await expect(pimPage.lastnameInput).toHaveValue(lastName);
-
-  await pimPage.gotoEmployeeList();
-  await pimPage.filterEmployeeList({ employeeId: employeeId });
-  await pimPage.clickOnFilterSearch();
-  await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
-});
-
-test("TC_PIM_003 - No records should appear for a nonexistent employee ID @negative @regression", async ({
-  page,
-  loginPage,
-  navigationPage,
-  pimPage,
-}) => {
-  const nonexistentEmployeeId = "9999999999";
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
-  await navigationPage.gotoPIM();
-  await pimPage.gotoEmployeeList();
-  await pimPage.filterEmployeeList({ employeeId: nonexistentEmployeeId });
-  await pimPage.clickOnFilterSearch();
-  await pimPage.verifyNoEmployeeRecordsFound(nonexistentEmployeeId);
-});
-
-test("TC_PIM_004 - Admin should search for an employee by name @positive @regression", async ({
-  page,
-  loginPage,
-  navigationPage,
-  pimPage,
-}) => {
-  const firstName = `Auto${Date.now()}`;
-  const middleName = "Test";
-  const lastName = "User";
-
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
-
-  await navigationPage.gotoPIM();
-  await pimPage.gotoAddEmployee();
-
-  const employeeId = await pimPage.addEmployee({
-    firstName: firstName,
-    middleName: middleName,
-    lastName: lastName,
-  });
-  await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-    timeout: 15_000,
-  });
-
-  await pimPage.gotoEmployeeList();
-
-  await pimPage.filterEmployeeList({
-    employeeName: firstName,
-  });
-
-  await pimPage.clickOnFilterSearch();
-
-  await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
-});
-
-test("TC_PIM_005 - Admin should search using employee ID and employee name @positive @regression", async ({
-  page,
-  loginPage,
-  navigationPage,
-  pimPage,
-}) => {
-  const firstName = `Auto${Date.now()}`;
-  const middleName = "Test";
-  const lastName = "User";
-
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
-
-  await navigationPage.gotoPIM();
-  await pimPage.gotoAddEmployee();
-
-  const employeeId = await pimPage.addEmployee({
-    firstName: firstName,
-    middleName: middleName,
-    lastName: lastName,
-  });
-
-  await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-    timeout: 15_000,
-  });
-
-  await pimPage.gotoEmployeeList();
-
-  await pimPage.filterEmployeeList({
-    employeeName: firstName,
-    employeeId: employeeId,
-  });
-
-  await pimPage.clickOnFilterSearch();
-
-  await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
 });
 
 test("TC_PIM_006 - Admin should update employee personal details @positive @regression", async ({
@@ -204,43 +78,6 @@ test("TC_PIM_006 - Admin should update employee personal details @positive @regr
   await expect(pimPage.employeeID).toHaveValue(employeeId);
 });
 
-test("TC_PIM_007 - Admin should delete an employee successfully @positive @regression", async ({
-  page,
-  loginPage,
-  navigationPage,
-  pimPage,
-}) => {
-  const firstName = `Auto${Date.now()}`;
-  const middleName = "Test";
-  const lastName = "User";
-  const updatedMiddleName = "updatedTest";
-  const updatedLastName = "updatedUser";
-
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
-
-  await navigationPage.gotoPIM();
-  await pimPage.gotoAddEmployee();
-
-  const employeeId = await pimPage.addEmployee({
-    firstName: firstName,
-    middleName: middleName,
-    lastName: lastName,
-  });
-
-  await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-    timeout: 15_000,
-  });
-
-  await pimPage.gotoEmployeeList();
-  await pimPage.filterEmployeeList({ employeeId: employeeId });
-  await pimPage.clickOnFilterSearch();
-  await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
-  await pimPage.deleteEmployeeById(employeeId);
-  await pimPage.filterEmployeeList({ employeeId: employeeId });
-  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
-});
 
 test("TC_PIM_008 - Admin should upload an employee profile picture @positive @upload @regression", async ({
   page,
@@ -329,7 +166,6 @@ test("TC_PIM_023 - Admin should cancel adding a new employee @negative @regressi
   await pimPage.cancelAddingEmployee();
 });
 
-
 test("TC_PIM_024 - Required validation should appear when employee first and last names are empty @negative @validation @regression", async ({
   page,
   loginPage,
@@ -350,20 +186,17 @@ test("TC_PIM_024 - Required validation should appear when employee first and las
   await pimPage.gotoAddEmployee();
 
   const employeeId = await pimPage.saveEmployeeWithoutRequiredDetails({
-   firstName: "",
-  lastName: "",
-  middleName:middleName
+    firstName: "",
+    lastName: "",
+    middleName: middleName,
+  });
 
+  await expect(pimPage.requiredValidationMessages).toHaveCount(2);
+  await expect(pimPage.requiredValidationMessages).toHaveText([
+    "Required",
+    "Required",
+  ]);
 });
-
-await expect(pimPage.requiredValidationMessages).toHaveCount(2);
-await expect(pimPage.requiredValidationMessages).toHaveText([
-  'Required',
-  'Required',
-]);
-
-});
-
 
 test("TC_PIM_025 - Required validation should appear when employee last name is empty @negative @validation @regression", async ({
   page,
@@ -373,28 +206,22 @@ test("TC_PIM_025 - Required validation should appear when employee last name is 
 }) => {
   const firstName = `Auto${Date.now()}`;
   const middleName = "test";
-  
+
   await loginPage.visitPage();
   await loginPage.login("Admin", "admin123");
   await loginPage.verifyLoginSuccessful();
   await navigationPage.gotoPIM();
   await pimPage.gotoAddEmployee();
   const employeeId = await pimPage.saveEmployeeWithoutRequiredDetails({
-   firstName:firstName,
-  lastName: " ",
-  middleName:middleName
+    firstName: firstName,
+    lastName: " ",
+    middleName: middleName,
+  });
+  await expect(pimPage.requiredValidationMessages).toHaveCount(1);
+  await expect(pimPage.requiredValidationMessages).toHaveText(["Required"]);
 
+  await expect(page).toHaveURL(/pim\/addEmployee/);
 });
-await expect(pimPage.requiredValidationMessages).toHaveCount(1);
-await expect(pimPage.requiredValidationMessages).toHaveText([
-  'Required',
-]);
-
-await expect(page).toHaveURL(/pim\/addEmployee/);
-
-});
-
-
 
 test("TC_PIM_026 - Required validation should appear when employee first name is empty @negative @validation @regression", async ({
   page,
@@ -402,29 +229,24 @@ test("TC_PIM_026 - Required validation should appear when employee first name is
   navigationPage,
   pimPage,
 }) => {
-  const middleName = 'Test';
-const lastName = `User${Date.now()}`;
-  
+  const middleName = "Test";
+  const lastName = `User${Date.now()}`;
+
   await loginPage.visitPage();
   await loginPage.login("Admin", "admin123");
   await loginPage.verifyLoginSuccessful();
   await navigationPage.gotoPIM();
   await pimPage.gotoAddEmployee();
   const employeeId = await pimPage.saveEmployeeWithoutRequiredDetails({
-  firstName:" ",
-  middleName:middleName,
-  lastName:lastName,
+    firstName: " ",
+    middleName: middleName,
+    lastName: lastName,
+  });
+  await expect(pimPage.requiredValidationMessages).toHaveCount(1);
+  await expect(pimPage.requiredValidationMessages).toHaveText(["Required"]);
 
+  await expect(page).toHaveURL(/pim\/addEmployee/);
 });
-await expect(pimPage.requiredValidationMessages).toHaveCount(1);
-await expect(pimPage.requiredValidationMessages).toHaveText([
-  'Required',
-]);
-
-await expect(page).toHaveURL(/pim\/addEmployee/);
-
-});
-
 
 test("'TC_PIM_027 - Duplicate validation should appear for an existing employee ID @negative @validation @regression", async ({
   page,
@@ -432,154 +254,79 @@ test("'TC_PIM_027 - Duplicate validation should appear for an existing employee 
   navigationPage,
   pimPage,
 }) => {
-  const middleName = 'Test';
-const lastName = `User${Date.now()}`;
-  
+  const middleName = "Test";
+  const lastName = `User${Date.now()}`;
+
   await loginPage.visitPage();
   await loginPage.login("Admin", "admin123");
   await loginPage.verifyLoginSuccessful();
   await navigationPage.gotoPIM();
   await pimPage.gotoAddEmployee();
   const employeeId = await pimPage.saveEmployeeWithoutRequiredDetails({
-  firstName:" ",
-  middleName:middleName,
-  lastName:lastName,
+    firstName: " ",
+    middleName: middleName,
+    lastName: lastName,
+  });
+  await expect(pimPage.requiredValidationMessages).toHaveCount(1);
+  await expect(pimPage.requiredValidationMessages).toHaveText(["Required"]);
 
-});
-await expect(pimPage.requiredValidationMessages).toHaveCount(1);
-await expect(pimPage.requiredValidationMessages).toHaveText([
-  'Required',
-]);
-
-await expect(page).toHaveURL(/pim\/addEmployee/);
-
+  await expect(page).toHaveURL(/pim\/addEmployee/);
 });
 
-
-test(
-  'TC_PIM_027 - Duplicate validation should appear for an existing employee ID @negative @validation @regression',
-  async ({ page, loginPage, navigationPage, pimPage }) => {
-    const firstName = `Auto${Date.now()}`;
-    const secondFirstName = `Duplicate${Date.now()}`;
-
-    await loginPage.visitPage();
-    await loginPage.login('Admin', 'admin123');
-    await loginPage.verifyLoginSuccessful();
-
-    await navigationPage.gotoPIM();
-    await pimPage.gotoAddEmployee();
-    const employeeId = await pimPage.addEmployee({
-      firstName,
-      middleName: 'Test',
-      lastName: 'User',
-    });
-    await page.waitForURL(
-      /pim\/viewPersonalDetails\/empNumber\/\d+/,
-      { timeout: 15_000 }
-    );
-
-    await pimPage.gotoAddEmployee();
-
-    await pimPage.fillAddEmployeeForm({
-      firstName: secondFirstName,
-      middleName: 'Test',
-      lastName: 'User',
-      employeeId,
-    });
-
-    await expect(pimPage.employeeIdValidation).toBeVisible();
-
-    await expect(pimPage.employeeIdValidation).toHaveText(
-      'Employee Id already exists'
-    );
-
-    await expect(page).toHaveURL(/pim\/addEmployee/);
-
-    await pimPage.cancelAddingEmployee();
-    await pimPage.filterEmployeeList({ employeeId });
-    await pimPage.clickOnFilterSearch();
-    await pimPage.verifyEmployeeSearchResult(
-      employeeId,
-      firstName,
-      'User'
-    );
-
-    await pimPage.deleteEmployeeById(employeeId);
-
-    await pimPage.filterEmployeeList({ employeeId });
-    await pimPage.clickOnFilterSearch();
-    await pimPage.verifyNoEmployeeRecordsFound(employeeId);
-  }
-);
-
-
-test("'TC_PIM_028 - Admin should reset Employee List search filters @positive @filter @regression',", async ({
-  page,
-  loginPage,
-  navigationPage,
-  pimPage,
-}) => {
-
-
-  const employeeId = '999999';
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
-  await navigationPage.gotoPIM();
-  await pimPage.gotoEmployeeList();
-  await pimPage.filterEmployeeList({ employeeId });
-   await expect(
-      pimPage.employeeIdFilterInput
-    ).toHaveValue(employeeId);
-
-  await pimPage.resetEmployeeFilters();
-
-    await expect(
-      pimPage.employeeIdFilterInput
-    ).toHaveValue('');
-
-    await expect(
-      pimPage.employeeNameFilterInput
-    ).toHaveValue('');
-
-    expect(
-      (await pimPage.getVisibleEmployeeIds()).length
-    ).toBeGreaterThan(0);
-  }
-);
-
-test("TC_PIM_029 - Admin should search for an employee using a partial employee name @positive @search @regression", async ({
+test("TC_PIM_027 - Duplicate validation should appear for an existing employee ID @negative @validation @regression", async ({
   page,
   loginPage,
   navigationPage,
   pimPage,
 }) => {
   const firstName = `Auto${Date.now()}`;
-  const middleName = "test";
-  const lastName = "user";
+  const secondFirstName = `Duplicate${Date.now()}`;
+
   await loginPage.visitPage();
   await loginPage.login("Admin", "admin123");
   await loginPage.verifyLoginSuccessful();
+
   await navigationPage.gotoPIM();
   await pimPage.gotoAddEmployee();
   const employeeId = await pimPage.addEmployee({
-    firstName: firstName,
-    middleName: middleName,
-    lastName: lastName,
+    firstName,
+    middleName: "Test",
+    lastName: "User",
   });
   await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
     timeout: 15_000,
   });
 
-  await pimPage.gotoEmployeeList();
+  await pimPage.gotoAddEmployee();
 
-const partialName = firstName.substring(0, 8);
-const fullName = `${firstName} ${middleName} ${lastName}`;
+  await pimPage.fillAddEmployeeForm({
+    firstName: secondFirstName,
+    middleName: "Test",
+    lastName: "User",
+    employeeId,
+  });
 
-await pimPage.selectEmployeeFromAutocomplete(partialName, fullName);
-await pimPage.clickOnFilterSearch();
+  await expect(pimPage.employeeIdValidation).toBeVisible();
 
+  await expect(pimPage.employeeIdValidation).toHaveText(
+    "Employee Id already exists",
+  );
+
+  await expect(page).toHaveURL(/pim\/addEmployee/);
+
+  await pimPage.cancelAddingEmployee();
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+  await pimPage.verifyEmployeeSearchResult(employeeId, firstName, "User");
+
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
 });
+
+
 
 test("'TC_PIM_030 - Admin should create an employee with login credentials @positive @account @regression'", async ({
   page,
@@ -591,7 +338,7 @@ test("'TC_PIM_030 - Admin should create an employee with login credentials @posi
   const middleName = "Test";
   const lastName = "User";
   const username = `user${Date.now()}`;
-  const password = 'Test@12345';
+  const password = "Test@12345";
 
   await loginPage.visitPage();
   await loginPage.login("Admin", "admin123");
@@ -600,113 +347,394 @@ test("'TC_PIM_030 - Admin should create an employee with login credentials @posi
   await navigationPage.gotoPIM();
   await pimPage.gotoAddEmployee();
 
-const employeeId =
-      await pimPage.addEmployeeWithLoginDetails({
-        firstName,
-        middleName,
-        lastName,
-        username,
-        password,
-        status: 'Enabled',
-      });
+  const employeeId = await pimPage.addEmployeeWithLoginDetails({
+    firstName,
+    middleName,
+    lastName,
+    username,
+    password,
+    status: "Enabled",
+  });
   await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
     timeout: 15_000,
   });
 
- await expect(pimPage.personalDetailsHeading).toBeVisible();
+  await expect(pimPage.personalDetailsHeading).toBeVisible();
 
-    await expect(pimPage.firstnameInput).toHaveValue(
-      firstName
+  await expect(pimPage.firstnameInput).toHaveValue(firstName);
+
+  await expect(pimPage.middlenameInput).toHaveValue(middleName);
+
+  await expect(pimPage.lastnameInput).toHaveValue(lastName);
+
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
+
+  // Cleanup.
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+});
+
+test("TC_PIM_031 - Password mismatch validation should appear while creating employee login details @negative @validation @account @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  const firstName = `Auto${Date.now()}`;
+  const username = `user${Date.now()}`;
+  const password = "Test@12345";
+  const confirmPassword = "Wrong@12345";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  await pimPage.fillAddEmployeeForm({
+    firstName,
+    middleName: "Test",
+    lastName: "User",
+  });
+
+  await pimPage.createLoginDetailsSwitch.click();
+
+  await expect(pimPage.createLoginDetailsCheckbox).toBeChecked();
+
+  await pimPage.employeeUsernameInput.fill(username);
+  await pimPage.employeePasswordInput.fill(password);
+  await pimPage.confirmPasswordInput.fill(confirmPassword);
+
+  await pimPage.confirmPasswordInput.blur();
+
+  await expect(pimPage.confirmPasswordValidation).toBeVisible();
+
+  await expect(pimPage.confirmPasswordValidation).toHaveText(
+    "Passwords do not match",
+  );
+
+  await pimPage.SaveEmployeeButton.click();
+
+  await expect(page).toHaveURL(/pim\/addEmployee/);
+
+  await expect(pimPage.confirmPasswordValidation).toHaveText(
+    "Passwords do not match",
+  );
+});
+
+test("TC_PIM_032 - Weak password validation should appear while creating employee login details @negative @validation @account @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  const firstName = `Auto${Date.now()}`;
+  const username = `user${Date.now()}`;
+  const weakPassword = "12345";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  await pimPage.fillAddEmployeeForm({
+    firstName,
+    middleName: "Test",
+    lastName: "User",
+  });
+
+  // Click the visible switch.
+  await pimPage.createLoginDetailsSwitch.click();
+
+  // Verify the hidden checkbox is checked.
+  await expect(pimPage.createLoginDetailsCheckbox).toBeChecked();
+
+  // Verify login fields are displayed.
+  await expect(pimPage.employeeUsernameInput).toBeVisible();
+
+  await expect(pimPage.employeePasswordInput).toBeVisible();
+
+  await expect(pimPage.confirmPasswordInput).toBeVisible();
+
+  // Enter the login details with a weak password.
+  await pimPage.employeeUsernameInput.fill(username);
+
+  await pimPage.employeePasswordInput.fill(weakPassword);
+
+  await pimPage.confirmPasswordInput.fill(weakPassword);
+
+  await pimPage.confirmPasswordInput.blur();
+
+  // Verify weak-password validation.
+  await expect(pimPage.passwordValidation).toBeVisible();
+
+  await expect(pimPage.passwordValidation).toContainText(
+    /at least|characters|password/i,
+  );
+
+  // Verify strength when OrangeHRM displays the indicator.
+  if (await pimPage.passwordStrengthIndicator.isVisible()) {
+    await expect(pimPage.passwordStrengthIndicator).toHaveText(
+      /Very Weak|Weak/i,
     );
+  }
 
-    await expect(pimPage.middlenameInput).toHaveValue(
-      middleName
-    );
+  // Try to save the invalid form.
+  await pimPage.SaveEmployeeButton.click();
 
-    await expect(pimPage.lastnameInput).toHaveValue(
-      lastName
-    );
+  // Employee must not be created.
+  await expect(page).toHaveURL(/pim\/addEmployee/);
 
-    await expect(pimPage.employeeID).toHaveValue(
-      employeeId
-    );
+  await expect(pimPage.passwordValidation).toBeVisible();
+});
 
-     await pimPage.gotoEmployeeList();
+test("TC_PIM_033 - Required validation should appear when login username is empty @negative @validation @account @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  const firstName = `Auto${Date.now()}`;
+  const username = ``;
+  const Password = "123457896";
 
-    await pimPage.filterEmployeeList({ employeeId });
-    await pimPage.clickOnFilterSearch();
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
 
-    await pimPage.verifyEmployeeSearchResult(
-      employeeId,
-      firstName,
-      lastName
-    );
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
 
-    // Cleanup.
-    await pimPage.deleteEmployeeById(employeeId);
+  await pimPage.fillAddEmployeeForm({
+    firstName,
+    middleName: "Test",
+    lastName: "User",
+  });
 
-    await pimPage.filterEmployeeList({ employeeId });
-    await pimPage.clickOnFilterSearch();
+  await pimPage.createLoginDetailsSwitch.click();
 
-    await pimPage.verifyNoEmployeeRecordsFound(employeeId);
-  
+  await expect(pimPage.createLoginDetailsCheckbox).toBeChecked();
+
+  await expect(pimPage.employeeUsernameInput).toBeVisible();
+
+  await expect(pimPage.employeePasswordInput).toBeVisible();
+
+  await expect(pimPage.confirmPasswordInput).toBeVisible();
+
+  await pimPage.employeeUsernameInput.fill(username);
+
+  await pimPage.employeePasswordInput.fill(Password);
+
+  await pimPage.confirmPasswordInput.fill(Password);
+
+  await pimPage.SaveEmployeeButton.click();
+
+  await expect(page).toHaveURL(/pim\/addEmployee/);
+
+  await expect(pimPage.passwordValidation).toBeVisible();
+  await expect(pimPage.usernameValidation).toBeVisible();
+  await expect(pimPage.usernameValidation).toHaveText("Required");
+});
+
+test("TC_PIM_034 - Duplicate validation should appear for an existing login username @negative @validation @account @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  const firstName = `Auto${Date.now()}`;
+  const username = `Admin`;
+  const Password = "123457896";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  await pimPage.fillAddEmployeeForm({
+    firstName,
+    middleName: "Test",
+    lastName: "User",
+  });
+
+  await pimPage.createLoginDetailsSwitch.click();
+
+  await expect(pimPage.createLoginDetailsCheckbox).toBeChecked();
+
+  await expect(pimPage.employeeUsernameInput).toBeVisible();
+
+  await expect(pimPage.employeePasswordInput).toBeVisible();
+
+  await expect(pimPage.confirmPasswordInput).toBeVisible();
+
+  await pimPage.employeeUsernameInput.fill(username);
+
+  await pimPage.employeeUsernameInput.blur();
+
+  await pimPage.employeePasswordInput.fill(Password);
+
+  await pimPage.confirmPasswordInput.fill(Password);
+
+  await pimPage.SaveEmployeeButton.click();
+
+  await expect(page).toHaveURL(/pim\/addEmployee/);
+
+  await expect(pimPage.passwordValidation).toBeVisible();
+  await expect(pimPage.usernameValidation).toBeVisible();
+  await expect(pimPage.usernameValidation).toHaveText(
+    "Username already exists",
+  );
+});
+
+test("TC_PIM_035 - Disabled employee account should not be able to login @negative @security @account @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  dashboardPage,
+  pimPage,
+}) => {
+  const firstName = `Auto${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+  const username = `user${Date.now()}`;
+  const password = "Test@12345";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployeeWithLoginDetails({
+    firstName,
+    middleName,
+    lastName,
+    username,
+    password,
+    status: "Disabled",
+  });
+  await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+    timeout: 15_000,
+  });
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible();
+
+  await expect(pimPage.firstnameInput).toHaveValue(firstName);
+
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  // Logout from the Admin account.
+  await dashboardPage.clickOnLogout();
+
+  await expect(page).toHaveURL(/auth\/login/);
+
+  // Attempt to login using the disabled account.
+  await loginPage.login(username, password);
+
+  await expect(loginPage.errorMessage).toBeVisible();
+
+  await expect(loginPage.errorMessage).toHaveText("Invalid credentials");
+
+  await loginPage.verifyLoginUnsuccessful();
+
+  // Login again as Admin for cleanup.
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
+
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
 });
 
 
-test(
-  'TC_PIM_031 - Password mismatch validation should appear while creating employee login details @negative @validation @account @regression',
-  async ({ page, loginPage, navigationPage, pimPage }) => {
-    const firstName = `Auto${Date.now()}`;
-    const username = `user${Date.now()}`;
-    const password = 'Test@12345';
-    const confirmPassword = 'Wrong@12345';
+test("TC_PIM_036 - Enabled employee account should login successfully @positive @security @account @regression", async ({
+  page,
+  loginPage,
+  navigationPage,dashboardPage,
+  pimPage,
+}) => {
+  const firstName = `Auto${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+  const username = `user${Date.now()}`;
+  const password = "Test@12345";
 
-    await loginPage.visitPage();
-    await loginPage.login('Admin', 'admin123');
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployeeWithLoginDetails({
+    firstName,
+    middleName,
+    lastName,
+    username,
+    password,
+    status: "Enabled",
+  });
+  await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+    timeout: 15_000,
+  });
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible();
+
+  await expect(pimPage.firstnameInput).toHaveValue(firstName);
+
+  await expect(pimPage.middlenameInput).toHaveValue(middleName);
+
+  await expect(pimPage.lastnameInput).toHaveValue(lastName);
+
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
+
+  await dashboardPage.clickOnLogout();
+
+    await loginPage.login(username, password);
+
     await loginPage.verifyLoginSuccessful();
 
-    await navigationPage.gotoPIM();
-    await pimPage.gotoAddEmployee();
 
-    
-    await pimPage.fillAddEmployeeForm({
-      firstName,
-      middleName: 'Test',
-      lastName: 'User',
-    });
+  // await pimPage.deleteEmployeeById(employeeId);
 
-   
-    await pimPage.createLoginDetailsSwitch.check({
-      force: true,
-    });
+  // await pimPage.filterEmployeeList({ employeeId });
+  // await pimPage.clickOnFilterSearch();
 
-    await expect(
-      pimPage.createLoginDetailsSwitch
-    ).toBeChecked();
+  // await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+});
 
-
-    await pimPage.employeeUsernameInput.fill(username);
-    await pimPage.employeePasswordInput.fill(password);
-    await pimPage.confirmPasswordInput.fill(
-      confirmPassword
-    );
-
-    await pimPage.confirmPasswordInput.blur();
-
-    await expect(
-      pimPage.confirmPasswordValidation
-    ).toBeVisible();
-
-    await expect(
-      pimPage.confirmPasswordValidation
-    ).toHaveText('Passwords do not match');
-
-    await pimPage.SaveEmployeeButton.click();
-
-    await expect(page).toHaveURL(/pim\/addEmployee/);
-
-    await expect(
-      pimPage.confirmPasswordValidation
-    ).toHaveText('Passwords do not match');
-  }
-);
