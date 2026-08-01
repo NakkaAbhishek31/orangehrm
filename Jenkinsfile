@@ -31,7 +31,7 @@ pipeline {
                 '@selection',
                 '@navigation'
             ],
-            description: 'Select the Playwright tests to run'
+            description: 'Select the test tag'
         )
 
         choice(
@@ -57,7 +57,10 @@ pipeline {
     stages {
         stage('Clean and Checkout') {
             steps {
+                // Removes the previous Jenkins workspace,
+                // including stale Allure result files.
                 deleteDir()
+
                 checkout scm
             }
         }
@@ -81,17 +84,17 @@ pipeline {
             }
         }
 
-        stage('List Tests') {
-            steps {
-                bat(
-                    'npx playwright test --list --project=chromium'
-                )
-            }
-        }
-
         stage('Run Playwright Tests') {
             steps {
                 script {
+                    // Ensure no results exist before execution.
+                    bat '''
+                        if exist allure-results rmdir /s /q allure-results
+                        if exist allure-report rmdir /s /q allure-report
+                        if exist playwright-report rmdir /s /q playwright-report
+                        if exist test-results rmdir /s /q test-results
+                    '''
+
                     def testCommand =
                         'npx playwright test'
 
@@ -105,6 +108,7 @@ pipeline {
                         requestedFiles = 'all'
                     }
 
+                    // Add selected files or folders.
                     if (
                         requestedFiles
                             .toLowerCase() != 'all'
@@ -160,25 +164,28 @@ pipeline {
                     testCommand +=
                         " --project=${selectedBrowser}"
 
+                    // OrangeHRM is a shared demo.
                     testCommand +=
                         ' --workers=1'
 
                     def selectedTag =
                         params.TEST_TAG ?: 'all'
 
+                    // Add the selected tag.
                     if (selectedTag != 'all') {
                         testCommand +=
                             " --grep \"${selectedTag}\""
                     }
 
                     echo(
-                        "Running command: ${testCommand}"
+                        "Running exactly: ${testCommand}"
                     )
 
                     catchError(
                         buildResult: 'FAILURE',
                         stageResult: 'FAILURE'
                     ) {
+                        // Only one Playwright execution occurs.
                         bat(
                             script: testCommand
                         )
