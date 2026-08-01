@@ -1,12 +1,11 @@
-
 pipeline {
     agent any
 
     tools {
         nodejs 'nodejs'
-        allure 'Allure'
     }
-parameters {
+
+    parameters {
         string(
             name: 'TEST_FILES',
             defaultValue: 'all',
@@ -186,13 +185,3 @@ parameters {
         }
     }
 }
-Make sure playwright.config.ts contains the Allure reporter:
-reporter: [
-  ['html', { open: 'never' }],
-  [
-    'allure-playwright',
-    {
-      outputFolder: 'allure-results',
-    },
-  ],
-],
