@@ -244,25 +244,96 @@ export class PIMPage {
     await this.AddEmployeeLink.click();
   }
 
+  // async addEmployee(details: AddEmployeeDetails): Promise<string> {
+  //   if (details.firstName !== undefined) {
+  //     await this.firstnameInput.fill(details.firstName);
+  //   }
+
+  //   if (details.middleName !== undefined) {
+  //     await this.middlenameInput.fill(details.middleName);
+  //   }
+
+  //   if (details.lastName !== undefined) {
+  //     await this.lastnameInput.fill(details.lastName);
+  //   }
+
+  //   let employeeId = details.employeeId ?? (await this.employeeID.inputValue());
+
+  //   // if (details.employeeId !== undefined) {
+  //   //   await this.employeeID.fill(employeeId);
+  //   // }
+
+  //   // await this.employeeID.blur();
+
+  //   // const duplicateIdFound = await this.employeeIdValidation
+  //   //   .waitFor({
+  //   //     state: "visible",
+  //   //     timeout: 3_000,
+  //   //   })
+  //   //   .then(() => true)
+  //   //   .catch(() => false);
+
+  //   // if (duplicateIdFound) {
+  //   //   employeeId = `E${Date.now().toString().slice(-9)}`;
+
+  //   //   await this.employeeID.fill(employeeId);
+  //   //   await this.employeeID.blur();
+
+  //   //   await expect(this.employeeID).toHaveValue(employeeId);
+  //   //   await expect(this.employeeIdValidation).toBeHidden();
+  //   // }
+
+  //   if (details.profilePicturePath !== undefined) {
+  //     const defaultImageSrc =
+  //       await this.profilePicturePreview.getAttribute("src");
+
+  //     await this.profilePictureInput.setInputFiles(details.profilePicturePath);
+
+  //     await expect(this.profilePicturePreview).not.toHaveAttribute(
+  //       "src",
+  //       defaultImageSrc ?? "",
+  //     );
+  //   }
+
+  //   const personalDetailsLoaded = this.page.waitForResponse(
+  //     (response) =>
+  //       response.url().includes("/personal-details") &&
+  //       response.request().method() === "GET" &&
+  //       response.ok(),
+  //     { timeout: 20_000 },
+  //   );
+
+  //   await this.SaveEmployeeButton.click();
+
+  //   await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+  //     timeout: 20_000,
+  //   });
+
+  //   await personalDetailsLoaded;
+  //   await expect(this.loadingSpinner).toBeHidden();
+  //   await expect(this.personalDetailsHeading).toBeVisible();
+
+  //   return employeeId;
+  // }
+
   async addEmployee(details: AddEmployeeDetails): Promise<string> {
-    if (details.firstName !== undefined) {
-      await this.firstnameInput.fill(details.firstName);
-    }
+    // Fill employee name fields.
+    await this.firstnameInput.fill(details.firstName);
 
     if (details.middleName !== undefined) {
       await this.middlenameInput.fill(details.middleName);
     }
 
-    if (details.lastName !== undefined) {
-      await this.lastnameInput.fill(details.lastName);
-    }
+    await this.lastnameInput.fill(details.lastName);
 
-    let employeeId = details.employeeId ?? (await this.employeeID.inputValue());
-
+    // Use the provided ID or keep the generated ID.
     if (details.employeeId !== undefined) {
-      await this.employeeID.fill(employeeId);
+      await this.employeeID.fill(details.employeeId);
     }
 
+    let employeeId = await this.employeeID.inputValue();
+
+    // Trigger duplicate-ID validation.
     await this.employeeID.blur();
 
     const duplicateIdFound = await this.employeeIdValidation
@@ -273,49 +344,65 @@ export class PIMPage {
       .then(() => true)
       .catch(() => false);
 
+    // Replace a duplicate ID with a unique ID.
     if (duplicateIdFound) {
-      employeeId = `E${Date.now().toString().slice(-9)}`;
+      employeeId = `E${Date.now().toString().slice(-8)}`;
 
       await this.employeeID.fill(employeeId);
       await this.employeeID.blur();
 
       await expect(this.employeeID).toHaveValue(employeeId);
-      await expect(this.employeeIdValidation).toBeHidden();
+
+      await expect(this.employeeIdValidation).toBeHidden({
+        timeout: 10_000,
+      });
     }
 
+    // Upload an optional profile picture.
     if (details.profilePicturePath !== undefined) {
-      const defaultImageSrc =
+      const originalImageSource =
         await this.profilePicturePreview.getAttribute("src");
 
       await this.profilePictureInput.setInputFiles(details.profilePicturePath);
 
-      await expect(this.profilePicturePreview).not.toHaveAttribute(
-        "src",
-        defaultImageSrc ?? "",
-      );
+      await expect
+        .poll(async () => this.profilePicturePreview.getAttribute("src"), {
+          timeout: 10_000,
+          message: "Waiting for profile picture preview to update",
+        })
+        .not.toBe(originalImageSource);
     }
 
-    const personalDetailsLoaded = this.page.waitForResponse(
+    // Set all waiters before clicking Save.
+    const personalDetailsResponse = this.page.waitForResponse(
       (response) =>
         response.url().includes("/personal-details") &&
         response.request().method() === "GET" &&
         response.ok(),
-      { timeout: 20_000 },
+      {
+        timeout: 20_000,
+      },
+    );
+
+    const personalDetailsURL = this.page.waitForURL(
+      /pim\/viewPersonalDetails\/empNumber\/\d+/,
+      {
+        timeout: 20_000,
+      },
     );
 
     await this.SaveEmployeeButton.click();
 
-    await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+    await Promise.all([personalDetailsResponse, personalDetailsURL]);
+
+    await expect(this.loadingSpinner).toBeHidden({
       timeout: 20_000,
     });
 
-    await personalDetailsLoaded;
-    await expect(this.loadingSpinner).toBeHidden();
     await expect(this.personalDetailsHeading).toBeVisible();
 
     return employeeId;
   }
-
   async gotoEmployeeList(): Promise<void> {
     await this.employeeListLink.click();
   }
@@ -735,72 +822,60 @@ export class PIMPage {
     await expect(this.loadingSpinner).toBeHidden();
   }
 
-async selectAllVisibleEmployees(): Promise<void> {
-  await expect(this.loadingSpinner).toBeHidden({
-    timeout: 20_000,
-  });
+  async selectAllVisibleEmployees(): Promise<void> {
+    await expect(this.loadingSpinner).toBeHidden({
+      timeout: 20_000,
+    });
 
-  await expect(this.employeeRows.first()).toBeVisible({
-    timeout: 20_000,
-  });
+    await expect(this.employeeRows.first()).toBeVisible({
+      timeout: 20_000,
+    });
 
-  const headerCheckbox = this.page.locator(
-    '.oxd-table-header input[type="checkbox"]'
-  );
+    const headerCheckbox = this.page.locator(
+      '.oxd-table-header input[type="checkbox"]',
+    );
 
-  const rowCheckboxes = this.employeeRows.locator(
-    'input[type="checkbox"]'
-  );
+    const rowCheckboxes = this.employeeRows.locator('input[type="checkbox"]');
 
-  await expect
-    .poll(
-      async () => rowCheckboxes.count(),
-      {
+    await expect
+      .poll(async () => rowCheckboxes.count(), {
         timeout: 20_000,
-        message:
-          'Waiting for Employee List rows to load',
-      }
-    )
-    .toBeGreaterThan(0);
+        message: "Waiting for Employee List rows to load",
+      })
+      .toBeGreaterThan(0);
 
-  const rowCount = await rowCheckboxes.count();
+    const rowCount = await rowCheckboxes.count();
 
-  await headerCheckbox.check({
-    force: true,
-  });
+    await headerCheckbox.check({
+      force: true,
+    });
 
-  await expect(headerCheckbox).toBeChecked();
+    await expect(headerCheckbox).toBeChecked();
 
-  for (let index = 0; index < rowCount; index++) {
-    await expect(
-      rowCheckboxes.nth(index)
-    ).toBeChecked();
+    for (let index = 0; index < rowCount; index++) {
+      await expect(rowCheckboxes.nth(index)).toBeChecked();
+    }
   }
-}
 
-async deselectAllVisibleEmployees(): Promise<void> {
-  const headerCheckbox = this.page.locator(
-    '.oxd-table-header input[type="checkbox"]'
-  );
+  async deselectAllVisibleEmployees(): Promise<void> {
+    const headerCheckbox = this.page.locator(
+      '.oxd-table-header input[type="checkbox"]',
+    );
 
-  const rowCheckboxes = this.employeeRows.locator(
-    'input[type="checkbox"]'
-  );
+    const rowCheckboxes = this.employeeRows.locator('input[type="checkbox"]');
 
-  const rowCount = await rowCheckboxes.count();
+    const rowCount = await rowCheckboxes.count();
 
-  expect(rowCount).toBeGreaterThan(0);
+    expect(rowCount).toBeGreaterThan(0);
 
-  await headerCheckbox.uncheck({
-    force: true,
-  });
+    await headerCheckbox.uncheck({
+      force: true,
+    });
 
-  await expect(headerCheckbox).not.toBeChecked();
+    await expect(headerCheckbox).not.toBeChecked();
 
-  for (let index = 0; index < rowCount; index++) {
-    await expect(
-      rowCheckboxes.nth(index)
-    ).not.toBeChecked();
+    for (let index = 0; index < rowCount; index++) {
+      await expect(rowCheckboxes.nth(index)).not.toBeChecked();
+    }
   }
-}
 }

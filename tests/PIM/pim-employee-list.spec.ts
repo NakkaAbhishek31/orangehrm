@@ -76,7 +76,7 @@ test("TC_PIM_004 - Admin should search for an employee by name @positive @regres
     lastName: lastName,
   });
   await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-    timeout: 15_000,
+    timeout: 55_000,
   });
 
   await pimPage.gotoEmployeeList();

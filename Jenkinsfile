@@ -8,58 +8,69 @@ pipeline {
     }
 
     parameters {
-        choice(
-            name: 'TEST_TAG',
-            choices: [
-                'all',
-                '@smoke',
-                '@regression',
-                '@validation',
-                '@positive',
-                '@negative',
-                '@search',
-                '@pagination',
-                '@upload',
-                '@download',
-                '@security'
-            ],
-            description: 'Select the Playwright tests to run'
-        )
+    choice(
+        name: 'TEST_FILE',
+        choices: [
+            'all',
+            'tests/login.spec.ts',
+            'tests/logout.spec.ts',
+            'tests/PIM/pim-employee.spec.ts',
+            'tests/PIM/pim-employee-list.spec.ts',
+            'tests/PIM/pim-pagination.spec.ts',
+            'tests/PIM/pim-attachments.spec.ts'
+        ],
+        description: 'Select the Playwright spec file'
+    )
+
+    choice(
+        name: 'TEST_TAG',
+        choices: [
+            'all',
+            '@smoke',
+            '@regression',
+            '@validation',
+            '@positive',
+            '@negative',
+            '@search',
+            '@pagination',
+            '@upload',
+            '@download',
+            '@security'
+        ],
+        description: 'Select the test tag'
+    )
+}
+
+stage('Run Playwright Tests') {
+    steps {
+        script {
+            def testCommand =
+                'npx playwright test'
+
+            if (params.TEST_FILE != 'all') {
+                testCommand +=
+                    " \"${params.TEST_FILE}\""
+            }
+
+            testCommand +=
+                ' --project=chromium'
+
+            if (params.TEST_TAG != 'all') {
+                testCommand +=
+                    " --grep \"${params.TEST_TAG}\""
+            }
+
+            echo "Running: ${testCommand}"
+
+            catchError(
+                buildResult: 'FAILURE',
+                stageResult: 'FAILURE'
+            ) {
+                bat testCommand
+            }
+        }
     }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                bat 'npm ci'
-                bat 'npx playwright install chromium'
-            }
-        }
-
-        stage('Run Playwright Tests') {
-            steps {
-                script {
-                    catchError(
-                        buildResult: 'FAILURE',
-                        stageResult: 'FAILURE'
-                    ) {
-                        if (params.TEST_TAG == 'all') {
-                            bat 'npx playwright test --project=chromium'
-                        } else {
-                            bat """
-                                npx playwright test --project=chromium --grep "${params.TEST_TAG}"
-                            """
-                        }
-                    }
-                }
-            }
-        }
-    }
+}
 
     post {
         always {
