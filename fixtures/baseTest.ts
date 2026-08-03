@@ -5,14 +5,16 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { NavigationPage } from '../pages/Navigation.spec';
 import { PIMPage } from '../pages/PimPage';
 import {  EmployeeAttachmentsPage } from '../pages/EmployeeAttachmentsPage';
+import { AdminPage } from '../pages/Admin';
 
 type AppFixtures={
     loginPage:LoginPage;
-    forgotPage:ForgotPage
-    dashboardPage:DashboardPage
-    navigationPage:NavigationPage
-    pimPage:PIMPage
-    employeeAttachmentspage:EmployeeAttachmentsPage
+    forgotPage:ForgotPage;
+    dashboardPage:DashboardPage;
+    navigationPage:NavigationPage;
+    pimPage:PIMPage;
+    employeeAttachmentspage:EmployeeAttachmentsPage;
+    adminPage:AdminPage;
 }
 
 
@@ -37,5 +39,9 @@ export const test =base.extend<AppFixtures>({
     },
      employeeAttachmentspage:async({page},use)=>{
         await  use(new EmployeeAttachmentsPage(page));
+    }
+    ,
+     adminPage:async({page},use)=>{
+        await  use(new AdminPage(page));
     }
 })
