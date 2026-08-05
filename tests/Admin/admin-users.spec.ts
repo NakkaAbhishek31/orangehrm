@@ -1187,7 +1187,7 @@ test('TC_ADMIN_057 - Admin should delete multiple System Users using bulk select
   }
 );
 
-test.only('TC_ADMIN_058 - Admin should select and deselect all visible System Users @positive @selection @regression',
+test('TC_ADMIN_058 - Admin should select and deselect all visible System Users @positive @selection @regression',
   async ({
     loginPage,
     navigationPage,
