@@ -9,7 +9,7 @@ pipeline {
         string(
             name: 'TEST_FILES',
             defaultValue: 'all',
-            description: 'Enter all, one spec file, folder, or comma-separated spec files'
+            description: 'Enter all, one spec file, folder, or comma-separated spec files. Both / and \\ are accepted.'
         )
 
         choice(
@@ -36,9 +36,7 @@ pipeline {
 
         choice(
             name: 'BROWSER',
-            choices: [
-                'chromium'
-            ],
+            choices: ['chromium'],
             description: 'Select the browser'
         )
     }
@@ -47,20 +45,13 @@ pipeline {
         skipDefaultCheckout(true)
         disableConcurrentBuilds()
         timestamps()
-
-        timeout(
-            time: 60,
-            unit: 'MINUTES'
-        )
+        timeout(time: 60, unit: 'MINUTES')
     }
 
     stages {
         stage('Clean and Checkout') {
             steps {
-                // Removes the previous Jenkins workspace,
-                // including stale Allure result files.
                 deleteDir()
-
                 checkout scm
             }
         }
@@ -69,6 +60,7 @@ pipeline {
             steps {
                 bat 'node --version'
                 bat 'npm --version'
+                bat 'npx playwright --version'
             }
         }
 
@@ -87,7 +79,6 @@ pipeline {
         stage('Run Playwright Tests') {
             steps {
                 script {
-                    // Ensure no results exist before execution.
                     bat '''
                         if exist allure-results rmdir /s /q allure-results
                         if exist allure-report rmdir /s /q allure-report
@@ -95,100 +86,65 @@ pipeline {
                         if exist test-results rmdir /s /q test-results
                     '''
 
-                    def testCommand =
-                        'npx playwright test'
+                    def testCommand = 'npx playwright test'
+                    def requestedFiles = params.TEST_FILES?.trim()
 
-                    def requestedFiles =
-                        params.TEST_FILES?.trim()
-
-                    if (
-                        requestedFiles == null ||
-                        requestedFiles == ''
-                    ) {
+                    if (!requestedFiles) {
                         requestedFiles = 'all'
                     }
 
-                    // Add selected files or folders.
-                    if (
-                        requestedFiles
-                            .toLowerCase() != 'all'
-                    ) {
-                        def selectedFiles =
-                            requestedFiles
-                                .split(',')
-                                .collect {
-                                    it.trim()
-                                }
-                                .findAll {
-                                    it
-                                }
+                    if (requestedFiles.toLowerCase() != 'all') {
+                        def selectedFiles = requestedFiles
+                            .split(',')
+                            .collect { file ->
+                                // Normalize Windows paths before validation.
+                                file.trim().replace('\\', '/')
+                            }
+                            .findAll { file -> file }
 
                         if (selectedFiles.isEmpty()) {
-                            error(
-                                'No test files were provided'
-                            )
+                            error('No test files were provided')
                         }
 
                         selectedFiles.each { file ->
-                            if (
-                                !file.startsWith(
-                                    'tests/'
-                                )
-                            ) {
-                                error(
-                                    "Test path must start with tests/: ${file}"
-                                )
+                            if (!file.startsWith('tests/')) {
+                                error("Test path must start with tests/: ${file}")
                             }
 
                             if (file.contains('..')) {
-                                error(
-                                    "Invalid test path: ${file}"
-                                )
+                                error("Invalid test path: ${file}")
+                            }
+
+                            if (!(file ==~ /[A-Za-z0-9_@() .\/\-]+/)) {
+                                error("Test path contains unsupported characters: ${file}")
                             }
                         }
 
-                        def fileArguments =
-                            selectedFiles
-                                .collect { file ->
-                                    "\"${file}\""
-                                }
-                                .join(' ')
+                        def fileArguments = selectedFiles
+                            .collect { file -> "\"${file}\"" }
+                            .join(' ')
 
-                        testCommand +=
-                            " ${fileArguments}"
+                        testCommand += " ${fileArguments}"
                     }
 
-                    def selectedBrowser =
-                        params.BROWSER ?: 'chromium'
+                    def selectedBrowser = params.BROWSER ?: 'chromium'
+                    testCommand += " --project=${selectedBrowser}"
 
-                    testCommand +=
-                        " --project=${selectedBrowser}"
+                    // OrangeHRM is a shared demo environment.
+                    testCommand += ' --workers=1'
 
-                    // OrangeHRM is a shared demo.
-                    testCommand +=
-                        ' --workers=1'
-
-                    def selectedTag =
-                        params.TEST_TAG ?: 'all'
-
-                    // Add the selected tag.
+                    def selectedTag = params.TEST_TAG ?: 'all'
                     if (selectedTag != 'all') {
-                        testCommand +=
-                            " --grep \"${selectedTag}\""
+                        testCommand += " --grep \"${selectedTag}\""
                     }
 
-                    echo(
-                        "Running exactly: ${testCommand}"
-                    )
+                    echo("Running exactly: ${testCommand}")
 
                     catchError(
                         buildResult: 'FAILURE',
                         stageResult: 'FAILURE'
                     ) {
-                        // Only one Playwright execution occurs.
-                        bat(
-                            script: testCommand
-                        )
+                        bat(script: testCommand)
                     }
                 }
             }
@@ -198,25 +154,14 @@ pipeline {
     post {
         always {
             script {
-                if (
-                    fileExists(
-                        'allure-results'
-                    )
-                ) {
+                if (fileExists('allure-results')) {
                     allure(
                         includeProperties: false,
                         jdk: '',
-                        results: [
-                            [
-                                path:
-                                    'allure-results'
-                            ]
-                        ]
+                        results: [[path: 'allure-results']]
                     )
                 } else {
-                    echo(
-                        'No Allure results were generated'
-                    )
+                    echo('No Allure results were generated')
                 }
             }
 
