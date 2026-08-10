@@ -1,0 +1,230 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Admin\admin-users.spec.ts >> TC_PIM_072 - Reset should clear employee ID and name filters @positive @filter @regression
+- Location: tests\Admin\admin-users.spec.ts:2365:6
+
+# Error details
+
+```
+Test timeout of 60000ms exceeded.
+```
+
+```
+Error: locator.fill: Test timeout of 60000ms exceeded.
+Call log:
+  - waiting for locator('.oxd-table-filter').locator('.oxd-input-group').filter({ hasText: 'Employee Id' }).locator('input')
+
+```
+
+# Test source
+
+```ts
+  292 |   //     await expect(this.profilePicturePreview).not.toHaveAttribute(
+  293 |   //       "src",
+  294 |   //       defaultImageSrc ?? "",
+  295 |   //     );
+  296 |   //   }
+  297 | 
+  298 |   //   const personalDetailsLoaded = this.page.waitForResponse(
+  299 |   //     (response) =>
+  300 |   //       response.url().includes("/personal-details") &&
+  301 |   //       response.request().method() === "GET" &&
+  302 |   //       response.ok(),
+  303 |   //     { timeout: 20_000 },
+  304 |   //   );
+  305 | 
+  306 |   //   await this.SaveEmployeeButton.click();
+  307 | 
+  308 |   //   await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+  309 |   //     timeout: 20_000,
+  310 |   //   });
+  311 | 
+  312 |   //   await personalDetailsLoaded;
+  313 |   //   await expect(this.loadingSpinner).toBeHidden();
+  314 |   //   await expect(this.personalDetailsHeading).toBeVisible();
+  315 | 
+  316 |   //   return employeeId;
+  317 |   // }
+  318 | 
+  319 |   async addEmployee(details: AddEmployeeDetails): Promise<string> {
+  320 |     await this.firstnameInput.fill(details.firstName);
+  321 | 
+  322 |     if (details.middleName !== undefined) {
+  323 |       await this.middlenameInput.fill(details.middleName);
+  324 |     }
+  325 | 
+  326 |     await this.lastnameInput.fill(details.lastName);
+  327 | 
+  328 |     // Always use a unique ID unless the test provides one.
+  329 |     const employeeId = details.employeeId ?? this.generateUniqueEmployeeId();
+  330 | 
+  331 |     await this.employeeID.fill(employeeId);
+  332 |     await this.employeeID.blur();
+  333 | 
+  334 |     await expect(this.employeeID).toHaveValue(employeeId);
+  335 | 
+  336 |     // Upload an optional profile picture.
+  337 |     if (details.profilePicturePath !== undefined) {
+  338 |       const originalImageSource =
+  339 |         await this.profilePicturePreview.getAttribute("src");
+  340 | 
+  341 |       await this.profilePictureInput.setInputFiles(details.profilePicturePath);
+  342 | 
+  343 |       await expect
+  344 |         .poll(async () => this.profilePicturePreview.getAttribute("src"), {
+  345 |           timeout: 10_000,
+  346 |           message: "Waiting for profile picture preview",
+  347 |         })
+  348 |         .not.toBe(originalImageSource);
+  349 |     }
+  350 | 
+  351 |     // Save and wait for the Personal Details page.
+  352 |     await Promise.all([
+  353 |       this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+  354 |         timeout: 30_000,
+  355 |       }),
+  356 |       this.SaveEmployeeButton.click(),
+  357 |     ]);
+  358 | 
+  359 |     await expect(this.personalDetailsHeading).toBeVisible({
+  360 |       timeout: 20_000,
+  361 |     });
+  362 | 
+  363 |     await expect(this.loadingSpinner).toBeHidden({
+  364 |       timeout: 20_000,
+  365 |     });
+  366 | 
+  367 |     // Verify the saved employee data.
+  368 |     await expect(this.firstnameInput).toHaveValue(details.firstName, {
+  369 |       timeout: 20_000,
+  370 |     });
+  371 | 
+  372 |     await expect(this.lastnameInput).toHaveValue(details.lastName, {
+  373 |       timeout: 20_000,
+  374 |     });
+  375 | 
+  376 |     if (details.middleName !== undefined) {
+  377 |       await expect(this.middlenameInput).toHaveValue(details.middleName, {
+  378 |         timeout: 20_000,
+  379 |       });
+  380 |     }
+  381 | 
+  382 |     await expect(this.employeeID).toHaveValue(employeeId);
+  383 | 
+  384 |     return employeeId;
+  385 |   }
+  386 |   async gotoEmployeeList(): Promise<void> {
+  387 |     await this.employeeListLink.click();
+  388 |   }
+  389 | 
+  390 |   async filterEmployeeList(filters: EmployeeFilters): Promise<void> {
+  391 |     if (filters.employeeId !== undefined) {
+> 392 |       await this.employeeIdFilterInput.fill(filters.employeeId);
+      |                                        ^ Error: locator.fill: Test timeout of 60000ms exceeded.
+  393 |     }
+  394 | 
+  395 |     if (filters.employeeName !== undefined) {
+  396 |       await this.employeeNameFilterInput.fill(filters.employeeName);
+  397 | 
+  398 |       const matchingOption = this.autocompleteOptions
+  399 |         .filter({ hasText: filters.employeeName })
+  400 |         .first();
+  401 | 
+  402 |       await expect(matchingOption).toBeVisible();
+  403 |       await matchingOption.click();
+  404 |     }
+  405 |   }
+  406 | 
+  407 |   async clickOnFilterSearch(): Promise<void> {
+  408 |     await this.filterSearchButton.click();
+  409 |   }
+  410 | 
+  411 |   async verifyEmployeeSearchResult(
+  412 |     employeeId: string,
+  413 |     firstName: string,
+  414 |     lastName: string,
+  415 |   ): Promise<void> {
+  416 |     await expect(this.loadingSpinner).toBeHidden();
+  417 |     const matchingRow = this.employeeRows.filter({ hasText: employeeId });
+  418 |     const cells = matchingRow.locator(".oxd-table-cell");
+  419 |     const fullName = await cells.nth(2).innerText();
+  420 |     const actualFirstName = fullName.trim().split(/\s+/)[0];
+  421 |     await expect(cells.nth(1)).toHaveText(employeeId);
+  422 |     expect(actualFirstName).toBe(firstName);
+  423 |     await expect(cells.nth(3)).toHaveText(lastName);
+  424 |     await expect(this.noRecordsFound).not.toBeVisible();
+  425 |   }
+  426 | 
+  427 | async verifyNoEmployeeRecordsFound(employeeId: string) {
+  428 |   await expect(this.loadingSpinner).toBeHidden({
+  429 |     timeout: 15_000,
+  430 |   });
+  431 | 
+  432 |   await expect(this.employeeRows).toHaveCount(0, {
+  433 |     timeout: 15_000,
+  434 |   });
+  435 | 
+  436 |   await expect(this.employeeIdFilterInput).toHaveValue(
+  437 |     employeeId
+  438 |   );
+  439 | }
+  440 | 
+  441 |   async updatePersonalDetails(details: PersonalDetails): Promise<void> {
+  442 |     await expect(this.personalDetailsHeading).toBeVisible();
+  443 |     //await expect(this.loadingSpinner).toBeHidden();
+  444 |     await expect(this.personalDetailsSaveButton).toBeEnabled();
+  445 | 
+  446 |     if (details.middleName !== undefined) {
+  447 |       await this.middlenameInput.fill(details.middleName);
+  448 |       await expect(this.middlenameInput).toHaveValue(details.middleName);
+  449 |     }
+  450 | 
+  451 |     if (details.lastName !== undefined) {
+  452 |       await this.lastnameInput.fill(details.lastName);
+  453 |       await expect(this.lastnameInput).toHaveValue(details.lastName);
+  454 |     }
+  455 | 
+  456 |     const updateResponse = this.page.waitForResponse(
+  457 |       (response) =>
+  458 |         response.url().includes("/personal-details") &&
+  459 |         response.request().method() === "PUT" &&
+  460 |         response.ok(),
+  461 |       { timeout: 20_000 },
+  462 |     );
+  463 | 
+  464 |     await this.personalDetailsSaveButton.click();
+  465 |     await updateResponse;
+  466 | 
+  467 |     await expect(this.successToast).toContainText("Successfully Updated");
+  468 | 
+  469 |     //await expect(this.loadingSpinner).toBeHidden();
+  470 | 
+  471 |     if (details.middleName !== undefined) {
+  472 |       await expect(this.middlenameInput).toHaveValue(details.middleName);
+  473 |     }
+  474 | 
+  475 |     if (details.lastName !== undefined) {
+  476 |       await expect(this.lastnameInput).toHaveValue(details.lastName);
+  477 |     }
+  478 |   }
+  479 |   //deleting the Records
+  480 |   async deleteEmployeeById(employeeId: string): Promise<void> {
+  481 |     await expect(this.loadingSpinner).toBeHidden();
+  482 |     const matchingRow = this.employeeRows.filter({ hasText: employeeId });
+  483 |     await expect(matchingRow).toHaveCount(1);
+  484 |     const deleteButton = matchingRow.locator("button").filter({
+  485 |       has: this.page.locator("i.bi-trash"),
+  486 |     });
+  487 |     await deleteButton.click();
+  488 | 
+  489 |     const confirmationDilaog = this.page.getByRole("dialog");
+  490 |     await expect(confirmationDilaog).toBeVisible();
+  491 |     const deleteResponse = this.page.waitForResponse(
+  492 |       (response) =>
+```

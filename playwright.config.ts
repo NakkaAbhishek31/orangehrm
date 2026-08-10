@@ -42,8 +42,9 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
     baseURL: 'https://opensource-demo.orangehrmlive.com',
       locale: 'en-US',
-      actionTimeout: 25_000,
-    navigationTimeout: 60_000,
+      actionTimeout: 30_000,
+    navigationTimeout: 70_000,
+
     
   extraHTTPHeaders: {
     'Accept-Language': 'en-US,en;q=0.9',

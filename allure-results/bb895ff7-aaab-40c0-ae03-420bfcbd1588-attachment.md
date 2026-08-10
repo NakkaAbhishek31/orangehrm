@@ -1,0 +1,457 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: PIM\pim-employee.spec.ts >> TC_PIM_001 - Admin should add a new employee successfully @positive @regression
+- Location: tests\PIM\pim-employee.spec.ts:6:5
+
+# Error details
+
+```
+Test timeout of 60000ms exceeded.
+```
+
+```
+Error: expect(locator).toBeHidden() failed
+
+Locator:  locator('.oxd-loading-spinner').first()
+Expected: hidden
+Received: visible
+
+Call log:
+  - Expect "toBeHidden" with timeout 20000ms
+  - waiting for locator('.oxd-loading-spinner').first()
+    7 × locator resolved to <div data-v-a6dfc6a9="" class="oxd-loading-spinner"></div>
+      - unexpected value "visible"
+  - Test timeout of 60000ms exceeded.
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=f4e3]:
+  - generic:
+    - complementary [ref=f4e4]:
+      - navigation "Sidepanel" [ref=f4e5]:
+        - generic [ref=f4e6]:
+          - link [ref=f4e7] [cursor=pointer]:
+            - /url: https://www.orangehrm.com/
+            - img "client brand banner" [ref=f4e9]
+          - text: 
+        - generic [ref=f4e10]:
+          - generic [ref=f4e11]:
+            - generic [ref=f4e12]:
+              - textbox "Search" [ref=f4e15]
+              - button "" [ref=f4e16] [cursor=pointer]
+            - separator [ref=f4e18]
+          - list [ref=f4e19]:
+            - listitem [ref=f4e20]:
+              - link "Admin" [ref=f4e21] [cursor=pointer]:
+                - /url: /web/index.php/admin/viewAdminModule
+            - listitem [ref=f4e25]:
+              - link "PIM" [ref=f4e26] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewPimModule
+            - listitem [ref=f4e41]:
+              - link "Leave" [ref=f4e42] [cursor=pointer]:
+                - /url: /web/index.php/leave/viewLeaveModule
+            - listitem [ref=f4e46]:
+              - link "Time" [ref=f4e47] [cursor=pointer]:
+                - /url: /web/index.php/time/viewTimeModule
+            - listitem [ref=f4e54]:
+              - link "Recruitment" [ref=f4e55] [cursor=pointer]:
+                - /url: /web/index.php/recruitment/viewRecruitmentModule
+            - listitem [ref=f4e62]:
+              - link "My Info" [ref=f4e63] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewMyDetails
+            - listitem [ref=f4e70]:
+              - link "Performance" [ref=f4e71] [cursor=pointer]:
+                - /url: /web/index.php/performance/viewPerformanceModule
+            - listitem [ref=f4e80]:
+              - link "Dashboard" [ref=f4e81] [cursor=pointer]:
+                - /url: /web/index.php/dashboard/index
+            - listitem [ref=f4e85]:
+              - link "Directory" [ref=f4e86] [cursor=pointer]:
+                - /url: /web/index.php/directory/viewDirectory
+            - listitem [ref=f4e90]:
+              - link "Maintenance" [ref=f4e91] [cursor=pointer]:
+                - /url: /web/index.php/maintenance/viewMaintenanceModule
+            - listitem [ref=f4e96]:
+              - link "Claim" [ref=f4e97] [cursor=pointer]:
+                - /url: /web/index.php/claim/viewClaimModule
+            - listitem [ref=f4e105]:
+              - link "Buzz" [ref=f4e106] [cursor=pointer]:
+                - /url: /web/index.php/buzz/viewBuzz
+    - banner [ref=f4e110]:
+      - generic [ref=f4e111]:
+        - generic [ref=f4e112]:
+          - text: 
+          - heading "PIM" [level=6] [ref=f4e114]
+        - link [ref=f4e116]:
+          - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+          - button "Upgrade" [ref=f4e117] [cursor=pointer]
+        - list [ref=f4e123]:
+          - listitem [ref=f4e124]:
+            - generic [ref=f4e125] [cursor=pointer]:
+              - img "profile picture" [ref=f4e126]
+              - paragraph [ref=f4e127]: Surya king
+              - generic [ref=f4e128]: 
+      - navigation "Topbar Menu" [ref=f4e130]:
+        - list [ref=f4e131]:
+          - listitem [ref=f4e132] [cursor=pointer]:
+            - generic [ref=f4e133]:
+              - text: Configuration
+              - generic [ref=f4e134]: 
+          - listitem [ref=f4e135] [cursor=pointer]:
+            - link "Employee List" [ref=f4e136]:
+              - /url: "#"
+          - listitem [ref=f4e137] [cursor=pointer]:
+            - link "Add Employee" [ref=f4e138]:
+              - /url: "#"
+          - listitem [ref=f4e139] [cursor=pointer]:
+            - link "Reports" [ref=f4e140]:
+              - /url: "#"
+          - button "" [ref=f4e142] [cursor=pointer]
+  - generic [ref=f4e144]:
+    - generic [ref=f4e148]:
+      - generic [ref=f4e149]:
+        - generic [ref=f4e150]:
+          - heading "Auto1785912086835 user" [level=6] [ref=f4e152]
+          - generic [ref=f4e154] [cursor=pointer]:
+            - img "profile picture"
+        - tablist [ref=f4e155]:
+          - tab [ref=f4e156]:
+            - link "Personal Details" [ref=f4e157] [cursor=pointer]:
+              - /url: /web/index.php/pim/viewPersonalDetails/empNumber/323
+          - tab [ref=f4e158]:
+            - link "Contact Details" [ref=f4e159] [cursor=pointer]:
+              - /url: /web/index.php/pim/contactDetails/empNumber/323
+          - tab [ref=f4e160]:
+            - link "Emergency Contacts" [ref=f4e161] [cursor=pointer]:
+              - /url: /web/index.php/pim/viewEmergencyContacts/empNumber/323
+          - tab [ref=f4e162]:
+            - link "Dependents" [ref=f4e163] [cursor=pointer]:
+              - /url: /web/index.php/pim/viewDependents/empNumber/323
+          - tab [ref=f4e164]:
+            - link "Immigration" [ref=f4e165] [cursor=pointer]:
+              - /url: /web/index.php/pim/viewImmigration/empNumber/323
+          - tab [ref=f4e166]:
+            - link "Job" [ref=f4e167] [cursor=pointer]:
+              - /url: /web/index.php/pim/viewJobDetails/empNumber/323
+          - tab [ref=f4e168]:
+            - link "Salary" [ref=f4e169] [cursor=pointer]:
+              - /url: /web/index.php/pim/viewSalaryList/empNumber/323
+          - tab [ref=f4e170]:
+            - link "Report-to" [ref=f4e171] [cursor=pointer]:
+              - /url: /web/index.php/pim/viewReportToDetails/empNumber/323
+          - tab [ref=f4e172]:
+            - link "Qualifications" [ref=f4e173] [cursor=pointer]:
+              - /url: /web/index.php/pim/viewQualifications/empNumber/323
+          - tab [ref=f4e174]:
+            - link "Memberships" [ref=f4e175] [cursor=pointer]:
+              - /url: /web/index.php/pim/viewMemberships/empNumber/323
+      - generic [ref=f4e176]:
+        - generic [ref=f4e177]:
+          - heading "Personal Details" [level=6] [ref=f4e178]
+          - separator [ref=f4e179]
+          - generic [ref=f4e180]:
+            - generic [ref=f4e187]:
+              - generic [ref=f4e188]: Employee Full Name*
+              - generic [ref=f4e190]:
+                - textbox "First Name" [ref=f4e193]
+                - textbox "Middle Name" [ref=f4e196]
+                - textbox "Last Name" [ref=f4e199]
+            - separator [ref=f4e200]
+            - generic [ref=f4e201]:
+              - generic [ref=f4e202]:
+                - generic [ref=f4e204]:
+                  - generic [ref=f4e205]: Employee Id
+                  - textbox [ref=f4e208]
+                - generic [ref=f4e210]:
+                  - generic [ref=f4e211]: Other Id
+                  - textbox [ref=f4e214]
+              - generic [ref=f4e215]:
+                - generic [ref=f4e217]:
+                  - generic [ref=f4e218]: Driver's License Number
+                  - textbox [ref=f4e221]
+                - generic [ref=f4e223]:
+                  - generic [ref=f4e224]: License Expiry Date
+                  - generic [ref=f4e228]:
+                    - textbox "yyyy-dd-mm" [ref=f4e229]
+                    - generic [ref=f4e230] [cursor=pointer]: 
+            - separator [ref=f4e231]
+            - generic [ref=f4e232]:
+              - generic [ref=f4e233]:
+                - generic [ref=f4e235]:
+                  - generic [ref=f4e236]: Nationality
+                  - generic [ref=f4e240] [cursor=pointer]:
+                    - generic [ref=f4e241]: "-- Select --"
+                    - generic [ref=f4e242]: 
+                - generic [ref=f4e245]:
+                  - generic [ref=f4e246]: Marital Status
+                  - generic [ref=f4e250] [cursor=pointer]:
+                    - generic [ref=f4e251]: "-- Select --"
+                    - generic [ref=f4e252]: 
+              - generic [ref=f4e254]:
+                - generic [ref=f4e256]:
+                  - generic [ref=f4e257]: Date of Birth
+                  - generic [ref=f4e261]:
+                    - textbox "yyyy-dd-mm" [ref=f4e262]
+                    - generic [ref=f4e263] [cursor=pointer]: 
+                - generic [ref=f4e265]:
+                  - generic [ref=f4e266]: Gender
+                  - generic [ref=f4e268]:
+                    - generic [ref=f4e272] [cursor=pointer]:
+                      - radio "Male" [ref=f4e273]
+                      - text: Male
+                    - generic [ref=f4e278] [cursor=pointer]:
+                      - radio "Female" [ref=f4e279]
+                      - text: Female
+            - separator [ref=f4e281]
+            - generic [ref=f4e282]:
+              - paragraph [ref=f4e283]: "* Required"
+              - button "Save" [ref=f4e284] [cursor=pointer]
+        - generic [ref=f4e285]:
+          - separator [ref=f4e286]
+          - generic [ref=f4e287]:
+            - heading "Custom Fields" [level=6] [ref=f4e288]
+            - separator [ref=f4e289]
+            - generic [ref=f4e290]:
+              - generic [ref=f4e292]:
+                - generic [ref=f4e294]:
+                  - generic [ref=f4e295]: Blood Type
+                  - generic [ref=f4e299] [cursor=pointer]:
+                    - generic [ref=f4e300]: "-- Select --"
+                    - generic [ref=f4e301]: 
+                - generic [ref=f4e304]:
+                  - generic [ref=f4e305]: Test_Field
+                  - textbox [ref=f4e308]
+              - separator [ref=f4e309]
+              - button "Save" [ref=f4e311] [cursor=pointer]
+        - generic [ref=f4e312]:
+          - separator [ref=f4e313]
+          - generic [ref=f4e315]:
+            - heading "Attachments" [level=6] [ref=f4e316]
+            - button " Add" [ref=f4e317] [cursor=pointer]:
+              - generic [ref=f4e318]: 
+              - text: Add
+          - table [ref=f4e320]
+    - generic [ref=f4e324]:
+      - paragraph [ref=f4e325]: OrangeHRM OS 5.9
+      - paragraph [ref=f4e326]:
+        - text: © 2005 - 2026
+        - link "OrangeHRM, Inc" [ref=f4e327] [cursor=pointer]:
+          - /url: http://www.orangehrm.com
+        - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  263 |   //   //   await this.employeeID.fill(employeeId);
+  264 |   //   // }
+  265 | 
+  266 |   //   // await this.employeeID.blur();
+  267 | 
+  268 |   //   // const duplicateIdFound = await this.employeeIdValidation
+  269 |   //   //   .waitFor({
+  270 |   //   //     state: "visible",
+  271 |   //   //     timeout: 3_000,
+  272 |   //   //   })
+  273 |   //   //   .then(() => true)
+  274 |   //   //   .catch(() => false);
+  275 | 
+  276 |   //   // if (duplicateIdFound) {
+  277 |   //   //   employeeId = `E${Date.now().toString().slice(-9)}`;
+  278 | 
+  279 |   //   //   await this.employeeID.fill(employeeId);
+  280 |   //   //   await this.employeeID.blur();
+  281 | 
+  282 |   //   //   await expect(this.employeeID).toHaveValue(employeeId);
+  283 |   //   //   await expect(this.employeeIdValidation).toBeHidden();
+  284 |   //   // }
+  285 | 
+  286 |   //   if (details.profilePicturePath !== undefined) {
+  287 |   //     const defaultImageSrc =
+  288 |   //       await this.profilePicturePreview.getAttribute("src");
+  289 | 
+  290 |   //     await this.profilePictureInput.setInputFiles(details.profilePicturePath);
+  291 | 
+  292 |   //     await expect(this.profilePicturePreview).not.toHaveAttribute(
+  293 |   //       "src",
+  294 |   //       defaultImageSrc ?? "",
+  295 |   //     );
+  296 |   //   }
+  297 | 
+  298 |   //   const personalDetailsLoaded = this.page.waitForResponse(
+  299 |   //     (response) =>
+  300 |   //       response.url().includes("/personal-details") &&
+  301 |   //       response.request().method() === "GET" &&
+  302 |   //       response.ok(),
+  303 |   //     { timeout: 20_000 },
+  304 |   //   );
+  305 | 
+  306 |   //   await this.SaveEmployeeButton.click();
+  307 | 
+  308 |   //   await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+  309 |   //     timeout: 20_000,
+  310 |   //   });
+  311 | 
+  312 |   //   await personalDetailsLoaded;
+  313 |   //   await expect(this.loadingSpinner).toBeHidden();
+  314 |   //   await expect(this.personalDetailsHeading).toBeVisible();
+  315 | 
+  316 |   //   return employeeId;
+  317 |   // }
+  318 | 
+  319 |   async addEmployee(details: AddEmployeeDetails): Promise<string> {
+  320 |     await this.firstnameInput.fill(details.firstName);
+  321 | 
+  322 |     if (details.middleName !== undefined) {
+  323 |       await this.middlenameInput.fill(details.middleName);
+  324 |     }
+  325 | 
+  326 |     await this.lastnameInput.fill(details.lastName);
+  327 | 
+  328 |     // Always use a unique ID unless the test provides one.
+  329 |     const employeeId = details.employeeId ?? this.generateUniqueEmployeeId();
+  330 | 
+  331 |     await this.employeeID.fill(employeeId);
+  332 |     await this.employeeID.blur();
+  333 | 
+  334 |     await expect(this.employeeID).toHaveValue(employeeId);
+  335 | 
+  336 |     // Upload an optional profile picture.
+  337 |     if (details.profilePicturePath !== undefined) {
+  338 |       const originalImageSource =
+  339 |         await this.profilePicturePreview.getAttribute("src");
+  340 | 
+  341 |       await this.profilePictureInput.setInputFiles(details.profilePicturePath);
+  342 | 
+  343 |       await expect
+  344 |         .poll(async () => this.profilePicturePreview.getAttribute("src"), {
+  345 |           timeout: 10_000,
+  346 |           message: "Waiting for profile picture preview",
+  347 |         })
+  348 |         .not.toBe(originalImageSource);
+  349 |     }
+  350 | 
+  351 |     // Save and wait for the Personal Details page.
+  352 |     await Promise.all([
+  353 |       this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+  354 |         timeout: 30_000,
+  355 |       }),
+  356 |       this.SaveEmployeeButton.click(),
+  357 |     ]);
+  358 | 
+  359 |     await expect(this.personalDetailsHeading).toBeVisible({
+  360 |       timeout: 20_000,
+  361 |     });
+  362 | 
+> 363 |     await expect(this.loadingSpinner).toBeHidden({
+      |                                       ^ Error: expect(locator).toBeHidden() failed
+  364 |       timeout: 20_000,
+  365 |     });
+  366 | 
+  367 |     // Verify the saved employee data.
+  368 |     await expect(this.firstnameInput).toHaveValue(details.firstName, {
+  369 |       timeout: 20_000,
+  370 |     });
+  371 | 
+  372 |     await expect(this.lastnameInput).toHaveValue(details.lastName, {
+  373 |       timeout: 20_000,
+  374 |     });
+  375 | 
+  376 |     if (details.middleName !== undefined) {
+  377 |       await expect(this.middlenameInput).toHaveValue(details.middleName, {
+  378 |         timeout: 20_000,
+  379 |       });
+  380 |     }
+  381 | 
+  382 |     await expect(this.employeeID).toHaveValue(employeeId);
+  383 | 
+  384 |     return employeeId;
+  385 |   }
+  386 |   async gotoEmployeeList(): Promise<void> {
+  387 |     await this.employeeListLink.click();
+  388 |   }
+  389 | 
+  390 |   async filterEmployeeList(filters: EmployeeFilters): Promise<void> {
+  391 |     if (filters.employeeId !== undefined) {
+  392 |       await this.employeeIdFilterInput.fill(filters.employeeId);
+  393 |     }
+  394 | 
+  395 |     if (filters.employeeName !== undefined) {
+  396 |       await this.employeeNameFilterInput.fill(filters.employeeName);
+  397 | 
+  398 |       const matchingOption = this.autocompleteOptions
+  399 |         .filter({ hasText: filters.employeeName })
+  400 |         .first();
+  401 | 
+  402 |       await expect(matchingOption).toBeVisible();
+  403 |       await matchingOption.click();
+  404 |     }
+  405 |   }
+  406 | 
+  407 |   async clickOnFilterSearch(): Promise<void> {
+  408 |     await this.filterSearchButton.click();
+  409 |   }
+  410 | 
+  411 |   async verifyEmployeeSearchResult(
+  412 |     employeeId: string,
+  413 |     firstName: string,
+  414 |     lastName: string,
+  415 |   ): Promise<void> {
+  416 |     await expect(this.loadingSpinner).toBeHidden();
+  417 |     const matchingRow = this.employeeRows.filter({ hasText: employeeId });
+  418 |     const cells = matchingRow.locator(".oxd-table-cell");
+  419 |     const fullName = await cells.nth(2).innerText();
+  420 |     const actualFirstName = fullName.trim().split(/\s+/)[0];
+  421 |     await expect(cells.nth(1)).toHaveText(employeeId);
+  422 |     expect(actualFirstName).toBe(firstName);
+  423 |     await expect(cells.nth(3)).toHaveText(lastName);
+  424 |     await expect(this.noRecordsFound).not.toBeVisible();
+  425 |   }
+  426 | 
+  427 |   async verifyNoEmployeeRecordsFound(employeeId: string): Promise<void> {
+  428 |     await expect(this.loadingSpinner).toBeHidden();
+  429 | 
+  430 |     await expect(this.noRecordsFound).toBeVisible();
+  431 |     await expect(this.employeeRows).toHaveCount(0);
+  432 | 
+  433 |     await expect(this.employeeIdFilterInput).toHaveValue(employeeId);
+  434 |   }
+  435 | 
+  436 |   async updatePersonalDetails(details: PersonalDetails): Promise<void> {
+  437 |     await expect(this.personalDetailsHeading).toBeVisible();
+  438 |     //await expect(this.loadingSpinner).toBeHidden();
+  439 |     await expect(this.personalDetailsSaveButton).toBeEnabled();
+  440 | 
+  441 |     if (details.middleName !== undefined) {
+  442 |       await this.middlenameInput.fill(details.middleName);
+  443 |       await expect(this.middlenameInput).toHaveValue(details.middleName);
+  444 |     }
+  445 | 
+  446 |     if (details.lastName !== undefined) {
+  447 |       await this.lastnameInput.fill(details.lastName);
+  448 |       await expect(this.lastnameInput).toHaveValue(details.lastName);
+  449 |     }
+  450 | 
+  451 |     const updateResponse = this.page.waitForResponse(
+  452 |       (response) =>
+  453 |         response.url().includes("/personal-details") &&
+  454 |         response.request().method() === "PUT" &&
+  455 |         response.ok(),
+  456 |       { timeout: 20_000 },
+  457 |     );
+  458 | 
+  459 |     await this.personalDetailsSaveButton.click();
+  460 |     await updateResponse;
+  461 | 
+  462 |     await expect(this.successToast).toContainText("Successfully Updated");
+  463 | 
+```

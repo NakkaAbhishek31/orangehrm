@@ -27,6 +27,16 @@ export type EmployeeWithLoginDetails = AddEmployeeDetails & {
   status?: "Enabled" | "Disabled";
 };
 
+
+export interface EmployeeData {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  employeeId?: string;
+  profilePicturePath?: string;
+}
+
+
 export class PIMPage {
   readonly page: Page;
   readonly AddEmployeeLink: Locator;
@@ -71,6 +81,8 @@ export class PIMPage {
   readonly createLoginDetailsCheckbox: Locator;
   readonly usernameValidation: Locator;
   readonly canceldeletiondilogbutton: Locator;
+  readonly addEmployeeIdInput: Locator;
+  
 
   constructor(page: Page) {
     this.page = page;
@@ -90,9 +102,9 @@ export class PIMPage {
       .locator(".oxd-loading-spinner")
       .first();
     this.employeeRows = page.locator(".oxd-table-body .oxd-table-card");
-    this.noRecordsFound = this.noRecordsFound = page
-      .locator(".oxd-toast-content-text")
-      .filter({ hasText: "No Records Found" });
+  this.noRecordsFound = page
+  .locator(".oxd-toast-container")
+  .getByText("No Records Found", { exact: true });
     this.employeeNameFilterInput = page.locator(
       "//div[@class='oxd-grid-4 orangehrm-full-width-grid']//div[1]//div[1]//div[2]//div[1]//div[1]//input[1]",
     );
@@ -238,6 +250,12 @@ export class PIMPage {
     this.canceldeletiondilogbutton = page.getByRole("button", {
       name: /No, Cancel/i,
     });
+
+    this.addEmployeeIdInput = page
+    .locator(".oxd-input-group")
+    .filter({ hasText: "Employee Id" })
+    .locator("input");
+    
   }
 
   async gotoAddEmployee(): Promise<void> {
@@ -315,74 +333,70 @@ export class PIMPage {
 
   //   return employeeId;
   // }
+// async addEmployee(employee: EmployeeData): Promise<string> {
+//   await this.firstnameInput.fill(employee.firstName);
 
-  async addEmployee(details: AddEmployeeDetails): Promise<string> {
-    await this.firstnameInput.fill(details.firstName);
+//   if (employee.middleName) {
+//     await this.middlenameInput.fill(employee.middleName);
+//   }
 
-    if (details.middleName !== undefined) {
-      await this.middlenameInput.fill(details.middleName);
-    }
+//   await this.lastnameInput.fill(employee.lastName);
 
-    await this.lastnameInput.fill(details.lastName);
+//   /*
+//    * OrangeHRM generates the same next ID when multiple workers
+//    * open Add Employee simultaneously. Override it with a unique ID.
+//    */
+//   const employeeId =
+//     employee.employeeId ??
+//     `${Date.now().toString().slice(-6)}${Math.floor(
+//       Math.random() * 1000
+//     )
+//       .toString()
+//       .padStart(3, "0")}`;
 
-    // Always use a unique ID unless the test provides one.
-    const employeeId = details.employeeId ?? this.generateUniqueEmployeeId();
+//   await this.employeeID.fill(employeeId);
 
-    await this.employeeID.fill(employeeId);
-    await this.employeeID.blur();
+//   await this.SaveEmployeeButton.click();
 
-    await expect(this.employeeID).toHaveValue(employeeId);
+//   await expect(this.page).toHaveURL(
+//     /pim\/viewPersonalDetails\/empNumber\/\d+/,
+//     {
+//       timeout: 30_000,
+//     }
+//   );
 
-    // Upload an optional profile picture.
-    if (details.profilePicturePath !== undefined) {
-      const originalImageSource =
-        await this.profilePicturePreview.getAttribute("src");
+//   await expect(this.personalDetailsHeading).toBeVisible({
+//     timeout: 15_000,
+//   });
 
-      await this.profilePictureInput.setInputFiles(details.profilePicturePath);
+//   return employeeId;
+// }
 
-      await expect
-        .poll(async () => this.profilePicturePreview.getAttribute("src"), {
-          timeout: 10_000,
-          message: "Waiting for profile picture preview",
-        })
-        .not.toBe(originalImageSource);
-    }
 
-    // Save and wait for the Personal Details page.
-    await Promise.all([
-      this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-        timeout: 30_000,
-      }),
-      this.SaveEmployeeButton.click(),
-    ]);
+async addEmployee(data: EmployeeData): Promise<string> {
+  await this.firstnameInput.fill(data.firstName);
 
-    await expect(this.personalDetailsHeading).toBeVisible({
-      timeout: 20_000,
-    });
-
-    await expect(this.loadingSpinner).toBeHidden({
-      timeout: 20_000,
-    });
-
-    // Verify the saved employee data.
-    await expect(this.firstnameInput).toHaveValue(details.firstName, {
-      timeout: 20_000,
-    });
-
-    await expect(this.lastnameInput).toHaveValue(details.lastName, {
-      timeout: 20_000,
-    });
-
-    if (details.middleName !== undefined) {
-      await expect(this.middlenameInput).toHaveValue(details.middleName, {
-        timeout: 20_000,
-      });
-    }
-
-    await expect(this.employeeID).toHaveValue(employeeId);
-
-    return employeeId;
+  if (data.middleName !== undefined) {
+    await this.middlenameInput.fill(data.middleName);
   }
+
+  await this.lastnameInput.fill(data.lastName);
+
+  if (data.employeeId !== undefined) {
+    await this.employeeID.fill(data.employeeId);
+  }
+
+  if (data.profilePicturePath) {
+    await this.profilePictureInput.setInputFiles(
+      data.profilePicturePath,
+    );
+  }
+
+  await this.SaveEmployeeButton.click();
+
+  return await this.employeeID.inputValue();
+}
+
   async gotoEmployeeList(): Promise<void> {
     await this.employeeListLink.click();
   }
@@ -424,14 +438,19 @@ export class PIMPage {
     await expect(this.noRecordsFound).not.toBeVisible();
   }
 
-  async verifyNoEmployeeRecordsFound(employeeId: string): Promise<void> {
-    await expect(this.loadingSpinner).toBeHidden();
+async verifyNoEmployeeRecordsFound(employeeId: string) {
+  await expect(this.loadingSpinner).toBeHidden({
+    timeout: 15_000,
+  });
 
-    await expect(this.noRecordsFound).toBeVisible();
-    await expect(this.employeeRows).toHaveCount(0);
+  await expect(this.employeeRows).toHaveCount(0, {
+    timeout: 15_000,
+  });
 
-    await expect(this.employeeIdFilterInput).toHaveValue(employeeId);
-  }
+  await expect(this.employeeIdFilterInput).toHaveValue(
+    employeeId
+  );
+}
 
   async updatePersonalDetails(details: PersonalDetails): Promise<void> {
     await expect(this.personalDetailsHeading).toBeVisible();

@@ -1,0 +1,125 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: login.spec.ts >> TC_LOGOUT_001 - Admin should logout successfully @smoke @regression
+- Location: tests\login.spec.ts:101:5
+
+# Error details
+
+```
+Error: expect(page).toHaveURL(expected) failed
+
+Expected pattern: /dashboard/
+Received string:  "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
+Timeout: 10000ms
+
+Call log:
+  - Expect "toHaveURL" with timeout 10000ms
+    23 × locator resolved to <html>…</html>
+       - unexpected value "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
+
+```
+
+```yaml
+- img "company-branding"
+- heading "Login" [level=5]
+- paragraph: "Username : Admin"
+- paragraph: "Password : admin123"
+- text:  Username
+- textbox "Username": Admin
+- text:  Password
+- textbox "Password"
+- text: Required
+- button "Login"
+- paragraph: Forgot your password?
+- link:
+  - /url: https://www.linkedin.com/company/orangehrm/mycompany/
+- link:
+  - /url: https://www.facebook.com/OrangeHRM/
+- link:
+  - /url: https://twitter.com/orangehrm?lang=en
+- link:
+  - /url: https://www.youtube.com/c/OrangeHRMInc
+- paragraph: OrangeHRM OS 5.9
+- paragraph:
+  - text: © 2005 - 2026
+  - link "OrangeHRM, Inc":
+    - /url: http://www.orangehrm.com
+  - text: . All rights reserved.
+- img "orangehrm-logo"
+```
+
+# Test source
+
+```ts
+  1  | import {Locator, Page,expect} from "@playwright/test"
+  2  | 
+  3  | export class LoginPage{
+  4  |     readonly page:Page;
+  5  |     readonly usernameInput:Locator;
+  6  |     readonly passwordInput:Locator;
+  7  |     readonly loginButton:Locator;
+  8  |     readonly profileMenu:Locator;
+  9  |     readonly errorMessage:Locator;
+  10 |     readonly validationMessages:Locator;
+  11 |     readonly forgotPasswordButton:Locator;
+  12 | 
+  13 |    
+  14 | constructor(page:Page){
+  15 |  this.page=page;
+  16 |  this.usernameInput=page.getByRole('textbox', { name: 'Username' })
+  17 |  this.passwordInput=page.getByRole('textbox', { name: 'Password' })
+  18 |  this.loginButton= page.getByRole('button', { name: 'Login' })
+  19 |  this.profileMenu=page.locator('li.oxd-userdropdown');
+  20 |  this.errorMessage=page.getByText('Invalid credentials', { exact: true });
+  21 |  this.validationMessages = page.locator( '.oxd-input-field-error-message');
+  22 | this.forgotPasswordButton=page.getByText('Forgot your password?', { exact: true });
+  23 | 
+  24 | }
+  25 | 
+  26 | 
+  27 | async visitPage():Promise<void>
+  28 | {
+  29 |   await this.page.goto('/',{
+  30 |     waitUntil: 'domcontentloaded',
+  31 |     timeout: 60_000,
+  32 | 
+  33 |   });
+  34 | }
+  35 | 
+  36 | async login(Username:string,Password:string) {
+  37 |     await this.usernameInput.fill(Username);  
+  38 |     await this.passwordInput.fill(Password);
+  39 |     await this.loginButton.click();  
+  40 | }
+  41 | 
+  42 | async verifyLoginSuccessful():Promise<void>
+  43 | {
+> 44 |     await expect(this.page).toHaveURL(/dashboard/);
+     |                             ^ Error: expect(page).toHaveURL(expected) failed
+  45 | 
+  46 | }
+  47 | 
+  48 | async verifyLoginUnsuccessful():Promise<void>
+  49 | {
+  50 |     await expect(this.page).toHaveURL(/auth\/login/);
+  51 |     await expect(this.profileMenu).not.toBeVisible();
+  52 |     await expect(this.usernameInput).toBeVisible();
+  53 |     await expect(this.passwordInput).toBeVisible();
+  54 |     await expect(this.loginButton).toBeVisible();
+  55 | 
+  56 | }
+  57 | async clickOnForgotPassword():Promise<void>
+  58 | {
+  59 |     await this.forgotPasswordButton.click();
+  60 | 
+  61 | 
+  62 | }
+  63 | 
+  64 | }
+```

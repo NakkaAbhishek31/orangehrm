@@ -1,0 +1,49 @@
+{
+  "TC_LOGIN_001": {
+    "username": "Admin",
+    "password": "admin123"
+  },
+  "TC_LOGIN_002": {
+    "username": "InvalidAdmin",
+    "password": "admin123",
+    "expectedError": "Invalid credentials"
+  },
+  "TC_LOGIN_003": {
+    "username": "Admin",
+    "password": "WrongPassword123",
+    "expectedError": "Invalid credentials"
+  },
+  "TC_LOGIN_004": {
+    "username": "",
+    "password": "",
+    "expectedValidations": ["Required", "Required"]
+  },
+  "TC_LOGIN_005": {
+    "username": "",
+    "password": "admin123",
+    "expectedValidations": ["Required"]
+  },
+  "TC_LOGIN_006": {
+    "username": "Admin",
+    "password": "",
+    "expectedValidations": ["Required"]
+  },
+    "TC_LOGOUT_001": {
+    "username": "Admin",
+    "password": "admin123"
+  },
+  "validAdmin": {
+    "username": "Admin",
+    "password": "admin123"
+  },
+  "invalidUsername": {
+    "username": "InvalidAdmin",
+    "password": "admin123",
+    "expectedError": "Invalid credentials"
+  },
+  "invalidPassword": {
+    "username": "Admin",
+    "password": "WrongPassword123",
+    "expectedError": "Invalid credentials"
+  }
+}

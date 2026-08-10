@@ -1,0 +1,736 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Admin\admin-users.spec.ts >> TC_PIM_075 - Search should return no records when employee ID and name do not match @negative @search @regression
+- Location: tests\Admin\admin-users.spec.ts:2584:6
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: locator('.oxd-autocomplete-option').filter({ hasText: 'Wrongaa8e2fe1' }).first()
+Expected: visible
+Timeout: 10000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 10000ms
+  - waiting for locator('.oxd-autocomplete-option').filter({ hasText: 'Wrongaa8e2fe1' }).first()
+
+```
+
+```yaml
+- complementary:
+  - navigation "Sidepanel":
+    - link "client brand banner":
+      - /url: https://www.orangehrm.com/
+      - img "client brand banner"
+    - textbox "Search"
+    - button ""
+    - separator
+    - list:
+      - listitem:
+        - link "Admin":
+          - /url: /web/index.php/admin/viewAdminModule
+      - listitem:
+        - link "PIM":
+          - /url: /web/index.php/pim/viewPimModule
+      - listitem:
+        - link "Leave":
+          - /url: /web/index.php/leave/viewLeaveModule
+      - listitem:
+        - link "Time":
+          - /url: /web/index.php/time/viewTimeModule
+      - listitem:
+        - link "Recruitment":
+          - /url: /web/index.php/recruitment/viewRecruitmentModule
+      - listitem:
+        - link "My Info":
+          - /url: /web/index.php/pim/viewMyDetails
+      - listitem:
+        - link "Performance":
+          - /url: /web/index.php/performance/viewPerformanceModule
+      - listitem:
+        - link "Dashboard":
+          - /url: /web/index.php/dashboard/index
+      - listitem:
+        - link "Directory":
+          - /url: /web/index.php/directory/viewDirectory
+      - listitem:
+        - link "Maintenance":
+          - /url: /web/index.php/maintenance/viewMaintenanceModule
+      - listitem:
+        - link "Claim":
+          - /url: /web/index.php/claim/viewClaimModule
+          - img
+          - text: Claim
+      - listitem:
+        - link "Buzz":
+          - /url: /web/index.php/buzz/viewBuzz
+- banner:
+  - heading "PIM" [level=6]
+  - link "Upgrade":
+    - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+    - button "Upgrade"
+  - list:
+    - listitem:
+      - img "profile picture"
+      - paragraph: George Russell
+      - text: 
+  - navigation "Topbar Menu":
+    - list:
+      - listitem: Configuration 
+      - listitem:
+        - link "Employee List":
+          - /url: "#"
+      - listitem:
+        - link "Add Employee":
+          - /url: "#"
+      - listitem:
+        - link "Reports":
+          - /url: "#"
+      - button ""
+- heading "Employee Information" [level=5]
+- button ""
+- separator
+- text: Employee Name
+- textbox "Type for hints...": Wrongaa8e2fe1
+- listbox:
+  - option "Searching...."
+- text: Employee Id
+- textbox: "640207189"
+- text: Employment Status -- Select --  Include Current Employees Only  Supervisor Name
+- textbox "Type for hints..."
+- text: Job Title -- Select --  Sub Unit -- Select -- 
+- separator
+- button "Reset"
+- button "Search"
+- button " Add"
+- separator
+- text: (28) Records Found
+- table:
+  - rowgroup:
+    - row " Id  First (& Middle) Name  Last Name  Job Title  Employment Status  Sub Unit  Supervisor  Actions":
+      - columnheader "":
+        - checkbox ""
+        - text: 
+      - columnheader "Id "
+      - columnheader "First (& Middle) Name "
+      - columnheader "Last Name "
+      - columnheader "Job Title "
+      - columnheader "Employment Status "
+      - columnheader "Sub Unit "
+      - columnheader "Supervisor "
+      - columnheader "Actions"
+  - rowgroup:
+    - row " 0490 Ak1785999970817 Dove  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "0490"
+      - cell "Ak1785999970817"
+      - cell "Dove"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 0493 Ak1786000043017 Dove  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "0493"
+      - cell "Ak1786000043017"
+      - cell "Dove"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 665 aniket Ashok patil  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "665"
+      - cell "aniket Ashok"
+      - cell "patil"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 05100102 Anu Raju  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "05100102"
+      - cell "Anu"
+      - cell "Raju"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 159616969 Cancelef5b5aa2 Test Delete  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "159616969"
+      - cell "Cancelef5b5aa2 Test"
+      - cell "Delete"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " satish456 George akhill Russell HR Manager Full-Time Permanent Human Resources ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "satish456"
+      - cell "George akhill"
+      - cell "Russell"
+      - cell "HR Manager"
+      - cell "Full-Time Permanent"
+      - cell "Human Resources"
+      - cell
+      - cell "":
+        - button ""
+    - row " 0503183430 John joe Smith  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "0503183430"
+      - cell "John joe"
+      - cell "Smith"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 0509 M16Leave Provisioned1786000453542  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "0509"
+      - cell "M16Leave"
+      - cell "Provisioned1786000453542"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " EMP1287902 Manoj B  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "EMP1287902"
+      - cell "Manoj"
+      - cell "B"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " EMP7211361 Manoj B  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "EMP7211361"
+      - cell "Manoj"
+      - cell "B"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " EMP2976287 Manoj B  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "EMP2976287"
+      - cell "Manoj"
+      - cell "B"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " EMP2015418 Manoj B  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "EMP2015418"
+      - cell "Manoj"
+      - cell "B"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " MD Sharif MD Sharif Nawaz  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "MD Sharif"
+      - cell "MD Sharif"
+      - cell "Nawaz"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 532781681 Mismatch618241e0 Test User  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "532781681"
+      - cell "Mismatch618241e0 Test"
+      - cell "User"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 640207189 Mismatch8547468e Test User  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "640207189"
+      - cell "Mismatch8547468e Test"
+      - cell "User"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 059614575 Openda7b10dc Test Details  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "059614575"
+      - cell "Openda7b10dc Test"
+      - cell "Details"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 090815485 Openea99d696 Test Details  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "090815485"
+      - cell "Openea99d696 Test"
+      - cell "Details"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Pallove Pallove Jain  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Pallove"
+      - cell "Pallove"
+      - cell "Jain"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 509 Rama Priya  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "509"
+      - cell "Rama"
+      - cell "Priya"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 7493 Rayford Leffler  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "7493"
+      - cell "Rayford"
+      - cell "Leffler"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " EMP3285427 Sahithi T  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "EMP3285427"
+      - cell "Sahithi"
+      - cell "T"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " EMP7402591 Sahithi T  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "EMP7402591"
+      - cell "Sahithi"
+      - cell "T"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " EMP4075976 Sahithi T  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "EMP4075976"
+      - cell "Sahithi"
+      - cell "T"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 20955978 Sandee Abshire  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "20955978"
+      - cell "Sandee"
+      - cell "Abshire"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 05115515 Shawn Hirthe  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "05115515"
+      - cell "Shawn"
+      - cell "Hirthe"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Sudhir Sudhir Kalmegh  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Sudhir"
+      - cell "Sudhir"
+      - cell "Kalmegh"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 04933947 Toby Aufderhar  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "04933947"
+      - cell "Toby"
+      - cell "Aufderhar"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " 049677665 Zhang San  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "049677665"
+      - cell "Zhang"
+      - cell "San"
+      - cell
+      - cell
+      - cell
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+- paragraph: OrangeHRM OS 5.9
+- paragraph:
+  - text: © 2005 - 2026
+  - link "OrangeHRM, Inc":
+    - /url: http://www.orangehrm.com
+  - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  288 |   //   //   })
+  289 |   //   //   .then(() => true)
+  290 |   //   //   .catch(() => false);
+  291 | 
+  292 |   //   // if (duplicateIdFound) {
+  293 |   //   //   employeeId = `E${Date.now().toString().slice(-9)}`;
+  294 | 
+  295 |   //   //   await this.employeeID.fill(employeeId);
+  296 |   //   //   await this.employeeID.blur();
+  297 | 
+  298 |   //   //   await expect(this.employeeID).toHaveValue(employeeId);
+  299 |   //   //   await expect(this.employeeIdValidation).toBeHidden();
+  300 |   //   // }
+  301 | 
+  302 |   //   if (details.profilePicturePath !== undefined) {
+  303 |   //     const defaultImageSrc =
+  304 |   //       await this.profilePicturePreview.getAttribute("src");
+  305 | 
+  306 |   //     await this.profilePictureInput.setInputFiles(details.profilePicturePath);
+  307 | 
+  308 |   //     await expect(this.profilePicturePreview).not.toHaveAttribute(
+  309 |   //       "src",
+  310 |   //       defaultImageSrc ?? "",
+  311 |   //     );
+  312 |   //   }
+  313 | 
+  314 |   //   const personalDetailsLoaded = this.page.waitForResponse(
+  315 |   //     (response) =>
+  316 |   //       response.url().includes("/personal-details") &&
+  317 |   //       response.request().method() === "GET" &&
+  318 |   //       response.ok(),
+  319 |   //     { timeout: 20_000 },
+  320 |   //   );
+  321 | 
+  322 |   //   await this.SaveEmployeeButton.click();
+  323 | 
+  324 |   //   await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+  325 |   //     timeout: 20_000,
+  326 |   //   });
+  327 | 
+  328 |   //   await personalDetailsLoaded;
+  329 |   //   await expect(this.loadingSpinner).toBeHidden();
+  330 |   //   await expect(this.personalDetailsHeading).toBeVisible();
+  331 | 
+  332 |   //   return employeeId;
+  333 |   // }
+  334 | async addEmployee(employee: EmployeeData): Promise<string> {
+  335 |   await this.firstnameInput.fill(employee.firstName);
+  336 | 
+  337 |   if (employee.middleName) {
+  338 |     await this.middlenameInput.fill(employee.middleName);
+  339 |   }
+  340 | 
+  341 |   await this.lastnameInput.fill(employee.lastName);
+  342 | 
+  343 |   /*
+  344 |    * OrangeHRM generates the same next ID when multiple workers
+  345 |    * open Add Employee simultaneously. Override it with a unique ID.
+  346 |    */
+  347 |   const employeeId =
+  348 |     employee.employeeId ??
+  349 |     `${Date.now().toString().slice(-6)}${Math.floor(
+  350 |       Math.random() * 1000
+  351 |     )
+  352 |       .toString()
+  353 |       .padStart(3, "0")}`;
+  354 | 
+  355 |   await this.employeeID.fill(employeeId);
+  356 | 
+  357 |   await this.SaveEmployeeButton.click();
+  358 | 
+  359 |   await expect(this.page).toHaveURL(
+  360 |     /pim\/viewPersonalDetails\/empNumber\/\d+/,
+  361 |     {
+  362 |       timeout: 30_000,
+  363 |     }
+  364 |   );
+  365 | 
+  366 |   await expect(this.personalDetailsHeading).toBeVisible({
+  367 |     timeout: 15_000,
+  368 |   });
+  369 | 
+  370 |   return employeeId;
+  371 | }
+  372 |   async gotoEmployeeList(): Promise<void> {
+  373 |     await this.employeeListLink.click();
+  374 |   }
+  375 | 
+  376 |   async filterEmployeeList(filters: EmployeeFilters): Promise<void> {
+  377 |     if (filters.employeeId !== undefined) {
+  378 |       await this.employeeIdFilterInput.fill(filters.employeeId);
+  379 |     }
+  380 | 
+  381 |     if (filters.employeeName !== undefined) {
+  382 |       await this.employeeNameFilterInput.fill(filters.employeeName);
+  383 | 
+  384 |       const matchingOption = this.autocompleteOptions
+  385 |         .filter({ hasText: filters.employeeName })
+  386 |         .first();
+  387 | 
+> 388 |       await expect(matchingOption).toBeVisible();
+      |                                    ^ Error: expect(locator).toBeVisible() failed
+  389 |       await matchingOption.click();
+  390 |     }
+  391 |   }
+  392 | 
+  393 |   async clickOnFilterSearch(): Promise<void> {
+  394 |     await this.filterSearchButton.click();
+  395 |   }
+  396 | 
+  397 |   async verifyEmployeeSearchResult(
+  398 |     employeeId: string,
+  399 |     firstName: string,
+  400 |     lastName: string,
+  401 |   ): Promise<void> {
+  402 |     await expect(this.loadingSpinner).toBeHidden();
+  403 |     const matchingRow = this.employeeRows.filter({ hasText: employeeId });
+  404 |     const cells = matchingRow.locator(".oxd-table-cell");
+  405 |     const fullName = await cells.nth(2).innerText();
+  406 |     const actualFirstName = fullName.trim().split(/\s+/)[0];
+  407 |     await expect(cells.nth(1)).toHaveText(employeeId);
+  408 |     expect(actualFirstName).toBe(firstName);
+  409 |     await expect(cells.nth(3)).toHaveText(lastName);
+  410 |     await expect(this.noRecordsFound).not.toBeVisible();
+  411 |   }
+  412 | 
+  413 | async verifyNoEmployeeRecordsFound(employeeId: string) {
+  414 |   await expect(this.loadingSpinner).toBeHidden({
+  415 |     timeout: 15_000,
+  416 |   });
+  417 | 
+  418 |   await expect(this.employeeRows).toHaveCount(0, {
+  419 |     timeout: 15_000,
+  420 |   });
+  421 | 
+  422 |   await expect(this.employeeIdFilterInput).toHaveValue(
+  423 |     employeeId
+  424 |   );
+  425 | }
+  426 | 
+  427 |   async updatePersonalDetails(details: PersonalDetails): Promise<void> {
+  428 |     await expect(this.personalDetailsHeading).toBeVisible();
+  429 |     //await expect(this.loadingSpinner).toBeHidden();
+  430 |     await expect(this.personalDetailsSaveButton).toBeEnabled();
+  431 | 
+  432 |     if (details.middleName !== undefined) {
+  433 |       await this.middlenameInput.fill(details.middleName);
+  434 |       await expect(this.middlenameInput).toHaveValue(details.middleName);
+  435 |     }
+  436 | 
+  437 |     if (details.lastName !== undefined) {
+  438 |       await this.lastnameInput.fill(details.lastName);
+  439 |       await expect(this.lastnameInput).toHaveValue(details.lastName);
+  440 |     }
+  441 | 
+  442 |     const updateResponse = this.page.waitForResponse(
+  443 |       (response) =>
+  444 |         response.url().includes("/personal-details") &&
+  445 |         response.request().method() === "PUT" &&
+  446 |         response.ok(),
+  447 |       { timeout: 20_000 },
+  448 |     );
+  449 | 
+  450 |     await this.personalDetailsSaveButton.click();
+  451 |     await updateResponse;
+  452 | 
+  453 |     await expect(this.successToast).toContainText("Successfully Updated");
+  454 | 
+  455 |     //await expect(this.loadingSpinner).toBeHidden();
+  456 | 
+  457 |     if (details.middleName !== undefined) {
+  458 |       await expect(this.middlenameInput).toHaveValue(details.middleName);
+  459 |     }
+  460 | 
+  461 |     if (details.lastName !== undefined) {
+  462 |       await expect(this.lastnameInput).toHaveValue(details.lastName);
+  463 |     }
+  464 |   }
+  465 |   //deleting the Records
+  466 |   async deleteEmployeeById(employeeId: string): Promise<void> {
+  467 |     await expect(this.loadingSpinner).toBeHidden();
+  468 |     const matchingRow = this.employeeRows.filter({ hasText: employeeId });
+  469 |     await expect(matchingRow).toHaveCount(1);
+  470 |     const deleteButton = matchingRow.locator("button").filter({
+  471 |       has: this.page.locator("i.bi-trash"),
+  472 |     });
+  473 |     await deleteButton.click();
+  474 | 
+  475 |     const confirmationDilaog = this.page.getByRole("dialog");
+  476 |     await expect(confirmationDilaog).toBeVisible();
+  477 |     const deleteResponse = this.page.waitForResponse(
+  478 |       (response) =>
+  479 |         response.url().includes("/api/v2/pim/employees") &&
+  480 |         response.request().method() === "DELETE" &&
+  481 |         response.ok(),
+  482 |       { timeout: 20_000 },
+  483 |     );
+  484 | 
+  485 |     await confirmationDilaog.getByText("Yes, Delete", { exact: true }).click();
+  486 | 
+  487 |     await deleteResponse;
+  488 | 
+```

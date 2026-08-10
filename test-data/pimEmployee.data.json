@@ -1,0 +1,70 @@
+{
+  "TC_PIM_001": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" }
+  },
+  "TC_PIM_006": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "updatedEmployee": { "middleName": "UpdatedTest", "lastName": "UpdatedUser" }
+  },
+  "TC_PIM_008": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "profilePicturePath": "test-data/OIP.jpg"
+  },
+  "TC_PIM_009": {
+    "invalidProfilePicturePath": "test-data/txt_crlf_log_sample.txt"
+  },
+  "TC_PIM_023": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" }
+  },
+  "TC_PIM_024": {
+    "employee": { "firstName": "", "middleName": "Test", "lastName": "" },
+    "expectedValidations": ["Required", "Required"]
+  },
+  "TC_PIM_025": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": " " },
+    "expectedValidations": ["Required"]
+  },
+  "TC_PIM_026": {
+    "employee": { "firstName": " ", "middleName": "Test", "lastNamePrefix": "User" },
+    "expectedValidations": ["Required"]
+  },
+  "TC_PIM_027": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "duplicateEmployee": { "firstNamePrefix": "Duplicate", "middleName": "Test", "lastName": "User" },
+    "expectedError": "Employee Id already exists"
+  },
+  "TC_PIM_030": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "login": { "usernamePrefix": "user", "password": "Test@12345", "status": "Enabled" }
+  },
+  "TC_PIM_031": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "login": { "usernamePrefix": "user", "password": "Test@12345", "confirmPassword": "Wrong@12345" },
+    "expectedError": "Passwords do not match"
+  },
+  "TC_PIM_032": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "login": { "usernamePrefix": "user", "password": "12345" },
+    "expectedPasswordPattern": "at least|characters|password",
+    "expectedStrengthPattern": "Very Weak|Weak"
+  },
+  "TC_PIM_033": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "login": { "username": "", "password": "123457896" },
+    "expectedError": "Required"
+  },
+  "TC_PIM_034": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "login": { "username": "Admin", "password": "123457896" },
+    "expectedError": "Username already exists"
+  },
+  "TC_PIM_035": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "login": { "usernamePrefix": "user", "password": "Test@12345", "status": "Disabled" },
+    "expectedError": "Account disabled"
+  },
+  "TC_PIM_036": {
+    "employee": { "firstNamePrefix": "Auto", "middleName": "Test", "lastName": "User" },
+    "login": { "usernamePrefix": "user", "password": "Test@12345", "status": "Enabled" }
+  }
+}

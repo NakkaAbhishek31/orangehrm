@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
+import { randomUUID } from "node:crypto";
 
 test("TC_ADMIN_041 - Admin should navigate to the System Users page @smoke @navigation @regression", async ({
   page,
@@ -1998,6 +1999,7 @@ test("TC_ADMIN_065 - Invalid validation should appear for a nonexistent employee
   await expect(adminPage.systemUsersHeading).toBeVisible();
 });
 
+
 test("TC_ADMIN_066 - Admin should filter System Users by disabled status @positive @filter @status @regression", async ({
   loginPage,
   navigationPage,
@@ -2173,8 +2175,7 @@ test("TC_ADMIN_067 - Admin should open an existing System User for editing @posi
 
   await expect(adminPage.systemUsersHeading).toBeVisible();
 });
-test(
-  'TC_ADMIN_068 - Admin should select and deselect an individual System User @positive @selection @regression',
+test('TC_ADMIN_068 - Admin should select and deselect an individual System User @positive @selection @regression',
   async ({
     page,
     loginPage,
@@ -2245,3 +2246,2312 @@ test(
     });
   }
 );
+
+test("TC_PIM_068 - Admin should find a newly created employee by ID @positive @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+
+  const firstName=`Find${randomUUID().slice(0, 8)}`;
+  const lastName = "User";
+  const middleName="Test";
+  await loginPage.visitPage();
+  await loginPage.login("Admin","admin123");
+  await loginPage.verifyLoginSuccessful();
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+  const employeeId=await pimPage.addEmployee({firstName,middleName,lastName});
+  await pimPage.gotoEmployeeList();
+  await pimPage.filterEmployeeList({employeeId});
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(employeeId,firstName,lastName);
+
+  await pimPage.deleteEmployeeById(employeeId);
+
+
+
+});
+
+test("TC_PIM_069 - Admin should find a newly created employee by name @positive @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+
+  const firstName = `Name${randomUUID().slice(0, 8)}`;
+  const middleName = "Test";
+  const lastName = "Search";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin","admin123");
+  await loginPage.verifyLoginSuccessful();
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId=await pimPage.addEmployee({firstName,middleName,lastName});
+   await pimPage.gotoAddEmployee();
+    const fullName = `${firstName} ${middleName} ${lastName}`;
+
+  await pimPage.selectEmployeeFromAutocomplete(
+    firstName,
+    fullName
+  );
+
+  await pimPage.clickOnFilterSearch();
+  await pimPage.verifyEmployeeSearchResult(employeeId,firstName,lastName);
+  await pimPage.deleteEmployeeById(employeeId);
+
+});
+
+test("TC_PIM_070 - Employee search should return no records for an invalid ID @negative @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+   const invalidEmployeeId = `999${Date.now()}`;
+   await loginPage.visitPage();
+   await loginPage.login("Admin", "admin123");
+   await loginPage.verifyLoginSuccessful();
+
+   await navigationPage.gotoPIM();
+   await pimPage.gotoEmployeeList();
+
+   await pimPage.filterEmployeeList({employeeId: invalidEmployeeId,});
+
+   await pimPage.clickOnFilterSearch();
+   await pimPage.verifyNoEmployeeRecordsFound(invalidEmployeeId);
+   
+
+
+});
+
+
+test("TC_PIM_071 - Deleted employee should not appear in search results @positive @delete @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  const firstName = `Delete${randomUUID().slice(0, 8)}`;
+  const lastName = "User";
+  const  middleName="Test";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin","admin123");
+  await loginPage.verifyLoginSuccessful();
+   await navigationPage.gotoPIM();
+   await pimPage.gotoAddEmployee();
+
+const employeeId=await pimPage.addEmployee({firstName,middleName,lastName});
+
+await pimPage.gotoEmployeeList();
+await pimPage.filterEmployeeList({employeeId});
+await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.deleteEmployeeById(employeeId);
+  await pimPage.filterEmployeeList({employeeId});
+  await pimPage.clickOnFilterSearch();
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+
+});
+
+
+test("TC_PIM_072 - Reset should clear employee ID and name filters @positive @filter @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+
+  const employeeId = "999999";
+  const employeeName = "Test Employee";
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+  await navigationPage.gotoPIM();
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({employeeId,employeeName});
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue(employeeId);
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).toHaveValue(employeeName);
+
+  await pimPage.resetEmployeeFilters();
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue("");
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).toHaveValue("");
+
+  expect(
+    (await pimPage.getVisibleEmployeeIds()).length
+  ).toBeGreaterThan(0);
+});
+
+test("TC_PIM_073 - Admin should open employee details after searching by ID @positive @navigation @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+   test.setTimeout(120_000);
+  const uniqueEmployeeId =
+    `${testInfo.workerIndex}` +
+    `${Date.now().toString().slice(-6)}` +
+    `${Math.floor(Math.random() * 100)
+      .toString()
+      .padStart(2, "0")}`;
+
+  const firstName = `Open${randomUUID().slice(0, 8)}`;
+  const middleName = "Test";
+  const lastName = "Details";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+    employeeId: uniqueEmployeeId,
+  });
+
+  await expect(page).toHaveURL(
+    /pim\/viewPersonalDetails\/empNumber\/\d+/,
+    {
+      timeout: 30_000,
+    }
+  );
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible({
+    timeout: 15_000,
+  });
+
+  await expect(pimPage.firstnameInput).toHaveValue(firstName);
+  await expect(pimPage.middlenameInput).toHaveValue(middleName);
+  await expect(pimPage.lastnameInput).toHaveValue(lastName);
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.openEmployeeById(employeeId);
+
+  await expect(page).toHaveURL(
+    /pim\/viewPersonalDetails\/empNumber\/\d+/,
+    {
+      timeout: 15_000,
+    }
+  );
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible();
+
+  await expect(pimPage.firstnameInput).toHaveValue(firstName);
+  await expect(pimPage.middlenameInput).toHaveValue(middleName);
+  await expect(pimPage.lastnameInput).toHaveValue(lastName);
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  // Cleanup
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+});
+test("TC_PIM_074 - Employee should remain after deletion is cancelled @negative @delete @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+   test.setTimeout(120_000);
+  const uniqueEmployeeId =
+    `${testInfo.workerIndex}` +
+    `${Date.now().toString().slice(-6)}` +
+    `${Math.floor(Math.random() * 100)
+      .toString()
+      .padStart(2, "0")}`;
+
+  const firstName = `Cancel${randomUUID().slice(0, 8)}`;
+  const middleName = "Test";
+  const lastName = "Delete";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+    employeeId: uniqueEmployeeId,
+  });
+
+  await expect(page).toHaveURL(
+    /pim\/viewPersonalDetails\/empNumber\/\d+/,
+    {
+      timeout: 30_000,
+    }
+  );
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible({
+    timeout: 15_000,
+  });
+
+  await expect(pimPage.firstnameInput).toHaveValue(firstName);
+  await expect(pimPage.middlenameInput).toHaveValue(middleName);
+  await expect(pimPage.lastnameInput).toHaveValue(lastName);
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  // Open deletion dialog and cancel it.
+  await pimPage.cancelEmployeeDeletion(employeeId);
+
+  // Verify that cancelling did not delete the employee.
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+});
+
+test("TC_PIM_075 - Search should return no records when employee ID and employee name belong to different employees @negative @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+  test.setTimeout(120_000);
+
+  const uniqueValue = randomUUID()
+    .replaceAll("-", "")
+    .slice(0, 8);
+
+  const idBase =
+    `${Date.now().toString().slice(-6)}` +
+    `${testInfo.workerIndex}`;
+
+  const firstEmployee = {
+    firstName: `First${uniqueValue}`,
+    middleName: "Test",
+    lastName: "User",
+    employeeId: `${idBase}1`,
+  };
+
+  const secondEmployee = {
+    firstName: `Second${uniqueValue}`,
+    middleName: "Test",
+    lastName: "User",
+    employeeId: `${idBase}2`,
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+
+  // Create the first employee.
+  await pimPage.gotoAddEmployee();
+
+  const firstEmployeeId = await pimPage.addEmployee({
+    firstName: firstEmployee.firstName,
+    middleName: firstEmployee.middleName,
+    lastName: firstEmployee.lastName,
+    employeeId: firstEmployee.employeeId,
+  });
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // Create the second employee.
+  await pimPage.gotoAddEmployee();
+
+  const secondEmployeeId = await pimPage.addEmployee({
+    firstName: secondEmployee.firstName,
+    middleName: secondEmployee.middleName,
+    lastName: secondEmployee.lastName,
+    employeeId: secondEmployee.employeeId,
+  });
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible({
+    timeout: 15_000,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  /*
+   * Use the first employee's ID with the second employee's name.
+   * Both values are valid, but they belong to different employees.
+   */
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+    employeeName: secondEmployee.firstName,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(
+    firstEmployeeId
+  );
+
+  // Cleanup the first employee.
+  await pimPage.resetEmployeeFilters();
+
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    firstEmployeeId,
+    firstEmployee.firstName,
+    firstEmployee.lastName
+  );
+
+  await pimPage.deleteEmployeeById(firstEmployeeId);
+
+  // Cleanup the second employee.
+  await pimPage.resetEmployeeFilters();
+
+  await pimPage.filterEmployeeList({
+    employeeId: secondEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    secondEmployeeId,
+    secondEmployee.firstName,
+    secondEmployee.lastName
+  );
+
+  await pimPage.deleteEmployeeById(secondEmployeeId);
+});
+
+test("TC_PIM_076 - Admin should search for two employees independently @positive @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+  const uniqueValue = randomUUID().slice(0, 8);
+
+  const firstEmployee = {
+    firstName: `First${uniqueValue}`,
+    middleName: "Test",
+    lastName: "User",
+  };
+
+  const secondEmployee = {
+    firstName: `Second${uniqueValue}`,
+    middleName: "Test",
+    lastName: "User",
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const firstEmployeeId =
+    await pimPage.addEmployee(firstEmployee);
+
+  await pimPage.gotoAddEmployee();
+
+  const secondEmployeeId =
+    await pimPage.addEmployee(secondEmployee);
+
+  await pimPage.gotoEmployeeList();
+
+  // Search for the first employee.
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    firstEmployeeId,
+    firstEmployee.firstName,
+    firstEmployee.lastName
+  );
+
+  // Search for the second employee.
+  await pimPage.resetEmployeeFilters();
+
+  await pimPage.filterEmployeeList({
+    employeeId: secondEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    secondEmployeeId,
+    secondEmployee.firstName,
+    secondEmployee.lastName
+  );
+
+  // Delete second employee.
+  await pimPage.deleteEmployeeById(secondEmployeeId);
+
+  // Delete first employee.
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+  await pimPage.deleteEmployeeById(firstEmployeeId);
+});
+
+test("TC_PIM_077 - Employee should remain searchable after navigating away and returning @positive @navigation @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+  const firstName = `Persist${randomUUID().slice(0, 8)}`;
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName: "Test",
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  // Navigate away and return.
+  await navigationPage.gotoPIM();
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+test("TC_PIM_078 - Admin should find an employee using a partial employee name @positive @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+  test.setTimeout(120_000);
+
+   const uniqueValue = randomUUID().replaceAll("-", "").slice(0, 8);
+
+  const employee = {
+    firstName: `Partial${uniqueValue}`,
+    middleName: "Test",
+    lastName: "User",
+    employeeId:
+      `${Date.now().toString().slice(-6)}` +
+      `${testInfo.workerIndex}2`,
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId =await pimPage.addEmployee(employee);
+  await expect(pimPage.personalDetailsHeading).toBeVisible();
+
+  await pimPage.gotoEmployeeList();
+
+    const partialName = employee.firstName.substring(0, 9);
+  const fullName =
+    `${employee.firstName} ` +
+    `${employee.middleName} ` +
+    `${employee.lastName}`;
+
+      await pimPage.selectEmployeeFromAutocomplete(
+    partialName,
+    fullName
+  );
+
+  await pimPage.clickOnFilterSearch();
+
+
+    await pimPage.verifyEmployeeSearchResult(employeeId,employee.firstName,employee.lastName);
+
+    await pimPage.deleteEmployeeById(employeeId);
+
+});
+
+test("TC_PIM_079 - Reset should restore the Employee List after an unsuccessful search @positive @filter @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+  test.setTimeout(90_000);
+ 
+   const invalidEmployeeId =
+    `9${Date.now().toString().slice(-6)}` +
+    `${testInfo.workerIndex}9`;
+
+    await loginPage.visitPage();
+    await loginPage.login("Admin", "admin123");
+    await loginPage.verifyLoginSuccessful();
+     await navigationPage.gotoPIM();
+  await pimPage.gotoEmployeeList();
+
+    await pimPage.filterEmployeeList({employeeId:invalidEmployeeId});
+
+    await pimPage.clickOnFilterSearch();
+    await pimPage.verifyNoEmployeeRecordsFound(invalidEmployeeId);
+    await pimPage.resetEmployeeFilters();
+    await expect(pimPage.employeeIdFilterInput).toHaveValue('');
+ await expect(
+    pimPage.employeeNameFilterInput
+  ).toHaveValue("");
+
+  await expect(pimPage.loadingSpinner).toBeHidden();
+
+  expect(
+    (await pimPage.getVisibleEmployeeIds()).length
+  ).toBeGreaterThan(0);
+});  
+
+
+test("TC_PIM_080 - Admin should search for the same employee by ID and then by name @positive @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+  test.setTimeout(120_000);
+  const uniqueValue = randomUUID().replaceAll("-", "").slice(0, 8);
+
+  const employee = {
+    firstName: `Double${uniqueValue}`,
+    middleName: "Test",
+    lastName: "Search",
+    employeeId:
+      `${Date.now().toString().slice(-6)}` +
+      `${testInfo.workerIndex}3`,
+  };
+
+   await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+
+
+});
+
+
+test("TC_PIM_081 - Employee details should contain the values entered during creation @positive @details @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+  test.setTimeout(120_000);
+
+  const uniqueValue = randomUUID().replaceAll("-", "").slice(0, 8);
+
+  const employee = {
+    firstName: `Details${uniqueValue}`,
+    middleName: "Middle",
+    lastName: "Verify",
+    employeeId:
+      `${Date.now().toString().slice(-6)}` +
+      `${testInfo.workerIndex}4`,
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId=await pimPage.addEmployee(employee);
+  await expect(page).toHaveURL(
+    /pim\/viewPersonalDetails\/empNumber\/\d+/,
+    { timeout: 30_000 }
+  );
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible();
+  await expect(pimPage.firstnameInput).toHaveValue(employee.firstName);
+ await expect(pimPage.middlenameInput).toHaveValue(employee.middleName);
+await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  // Verify again after opening the employee from the list.
+  await pimPage.gotoEmployeeList();
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.openEmployeeById(employeeId);
+
+  await expect(pimPage.firstnameInput).toHaveValue(
+    employee.firstName
+  );
+
+  await expect(pimPage.middlenameInput).toHaveValue(
+    employee.middleName
+  );
+
+  await expect(pimPage.lastnameInput).toHaveValue(
+    employee.lastName
+  );
+
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  // Cleanup
+  await pimPage.gotoEmployeeList();
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+
+test("TC_PIM_082 - Reset should clear a selected employee name filter @positive @filter @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+
+   test.setTimeout(120_000);
+
+  const uniqueValue = randomUUID()
+    .replaceAll("-", "")
+    .slice(0, 8);
+
+  const employee = {
+    firstName: `Reset${uniqueValue}`,
+    middleName: "Test",
+    lastName: "Filter",
+    employeeId:
+      `${Date.now().toString().slice(-6)}` +
+      `${testInfo.workerIndex}5`,
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+  const employeeId = await pimPage.addEmployee({
+    firstName: employee.firstName,
+    middleName: employee.middleName,
+    lastName: employee.lastName,
+    employeeId: employee.employeeId,
+  });
+
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible({
+    timeout: 15_000,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  const fullName =
+    `${employee.firstName} ` +
+    `${employee.middleName} ` +
+    `${employee.lastName}`;
+
+  // Select the created employee from autocomplete.
+  await pimPage.selectEmployeeFromAutocomplete(
+    employee.firstName,
+    fullName
+  );
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).not.toHaveValue("");
+
+  // Reset without executing the search.
+  await pimPage.resetEmployeeFilters();
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).toHaveValue("");
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue("");
+
+  await expect(pimPage.loadingSpinner).toBeHidden({
+    timeout: 15_000,
+  });
+
+  // Confirm that the employee still exists.
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    employee.firstName,
+    employee.lastName
+  );
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+});
+
+test("TC_PIM_083 - Admin should search using matching employee ID and employee name @positive @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+  test.setTimeout(120_000);
+
+  const uniqueValue = randomUUID()
+    .replaceAll("-", "")
+    .slice(0, 8);
+
+  const employee = {
+    firstName: `Combined${uniqueValue}`,
+    middleName: "Test",
+    lastName: "Search",
+    employeeId:
+      `${Date.now().toString().slice(-6)}` +
+      `${testInfo.workerIndex}6`,
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName: employee.firstName,
+    middleName: employee.middleName,
+    lastName: employee.lastName,
+    employeeId: employee.employeeId,
+  });
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible({
+    timeout: 15_000,
+  });
+
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  await pimPage.gotoEmployeeList();
+
+  /*
+   * Both filters belong to the same employee, so exactly one
+   * matching record should be returned.
+   */
+  await pimPage.filterEmployeeList({
+    employeeId,
+    employeeName: employee.firstName,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    employee.firstName,
+    employee.lastName
+  );
+
+  // Ensure the entered filters remain populated.
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue(employeeId);
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).toContainText(employee.firstName);
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+});
+
+test("TC_PIM_084 - Admin should open employee details after cancelling deletion @negative @delete @navigation @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+  test.setTimeout(120_000);
+
+  const uniqueValue = randomUUID()
+    .replaceAll("-", "")
+    .slice(0, 8);
+
+  const employee = {
+    firstName: `Cancel${uniqueValue}`,
+    middleName: "Test",
+    lastName: "Remain",
+    employeeId:
+      `${Date.now().toString().slice(-6)}` +
+      `${testInfo.workerIndex}7`,
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName: employee.firstName,
+    middleName: employee.middleName,
+    lastName: employee.lastName,
+    employeeId: employee.employeeId,
+  });
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible({
+    timeout: 15_000,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    employee.firstName,
+    employee.lastName
+  );
+
+  // Open the delete confirmation dialog and cancel it.
+  await pimPage.cancelEmployeeDeletion(employeeId);
+
+  // The employee should remain in the search results.
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    employee.firstName,
+    employee.lastName
+  );
+
+  // Verify the employee record can still be opened.
+  await pimPage.openEmployeeById(employeeId);
+
+  await expect(page).toHaveURL(
+    /pim\/viewPersonalDetails\/empNumber\/\d+/,
+    {
+      timeout: 15_000,
+    }
+  );
+
+  await expect(pimPage.firstnameInput).toHaveValue(
+    employee.firstName
+  );
+
+  await expect(pimPage.middlenameInput).toHaveValue(
+    employee.middleName
+  );
+
+  await expect(pimPage.lastnameInput).toHaveValue(
+    employee.lastName
+  );
+
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  // Cleanup
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+test("TC_PIM_085 - Deleting one employee should not delete another employee @positive @delete @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}, testInfo) => {
+  test.setTimeout(150_000);
+
+  const uniqueValue = randomUUID()
+    .replaceAll("-", "")
+    .slice(0, 8);
+
+  const idBase =
+    `${Date.now().toString().slice(-6)}` +
+    `${testInfo.workerIndex}`;
+
+  const firstEmployee = {
+    firstName: `Delete${uniqueValue}`,
+    middleName: "Test",
+    lastName: "First",
+    employeeId: `${idBase}8`,
+  };
+
+  const secondEmployee = {
+    firstName: `Remain${uniqueValue}`,
+    middleName: "Test",
+    lastName: "Second",
+    employeeId: `${idBase}9`,
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+
+  // Create first employee.
+  await pimPage.gotoAddEmployee();
+
+  const firstEmployeeId = await pimPage.addEmployee({
+    firstName: firstEmployee.firstName,
+    middleName: firstEmployee.middleName,
+    lastName: firstEmployee.lastName,
+    employeeId: firstEmployee.employeeId,
+  });
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // Create second employee.
+  await pimPage.gotoAddEmployee();
+
+  const secondEmployeeId = await pimPage.addEmployee({
+    firstName: secondEmployee.firstName,
+    middleName: secondEmployee.middleName,
+    lastName: secondEmployee.lastName,
+    employeeId: secondEmployee.employeeId,
+  });
+
+  await expect(pimPage.personalDetailsHeading).toBeVisible({
+    timeout: 15_000,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  // Find and delete only the first employee.
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    firstEmployeeId,
+    firstEmployee.firstName,
+    firstEmployee.lastName
+  );
+
+  await pimPage.deleteEmployeeById(firstEmployeeId);
+
+  // Confirm that the first employee was deleted.
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(
+    firstEmployeeId
+  );
+
+  // Reset before searching for the second employee.
+  await pimPage.resetEmployeeFilters();
+
+  // Verify the second employee still exists.
+  await pimPage.filterEmployeeList({
+    employeeId: secondEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    secondEmployeeId,
+    secondEmployee.firstName,
+    secondEmployee.lastName
+  );
+
+  // Cleanup second employee.
+  await pimPage.deleteEmployeeById(secondEmployeeId);
+
+  await pimPage.filterEmployeeList({
+    employeeId: secondEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(
+    secondEmployeeId
+  );
+});
+
+test("TC_PIM_086 - Admin should search again after resetting employee ID filter @positive @filter @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Reset${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue(employeeId);
+
+  await pimPage.resetEmployeeFilters();
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue("");
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+test("TC_PIM_087 - Employee should remain after deletion is cancelled @negative @delete @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Cancel${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  // Open the deletion confirmation and click Cancel.
+  await pimPage.cancelEmployeeDeletion(employeeId);
+
+  // Verify that the employee still exists.
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+});
+
+
+test("TC_PIM_088 - Admin should open employee details after searching by employee ID @positive @navigation @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Open${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.openEmployeeById(employeeId);
+
+  await expect(page).toHaveURL(
+    /pim\/viewPersonalDetails\/empNumber\/\d+/,
+    {
+      timeout: 15_000,
+    }
+  );
+
+  await expect(pimPage.firstnameInput).toHaveValue(
+    firstName
+  );
+
+  await expect(pimPage.middlenameInput).toHaveValue(
+    middleName
+  );
+
+  await expect(pimPage.lastnameInput).toHaveValue(
+    lastName
+  );
+
+  await expect(pimPage.employeeID).toHaveValue(
+    employeeId
+  );
+
+  // Cleanup
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+
+
+test("TC_PIM_089 - Deleted employee should not appear after reopening Employee List @positive @delete @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Delete${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  // Delete the employee.
+  await pimPage.deleteEmployeeById(employeeId);
+
+  // Verify that the employee was deleted.
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+
+  // Leave and reopen the Employee List.
+  await pimPage.gotoAddEmployee();
+  await pimPage.gotoEmployeeList();
+
+  // Search for the deleted employee again.
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+});
+
+
+test("TC_PIM_090 - Admin should search using employee ID and employee name together @positive @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Combined${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+    employeeName: firstName,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue(employeeId);
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).toHaveValue(new RegExp(firstName));
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+});
+
+
+test("TC_PIM_091 - Admin should reset employee search filters multiple times @positive @filter @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Reset${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  // Enter the employee ID and reset it for the first time.
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue(employeeId);
+
+  await pimPage.resetEmployeeFilters();
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue("");
+
+  // Enter the same employee ID and reset it again.
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue(employeeId);
+
+  await pimPage.resetEmployeeFilters();
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue("");
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).toHaveValue("");
+
+  // Confirm the employee still exists.
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+test("TC_PIM_092 - Deleting one employee should not delete another employee @positive @delete @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(150_000);
+
+  const uniqueValue = Date.now();
+
+  const firstEmployee = {
+    firstName: `Delete${uniqueValue}`,
+    middleName: "Test",
+    lastName: "First",
+  };
+
+  const secondEmployee = {
+    firstName: `Remain${uniqueValue}`,
+    middleName: "Test",
+    lastName: "Second",
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+
+  // Create the first employee.
+  await pimPage.gotoAddEmployee();
+
+  const firstEmployeeId = await pimPage.addEmployee(
+    firstEmployee
+  );
+
+  // Create the second employee.
+  await pimPage.gotoAddEmployee();
+
+  const secondEmployeeId = await pimPage.addEmployee(
+    secondEmployee
+  );
+
+  await pimPage.gotoEmployeeList();
+
+  // Search for and delete the first employee.
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    firstEmployeeId,
+    firstEmployee.firstName,
+    firstEmployee.lastName
+  );
+
+  await pimPage.deleteEmployeeById(firstEmployeeId);
+
+  // Confirm the first employee was deleted.
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(
+    firstEmployeeId
+  );
+
+  await pimPage.resetEmployeeFilters();
+
+  // Confirm the second employee still exists.
+  await pimPage.filterEmployeeList({
+    employeeId: secondEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    secondEmployeeId,
+    secondEmployee.firstName,
+    secondEmployee.lastName
+  );
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(secondEmployeeId);
+
+  await pimPage.filterEmployeeList({
+    employeeId: secondEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(
+    secondEmployeeId
+  );
+});
+
+
+test("TC_PIM_093 - Admin should distinguish employees with similar names using employee ID @positive @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(150_000);
+
+  const uniqueValue = Date.now();
+  const sharedFirstName = `Similar${uniqueValue}`;
+
+  const firstEmployee = {
+    firstName: sharedFirstName,
+    middleName: "Test",
+    lastName: "First",
+  };
+
+  const secondEmployee = {
+    firstName: sharedFirstName,
+    middleName: "Test",
+    lastName: "Second",
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+
+  // Create first employee.
+  await pimPage.gotoAddEmployee();
+
+  const firstEmployeeId = await pimPage.addEmployee(
+    firstEmployee
+  );
+
+  // Create second employee.
+  await pimPage.gotoAddEmployee();
+
+  const secondEmployeeId = await pimPage.addEmployee(
+    secondEmployee
+  );
+
+  expect(firstEmployeeId).not.toBe(secondEmployeeId);
+
+  await pimPage.gotoEmployeeList();
+
+  // Search for first employee using its ID.
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    firstEmployeeId,
+    firstEmployee.firstName,
+    firstEmployee.lastName
+  );
+
+  await pimPage.resetEmployeeFilters();
+
+  // Search for second employee using its ID.
+  await pimPage.filterEmployeeList({
+    employeeId: secondEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    secondEmployeeId,
+    secondEmployee.firstName,
+    secondEmployee.lastName
+  );
+
+  // Delete second employee.
+  await pimPage.deleteEmployeeById(secondEmployeeId);
+
+  await pimPage.resetEmployeeFilters();
+
+  // Delete first employee.
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.deleteEmployeeById(firstEmployeeId);
+});
+
+test("TC_PIM_094 - New employee ID should replace the previous employee ID filter @positive @filter @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Replace${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId: "999999999",
+  });
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue("999999999");
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue(employeeId);
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+test("TC_PIM_095 - Employee details should remain unchanged after returning from Employee List @positive @details @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Details${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await expect(pimPage.firstnameInput).toHaveValue(firstName);
+  await expect(pimPage.middlenameInput).toHaveValue(middleName);
+  await expect(pimPage.lastnameInput).toHaveValue(lastName);
+
+  await pimPage.gotoEmployeeList();
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.openEmployeeById(employeeId);
+
+  await expect(page).toHaveURL(
+    /pim\/viewPersonalDetails\/empNumber\/\d+/
+  );
+
+  await expect(pimPage.firstnameInput).toHaveValue(firstName);
+  await expect(pimPage.middlenameInput).toHaveValue(middleName);
+  await expect(pimPage.lastnameInput).toHaveValue(lastName);
+  await expect(pimPage.employeeID).toHaveValue(employeeId);
+
+  await pimPage.gotoEmployeeList();
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+
+test("TC_PIM_096 - Admin should search successfully after an invalid employee ID search @positive @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Valid${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId: "999999999",
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(
+    "999999999"
+  );
+
+  await pimPage.resetEmployeeFilters();
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+
+test("TC_PIM_097 - Admin should search using a partial employee name @positive @search @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Partial${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  const partialName = firstName.substring(0, 10);
+  const fullName = `${firstName} ${middleName} ${lastName}`;
+
+  await pimPage.selectEmployeeFromAutocomplete(
+    partialName,
+    fullName
+  );
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+
+
+test("TC_PIM_098 - Employee should remain searchable after deletion is cancelled @negative @delete @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Cancel${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.cancelEmployeeDeletion(employeeId);
+
+  await pimPage.resetEmployeeFilters();
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+
+
+test("TC_PIM_099 - Reset should clear employee ID and employee name together @positive @filter @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `ResetAll${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+    employeeName: firstName,
+  });
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue(employeeId);
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).toHaveValue(new RegExp(firstName));
+
+  await pimPage.resetEmployeeFilters();
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue("");
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).toHaveValue("");
+
+  // Cleanup
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+
+test("TC_PIM_100 - Admin should return to Employee List after opening employee details @positive @navigation @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Return${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.openEmployeeById(employeeId);
+
+  await expect(page).toHaveURL(
+    /pim\/viewPersonalDetails\/empNumber\/\d+/
+  );
+
+  await pimPage.gotoEmployeeList();
+
+  await expect(page).toHaveURL(
+    /pim\/viewEmployeeList/
+  );
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+test("TC_PIM_101 - Admin should verify that a deleted employee cannot be opened @negative @delete @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `CannotOpen${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await pimPage.deleteEmployeeById(employeeId);
+
+  await pimPage.filterEmployeeList({ employeeId });
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(employeeId);
+
+  await expect(pimPage.employeeRows).toHaveCount(0);
+});
+
+
+test("TC_PIM_102 - Admin should find an employee after refreshing the Employee List page @positive @search @regression", async ({
+  page,
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Refresh${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await page.reload();
+
+  await expect(page).toHaveURL(
+    /pim\/viewEmployeeList/
+  );
+
+  await expect(pimPage.loadingSpinner).toBeHidden({
+    timeout: 15_000,
+  });
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+
+test("TC_PIM_103 - Search filters should retain their values after clicking Search @positive @filter @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(120_000);
+
+  const firstName = `Retain${Date.now()}`;
+  const middleName = "Test";
+  const lastName = "User";
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+  await pimPage.gotoAddEmployee();
+
+  const employeeId = await pimPage.addEmployee({
+    firstName,
+    middleName,
+    lastName,
+  });
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.filterEmployeeList({
+    employeeId,
+    employeeName: firstName,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyEmployeeSearchResult(
+    employeeId,
+    firstName,
+    lastName
+  );
+
+  await expect(
+    pimPage.employeeIdFilterInput
+  ).toHaveValue(employeeId);
+
+  await expect(
+    pimPage.employeeNameFilterInput
+  ).toHaveValue(new RegExp(firstName));
+
+  // Cleanup
+  await pimPage.deleteEmployeeById(employeeId);
+});
+
+
+test("TC_PIM_104 - Admin should delete multiple newly created employees using bulk selection @positive @bulk-delete @regression", async ({
+  loginPage,
+  navigationPage,
+  pimPage,
+}) => {
+  test.setTimeout(150_000);
+
+  const uniqueValue = Date.now();
+
+  const firstEmployee = {
+    firstName: `BulkFirst${uniqueValue}`,
+    middleName: "Test",
+    lastName: "User",
+  };
+
+  const secondEmployee = {
+    firstName: `BulkSecond${uniqueValue}`,
+    middleName: "Test",
+    lastName: "User",
+  };
+
+  await loginPage.visitPage();
+  await loginPage.login("Admin", "admin123");
+  await loginPage.verifyLoginSuccessful();
+
+  await navigationPage.gotoPIM();
+
+  await pimPage.gotoAddEmployee();
+
+  const firstEmployeeId = await pimPage.addEmployee(
+    firstEmployee
+  );
+
+  await pimPage.gotoAddEmployee();
+
+  const secondEmployeeId = await pimPage.addEmployee(
+    secondEmployee
+  );
+
+  await pimPage.gotoEmployeeList();
+
+  await pimPage.selectEmployeeById(firstEmployeeId);
+  await pimPage.selectEmployeeById(secondEmployeeId);
+
+  await pimPage.deleteSelectedEmployees();
+
+  await pimPage.filterEmployeeList({
+    employeeId: firstEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(
+    firstEmployeeId
+  );
+
+  await pimPage.resetEmployeeFilters();
+
+  await pimPage.filterEmployeeList({
+    employeeId: secondEmployeeId,
+  });
+
+  await pimPage.clickOnFilterSearch();
+
+  await pimPage.verifyNoEmployeeRecordsFound(
+    secondEmployeeId
+  );
+});

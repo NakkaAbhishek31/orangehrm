@@ -1,0 +1,75 @@
+{
+  "TC_PIM_002": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_003": {
+    "nonexistentEmployeeId": "9999999999"
+  },
+  "TC_PIM_004": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_005": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_007": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_010": {
+    "targetPage": 2,
+    "skipMessage": "Employee List currently contains only one page"
+  },
+  "TC_PIM_028": {
+    "employeeId": "999999",
+    "emptyValue": ""
+  },
+  "TC_PIM_029": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "partialNameLength": 8
+  },
+  "TC_PIM_037": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_038": {
+    "firstEmployee": {
+      "firstNamePrefix": "BulkA",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "secondEmployee": {
+      "firstNamePrefix": "BulkB",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_039": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  }
+}
