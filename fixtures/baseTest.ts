@@ -6,6 +6,7 @@ import { NavigationPage } from '../pages/Navigation.spec';
 import { PIMPage } from '../pages/PimPage';
 import {  EmployeeAttachmentsPage } from '../pages/EmployeeAttachmentsPage';
 import { AdminPage } from '../pages/Admin';
+import { LeavePage } from '../pages/LeavesPage';
 
 type AppFixtures={
     loginPage:LoginPage;
@@ -15,6 +16,7 @@ type AppFixtures={
     pimPage:PIMPage;
     employeeAttachmentspage:EmployeeAttachmentsPage;
     adminPage:AdminPage;
+    leavepage:LeavePage;
 }
 
 
@@ -43,5 +45,8 @@ export const test =base.extend<AppFixtures>({
     ,
      adminPage:async({page},use)=>{
         await  use(new AdminPage(page));
+    },
+     leavepage:async({page},use)=>{
+        await  use(new LeavePage(page));
     }
 })

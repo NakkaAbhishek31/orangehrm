@@ -21,4 +21,15 @@ export class NavigationPage {
       timeout: 20_000,
     });
   }
+
+  async gotoLeave(): Promise<void> {
+  await this.page.getByRole('link', {
+    name: 'Leave',
+    exact: true,
+  }).click();
+
+  await expect(this.page).toHaveURL(
+    /leave\/viewLeaveList/
+  );
+}
 }

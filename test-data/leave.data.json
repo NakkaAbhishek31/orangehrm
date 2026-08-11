@@ -1,0 +1,18 @@
+{
+  "validDateRange": {
+    "fromDaysOffset": -30,
+    "toDaysOffset": 0
+  },
+  "invalidDateRange": {
+    "fromDaysOffset": 10,
+    "toDaysOffset": 0
+  },
+
+  "TC_LEAVE_115": {
+    "partialEmployeeName": "a"
+  },
+  
+  "TC_LEAVE_116": {
+    "employeeName": "UnknownEmployeeAutomation"
+  }
+}

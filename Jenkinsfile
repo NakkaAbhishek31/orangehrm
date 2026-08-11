@@ -191,12 +191,91 @@ pipeline {
                 }
             }
         }
+
+        stage('Verify Allure Results') {
+            steps {
+                powershell '''
+                    if (!(Test-Path "allure-results")) {
+                        Write-Host "No allure-results directory was generated"
+                        exit 0
+                    }
+
+                    $resultFiles = Get-ChildItem `
+                        "allure-results" `
+                        -Filter "*-result.json"
+
+                    Write-Host "Allure result files: $($resultFiles.Count)"
+
+                    if ($resultFiles.Count -eq 0) {
+                        Write-Host "No Allure JSON result files were generated"
+                        exit 0
+                    }
+
+                    $results = $resultFiles | ForEach-Object {
+                        Get-Content $_.FullName -Raw |
+                            ConvertFrom-Json
+                    }
+
+                    Write-Host ""
+                    Write-Host "Allure status counts:"
+
+                    $results |
+                        Group-Object status |
+                        Sort-Object Name |
+                        ForEach-Object {
+                            Write-Host "$($_.Name): $($_.Count)"
+                        }
+
+                    $historyResults = $results |
+                        Where-Object { $_.historyId }
+
+                    $uniqueHistoryIds = $historyResults |
+                        Select-Object -ExpandProperty historyId |
+                        Sort-Object -Unique
+
+                    Write-Host ""
+                    Write-Host "Unique Allure history IDs: $($uniqueHistoryIds.Count)"
+
+                    $duplicates = $historyResults |
+                        Group-Object historyId |
+                        Where-Object { $_.Count -gt 1 }
+
+                    Write-Host "Duplicate Allure history IDs: $($duplicates.Count)"
+
+                    if ($duplicates.Count -gt 0) {
+                        Write-Host ""
+                        Write-Host "Tests sharing the same Allure identity:"
+
+                        foreach ($duplicate in $duplicates) {
+                            Write-Host "--------------------------------"
+
+                            $duplicate.Group | ForEach-Object {
+                                Write-Host "$($_.name) | $($_.fullName) | $($_.status)"
+                            }
+                        }
+                    }
+                '''
+            }
+        }
     }
 
     post {
         always {
             script {
                 if (fileExists('allure-results')) {
+                    def resultCount = powershell(
+                        returnStdout: true,
+                        script: '''
+                            (
+                                Get-ChildItem `
+                                    "allure-results" `
+                                    -Filter "*-result.json"
+                            ).Count
+                        '''
+                    ).trim()
+
+                    echo("Publishing ${resultCount} Allure result files")
+
                     allure(
                         includeProperties: false,
                         jdk: '',
