@@ -1,0 +1,403 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Leave\leave.spec.ts >> Leaves - leaves for  Users >> TC_LEAVE_112 - Admin should reset Leave List search filters @positive @filter @regression
+- Location: tests\Leave\leave.spec.ts:159:5
+
+# Error details
+
+```
+TimeoutError: locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('.oxd-input-group').filter({ hasText: 'Include Past Employees' }).locator('.oxd-checkbox-wrapper label')
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=f2e3]:
+  - generic:
+    - complementary [ref=f2e4]:
+      - navigation "Sidepanel" [ref=f2e5]:
+        - generic [ref=f2e6]:
+          - link [ref=f2e7] [cursor=pointer]:
+            - /url: https://www.orangehrm.com/
+            - img "client brand banner" [ref=f2e9]
+          - text: 
+        - generic [ref=f2e10]:
+          - generic [ref=f2e11]:
+            - generic [ref=f2e12]:
+              - textbox "Search" [ref=f2e15]
+              - button "" [ref=f2e16] [cursor=pointer]
+            - separator [ref=f2e18]
+          - list [ref=f2e19]:
+            - listitem [ref=f2e20]:
+              - link "Admin" [ref=f2e21] [cursor=pointer]:
+                - /url: /web/index.php/admin/viewAdminModule
+            - listitem [ref=f2e25]:
+              - link "PIM" [ref=f2e26] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewPimModule
+            - listitem [ref=f2e41]:
+              - link "Leave" [ref=f2e42] [cursor=pointer]:
+                - /url: /web/index.php/leave/viewLeaveModule
+            - listitem [ref=f2e46]:
+              - link "Time" [ref=f2e47] [cursor=pointer]:
+                - /url: /web/index.php/time/viewTimeModule
+            - listitem [ref=f2e54]:
+              - link "Recruitment" [ref=f2e55] [cursor=pointer]:
+                - /url: /web/index.php/recruitment/viewRecruitmentModule
+            - listitem [ref=f2e62]:
+              - link "My Info" [ref=f2e63] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewMyDetails
+            - listitem [ref=f2e70]:
+              - link "Performance" [ref=f2e71] [cursor=pointer]:
+                - /url: /web/index.php/performance/viewPerformanceModule
+            - listitem [ref=f2e80]:
+              - link "Dashboard" [ref=f2e81] [cursor=pointer]:
+                - /url: /web/index.php/dashboard/index
+            - listitem [ref=f2e85]:
+              - link "Directory" [ref=f2e86] [cursor=pointer]:
+                - /url: /web/index.php/directory/viewDirectory
+            - listitem [ref=f2e90]:
+              - link "Maintenance" [ref=f2e91] [cursor=pointer]:
+                - /url: /web/index.php/maintenance/viewMaintenanceModule
+            - listitem [ref=f2e96]:
+              - link "Claim" [ref=f2e97] [cursor=pointer]:
+                - /url: /web/index.php/claim/viewClaimModule
+            - listitem [ref=f2e105]:
+              - link "Buzz" [ref=f2e106] [cursor=pointer]:
+                - /url: /web/index.php/buzz/viewBuzz
+    - banner [ref=f2e110]:
+      - generic [ref=f2e111]:
+        - generic [ref=f2e112]:
+          - text: 
+          - heading "Leave" [level=6] [ref=f2e114]
+        - link [ref=f2e116]:
+          - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+          - button "Upgrade" [ref=f2e117] [cursor=pointer]
+        - list [ref=f2e123]:
+          - listitem [ref=f2e124]:
+            - generic [ref=f2e125] [cursor=pointer]:
+              - img "profile picture" [ref=f2e126]
+              - paragraph [ref=f2e127]: mandaa user
+              - generic [ref=f2e128]: 
+      - navigation "Topbar Menu" [ref=f2e130]:
+        - list [ref=f2e131]:
+          - listitem [ref=f2e132] [cursor=pointer]:
+            - link "Apply" [ref=f2e133]:
+              - /url: "#"
+          - listitem [ref=f2e134] [cursor=pointer]:
+            - link "My Leave" [ref=f2e135]:
+              - /url: "#"
+          - listitem [ref=f2e136] [cursor=pointer]:
+            - generic [ref=f2e137]:
+              - text: Entitlements
+              - generic [ref=f2e138]: 
+          - listitem [ref=f2e139] [cursor=pointer]:
+            - generic [ref=f2e140]:
+              - text: Reports
+              - generic [ref=f2e141]: 
+          - listitem [ref=f2e142] [cursor=pointer]:
+            - generic [ref=f2e143]:
+              - text: Configure
+              - generic [ref=f2e144]: 
+          - listitem [ref=f2e145] [cursor=pointer]:
+            - link "Leave List" [ref=f2e146]:
+              - /url: "#"
+          - listitem [ref=f2e147] [cursor=pointer]:
+            - link "Assign Leave" [ref=f2e148]:
+              - /url: "#"
+          - button "" [ref=f2e150] [cursor=pointer]
+  - generic [ref=f2e152]:
+    - generic [ref=f2e154]:
+      - generic [ref=f2e155]:
+        - generic [ref=f2e156]:
+          - heading "Leave List" [level=5] [ref=f2e158]
+          - button "" [ref=f2e161] [cursor=pointer]
+        - separator [ref=f2e163]
+        - generic [ref=f2e165]:
+          - generic [ref=f2e167]:
+            - generic [ref=f2e169]:
+              - generic [ref=f2e170]: From Date
+              - generic [ref=f2e174]:
+                - textbox "yyyy-dd-mm" [ref=f2e175]: 2026-12-06
+                - generic [ref=f2e176] [cursor=pointer]: 
+            - generic [ref=f2e178]:
+              - generic [ref=f2e179]: To Date
+              - generic [ref=f2e183]:
+                - textbox "yyyy-dd-mm" [ref=f2e184]: 2026-27-07
+                - generic [ref=f2e185] [cursor=pointer]: 
+            - generic [ref=f2e187]:
+              - generic [ref=f2e188]: Show Leave with Status*
+              - generic [ref=f2e191]:
+                - generic [ref=f2e192] [cursor=pointer]:
+                  - generic [ref=f2e193]: "-- Select --"
+                  - generic [ref=f2e194]: 
+                - generic [ref=f2e196]:
+                  - generic [ref=f2e197]:
+                    - text: Pending Approval
+                    - generic [ref=f2e198] [cursor=pointer]: 
+                  - generic [ref=f2e199]:
+                    - text: Rejected
+                    - generic [ref=f2e200] [cursor=pointer]: 
+            - generic [ref=f2e202]:
+              - generic [ref=f2e203]: Leave Type
+              - generic [ref=f2e207] [cursor=pointer]:
+                - generic [ref=f2e208]: "-- Select --"
+                - generic [ref=f2e209]: 
+          - generic [ref=f2e212]:
+            - generic [ref=f2e214]:
+              - generic [ref=f2e215]: Employee Name
+              - textbox "Type for hints..." [ref=f2e220]
+            - generic [ref=f2e222]:
+              - generic [ref=f2e223]: Sub Unit
+              - generic [ref=f2e227] [cursor=pointer]:
+                - generic [ref=f2e228]: "-- Select --"
+                - generic [ref=f2e229]: 
+            - generic [ref=f2e231]:
+              - paragraph [ref=f2e232]: Include Past Employees
+              - checkbox [ref=f2e235]
+          - separator [ref=f2e237]
+          - generic [ref=f2e238]:
+            - paragraph [ref=f2e239]: "* Required"
+            - button "Reset" [ref=f2e240] [cursor=pointer]
+            - button "Search" [ref=f2e241] [cursor=pointer]
+      - generic [ref=f2e242]:
+        - generic [ref=f2e243]: No Records Found
+        - table [ref=f2e246]:
+          - rowgroup [ref=f2e247]:
+            - row [ref=f2e248]:
+              - columnheader "" [ref=f2e249]:
+                - generic [ref=f2e251] [cursor=pointer]:
+                  - checkbox "" [ref=f2e252]
+                  - generic [ref=f2e253]: 
+              - columnheader "Date" [ref=f2e255]
+              - columnheader "Employee Name" [ref=f2e256]
+              - columnheader "Leave Type" [ref=f2e257]
+              - columnheader "Leave Balance (Days)" [ref=f2e258]
+              - columnheader "Number of Days" [ref=f2e259]
+              - columnheader "Status" [ref=f2e260]
+              - columnheader "Comments" [ref=f2e261]
+              - columnheader "Actions" [ref=f2e262]
+          - rowgroup
+    - generic [ref=f2e264]:
+      - paragraph [ref=f2e265]: OrangeHRM OS 5.9
+      - paragraph [ref=f2e266]:
+        - text: © 2005 - 2026
+        - link "OrangeHRM, Inc" [ref=f2e267] [cursor=pointer]:
+          - /url: http://www.orangehrm.com
+        - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  125 |       await navigationPage.gotoLeave();
+  126 |     // Enter the future From Date.
+  127 |        await leavepage.fromDateInput.fill(fromDate);
+  128 |     // Enter the earlier To Date.
+  129 |        await leavepage.toDateInput.fill(toDate);
+  130 |     // Click Search.
+  131 |      await leavepage.searchButton.click();
+  132 |     // Verify the date-range validation appears.
+  133 |          await expect(
+  134 |       leavepage.toDateValidation
+  135 |     ).toBeVisible();
+  136 |     // Verify the validation message says:
+  137 |     // “To date should be after from date”.
+  138 |      await expect(
+  139 |       leavepage.toDateValidation
+  140 |     ).toHaveText(
+  141 |       'To date should be after from date'
+  142 |     );
+  143 | 
+  144 |     // Search should be blocked.
+  145 |     await expect(page).toHaveURL(
+  146 |       /leave\/viewLeaveList/
+  147 |     );
+  148 | 
+  149 |     // Verify no search results are loaded.
+  150 | 
+  151 |         await expect(leavepage.noRecordsFound).toBeVisible()
+  152 |     // Verify the entered dates remain unchanged.
+  153 |      await expect(leavepage.fromDateInput).toHaveValue(fromDate);
+  154 |       await expect(leavepage.toDateInput).toHaveValue(toDate);
+  155 | 
+  156 |   }
+  157 | );
+  158 | 
+  159 | test( 'TC_LEAVE_112 - Admin should reset Leave List search filters @positive @filter @regression',
+  160 |   async ({
+  161 |     page,
+  162 |     navigationPage,
+  163 |     leavepage,
+  164 |   }) => {
+  165 |     await navigationPage.gotoLeave();
+  166 | 
+  167 |     // Store default filter values.
+  168 |     const defaultFromDate =
+  169 |       await leavepage.fromDateInput.inputValue();
+  170 | 
+  171 |     const defaultToDate =
+  172 |       await leavepage.toDateInput.inputValue();
+  173 | 
+  174 |     const defaultStatusText = (
+  175 |       await leavepage.leaveStatusDropdown
+  176 |         .innerText()
+  177 |     ).trim();
+  178 | 
+  179 |     const defaultLeaveTypeText = (
+  180 |       await leavepage.leaveTypeDropdown
+  181 |         .innerText()
+  182 |     ).trim();
+  183 | 
+  184 |     // Generate different valid dates.
+  185 |     const changedFromDate =
+  186 |       dateFromOffset(-60);
+  187 | 
+  188 |     const changedToDate =
+  189 |       dateFromOffset(-15);
+  190 | 
+  191 |     await leavepage.fromDateInput.fill(
+  192 |       changedFromDate
+  193 |     );
+  194 | 
+  195 |     await leavepage.toDateInput.fill(
+  196 |       changedToDate
+  197 |     );
+  198 | 
+  199 |     // Select Rejected status.
+  200 |     await leavepage.leaveStatusDropdown.click();
+  201 | 
+  202 |     const statusOptions = page.locator(
+  203 |       '.oxd-select-dropdown:visible'
+  204 |     );
+  205 | 
+  206 |     await expect(statusOptions).toBeVisible();
+  207 | 
+  208 |     await statusOptions
+  209 |       .locator('.oxd-select-option')
+  210 |       .filter({
+  211 |         hasText: /^Rejected$/,
+  212 |       })
+  213 |       .click();
+  214 | 
+  215 |     // Select Include Past Employees.
+  216 |     const pastEmployeesLabel = page
+  217 |       .locator('.oxd-input-group')
+  218 |       .filter({
+  219 |         hasText: 'Include Past Employees',
+  220 |       })
+  221 |       .locator(
+  222 |         '.oxd-checkbox-wrapper label'
+  223 |       );
+  224 | 
+> 225 |     await pastEmployeesLabel.click();
+      |                              ^ TimeoutError: locator.click: Timeout 30000ms exceeded.
+  226 | 
+  227 |     await expect(
+  228 |       leavepage.includePastEmployeesCheckbox
+  229 |     ).toBeChecked();
+  230 | 
+  231 |     // Verify filters were changed.
+  232 |     await expect(
+  233 |       leavepage.fromDateInput
+  234 |     ).toHaveValue(changedFromDate);
+  235 | 
+  236 |     await expect(
+  237 |       leavepage.toDateInput
+  238 |     ).toHaveValue(changedToDate);
+  239 | 
+  240 |     // Reset all filters.
+  241 |     await leavepage.resetButton.click();
+  242 | 
+  243 |     await expect(
+  244 |       leavepage.loadingSpinner
+  245 |     ).toBeHidden();
+  246 | 
+  247 |     // Verify dates return to defaults.
+  248 |     await expect(
+  249 |       leavepage.fromDateInput
+  250 |     ).toHaveValue(defaultFromDate);
+  251 | 
+  252 |     await expect(
+  253 |       leavepage.toDateInput
+  254 |     ).toHaveValue(defaultToDate);
+  255 | 
+  256 |     // Verify status returns to its default value.
+  257 |     await expect
+  258 |       .poll(
+  259 |         async () =>
+  260 |           (
+  261 |             await leavepage
+  262 |               .leaveStatusDropdown
+  263 |               .innerText()
+  264 |           ).trim()
+  265 |       )
+  266 |       .toBe(defaultStatusText);
+  267 | 
+  268 |     // Verify Leave Type returns to default.
+  269 |     await expect
+  270 |       .poll(
+  271 |         async () =>
+  272 |           (
+  273 |             await leavepage
+  274 |               .leaveTypeDropdown
+  275 |               .innerText()
+  276 |           ).trim()
+  277 |       )
+  278 |       .toBe(defaultLeaveTypeText);
+  279 | 
+  280 |     // Verify Employee Name is cleared.
+  281 |     await expect(
+  282 |       leavepage.employeeNameInput
+  283 |     ).toHaveValue('');
+  284 | 
+  285 |     // Verify checkbox is cleared.
+  286 |     await expect(
+  287 |       leavepage.includePastEmployeesCheckbox
+  288 |     ).not.toBeChecked();
+  289 |   }
+  290 | );
+  291 | 
+  292 | test( 'TC_LEAVE_114 - Admin should filter the Leave List by leave type @positive @filter @regression',
+  293 |   async ({
+  294 |     navigationPage,
+  295 |     leavepage,
+  296 |   }) => {
+  297 |     await navigationPage.gotoLeave();
+  298 | 
+  299 |     const leaveType =
+  300 |       await leavepage
+  301 |         .selectFirstAvailableLeaveType();
+  302 | 
+  303 |     await leavepage.searchButton.click();
+  304 | 
+  305 |     await expect(
+  306 |       leavepage.loadingSpinner
+  307 |     ).toBeHidden();
+  308 | 
+  309 |     await expect(
+  310 |       leavepage.leaveTypeDropdown
+  311 |     ).toContainText(leaveType);
+  312 | 
+  313 |     await expect(
+  314 |       leavepage.leaveRows
+  315 |         .first()
+  316 |         .or(leavepage.noRecordsFound)
+  317 |     ).toBeVisible({
+  318 |       timeout: 15_000,
+  319 |     });
+  320 | 
+  321 |     const rowCount =
+  322 |       await leavepage.leaveRows.count();
+  323 | 
+  324 |     if (rowCount > 0) {
+  325 |       for (
+```

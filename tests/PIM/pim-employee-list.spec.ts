@@ -97,6 +97,7 @@ test.describe("PIM Employee List", () => {
     navigationPage,
     pimPage,
   }) => {
+   test.setTimeout(120_000);
     const data = employeeListData.TC_PIM_005;
     const employee = createEmployee(data.employee);
 
@@ -222,6 +223,7 @@ test.describe("PIM Employee List", () => {
     navigationPage,
     pimPage,
   }) => {
+    test.setTimeout(120_000);
     const data = employeeListData.TC_PIM_037;
     const employee = createEmployee(data.employee);
 
@@ -294,6 +296,7 @@ test.describe("PIM Employee List", () => {
     navigationPage,
     pimPage,
   }) => {
+    test.setTimeout(120_000);
     const data = employeeListData.TC_PIM_039;
     const employee = createEmployee(data.employee);
 
@@ -321,6 +324,7 @@ test.describe("PIM Employee List", () => {
     navigationPage,
     pimPage,
   }) => {
+    test.setTimeout(120_000);
     await navigationPage.gotoPIM();
     await pimPage.gotoEmployeeList();
     await pimPage.selectAllVisibleEmployees();

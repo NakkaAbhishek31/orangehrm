@@ -3,24 +3,34 @@ pipeline {
 
     tools {
         nodejs 'nodejs'
+        allure 'Allure'
+    }
+
+    options {
+        skipDefaultCheckout(true)
+        timestamps()
+
+        timeout(
+            time: 2,
+            unit: 'HOURS'
+        )
+
+        disableConcurrentBuilds()
+
+        buildDiscarder(
+            logRotator(
+                numToKeepStr: '10'
+            )
+        )
     }
 
     parameters {
-        choice(
-            name: 'TEST_SUITE',
-            choices: [
-                'all',
-                'admin',
-                'pim',
-                'employee'
-            ],
-            description: 'Select all tests or a role/feature folder'
-        )
-
         string(
             name: 'TEST_FILES',
             defaultValue: 'all',
-            description: 'Optional: all, one spec, folder, or comma-separated specs. Custom files override TEST_SUITE.'
+            description:
+                'Enter all, a test folder, one spec file, or comma-separated spec files',
+            trim: true
         )
 
         choice(
@@ -32,50 +42,50 @@ pipeline {
                 '@positive',
                 '@negative',
                 '@validation',
-                '@search',
                 '@filter',
-                '@pagination',
+                '@search',
                 '@navigation',
+                '@pagination',
                 '@upload',
                 '@download',
-                '@create',
-                '@edit',
                 '@delete',
-                '@bulk-delete',
-                '@cancel',
                 '@security',
                 '@account',
-                '@selection',
-                '@details',
-                '@autocomplete'
+                '@selection'
             ],
-            description: 'Select a Playwright test tag'
+            description:
+                'Select the test tag to run'
         )
 
         choice(
             name: 'BROWSER',
-            choices: ['chromium'],
-            description: 'Select the Playwright browser project'
+            choices: [
+                'chromium'
+            ],
+            description:
+                'Select the Playwright browser'
         )
 
         choice(
             name: 'WORKERS',
-            choices: ['1', '2', '4'],
-            description: 'Number of Playwright workers; 1 is recommended for the shared OrangeHRM demo'
+            choices: [
+                '2',
+                '1'
+            ],
+            description:
+                'Use 2 normally; use 1 for unstable or destructive tests'
         )
     }
 
-    options {
-        skipDefaultCheckout(true)
-        disableConcurrentBuilds()
-        timestamps()
-        timeout(time: 60, unit: 'MINUTES')
+    environment {
+        CI = 'true'
     }
 
     stages {
         stage('Clean and Checkout') {
             steps {
                 deleteDir()
+
                 checkout scm
             }
         }
@@ -96,16 +106,15 @@ pipeline {
 
         stage('Install Playwright Browser') {
             steps {
-                script {
-                    def selectedBrowser = params.BROWSER ?: 'chromium'
-                    bat "npx playwright install ${selectedBrowser}"
-                }
+                bat 'npx playwright install chromium'
             }
         }
 
         stage('Run Playwright Tests') {
             steps {
                 script {
+                    // Remove every previous report before
+                    // the single Playwright execution.
                     bat '''
                         if exist allure-results rmdir /s /q allure-results
                         if exist allure-report rmdir /s /q allure-report
@@ -113,148 +122,106 @@ pipeline {
                         if exist test-results rmdir /s /q test-results
                     '''
 
-                    def testCommand = 'npx playwright test'
-                    def requestedFiles = params.TEST_FILES?.trim()
-                    def selectedSuite = params.TEST_SUITE ?: 'all'
+                    def rawTestFiles =
+                        params.TEST_FILES.trim()
 
-                    if (!requestedFiles) {
-                        requestedFiles = 'all'
-                    }
+                    def testFileArguments = ''
 
-                    if (requestedFiles.toLowerCase() != 'all') {
-                        def selectedFiles = requestedFiles
-                            .split(',')
-                            .collect { file ->
-                                file.trim().replace('\\', '/')
-                            }
-                            .findAll { file -> file }
+                    if (
+                        !rawTestFiles.equalsIgnoreCase(
+                            'all'
+                        )
+                    ) {
+                        def selectedPaths =
+                            rawTestFiles
+                                .split(',')
+                                .collect {
+                                    it.trim()
+                                        .replace(
+                                            '\\',
+                                            '/'
+                                        )
+                                }
+                                .findAll {
+                                    it.length() > 0
+                                }
 
-                        if (selectedFiles.isEmpty()) {
-                            error('No test files were provided')
+                        if (
+                            selectedPaths.isEmpty()
+                        ) {
+                            error(
+                                'No valid test path was supplied'
+                            )
                         }
 
-                        selectedFiles.each { file ->
-                            if (!file.startsWith('tests/')) {
-                                error("Test path must start with tests/: ${file}")
+                        selectedPaths.each {
+                            testPath ->
+
+                            if (
+                                !testPath.startsWith(
+                                    'tests/'
+                                )
+                            ) {
+                                error(
+                                    'Test path must start with tests/: ' +
+                                    testPath
+                                )
                             }
 
-                            if (file.contains('..')) {
-                                error("Invalid test path: ${file}")
-                            }
-
-                            if (!(file ==~ /[A-Za-z0-9_@() .\/\-]+/)) {
-                                error("Test path contains unsupported characters: ${file}")
+                            if (
+                                testPath.contains(
+                                    '..'
+                                )
+                            ) {
+                                error(
+                                    'Parent path references are not allowed: ' +
+                                    testPath
+                                )
                             }
                         }
 
-                        def fileArguments = selectedFiles
-                            .collect { file -> "\"${file}\"" }
-                            .join(' ')
-
-                        testCommand += " ${fileArguments}"
-                    } else if (selectedSuite != 'all') {
-                        def suitePaths = [
-                            admin: 'tests/admin',
-                            pim: 'tests/pim',
-                            employee: 'tests/employee'
-                        ]
-
-                        def suitePath = suitePaths[selectedSuite]
-
-                        if (!suitePath) {
-                            error("Unsupported test suite: ${selectedSuite}")
-                        }
-
-                        testCommand += " \"${suitePath}\""
+                        testFileArguments =
+                            selectedPaths
+                                .collect {
+                                    "\"${it}\""
+                                }
+                                .join(' ')
                     }
 
-                    def selectedBrowser = params.BROWSER ?: 'chromium'
-                    def selectedWorkers = params.WORKERS ?: '1'
+                    def tagArgument = ''
 
-                    testCommand += " --project=${selectedBrowser}"
-                    testCommand += " --workers=${selectedWorkers}"
-
-                    def selectedTag = params.TEST_TAG ?: 'all'
-
-                    if (selectedTag != 'all') {
-                        testCommand += " --grep \"${selectedTag}\""
+                    if (
+                        params.TEST_TAG != 'all'
+                    ) {
+                        tagArgument =
+                            "--grep \"${params.TEST_TAG}\""
                     }
 
-                    echo("Running exactly: ${testCommand}")
+                    def testCommand = [
+                        'npx playwright test',
+                        testFileArguments,
+                        "--project=${params.BROWSER}",
+                        "--workers=${params.WORKERS}",
+                        '--retries=0',
+                        tagArgument
+                    ]
+                    .findAll {
+                        it != null &&
+                        it.trim().length() > 0
+                    }
+                    .join(' ')
+
+                    echo(
+                        "Running exactly: ${testCommand}"
+                    )
 
                     catchError(
                         buildResult: 'FAILURE',
                         stageResult: 'FAILURE'
                     ) {
-                        bat(script: testCommand)
+                        bat testCommand
                     }
                 }
-            }
-        }
-
-        stage('Verify Allure Results') {
-            steps {
-                powershell '''
-                    if (!(Test-Path "allure-results")) {
-                        Write-Host "No allure-results directory was generated"
-                        exit 0
-                    }
-
-                    $resultFiles = Get-ChildItem `
-                        "allure-results" `
-                        -Filter "*-result.json"
-
-                    Write-Host "Allure result files: $($resultFiles.Count)"
-
-                    if ($resultFiles.Count -eq 0) {
-                        Write-Host "No Allure JSON result files were generated"
-                        exit 0
-                    }
-
-                    $results = $resultFiles | ForEach-Object {
-                        Get-Content $_.FullName -Raw |
-                            ConvertFrom-Json
-                    }
-
-                    Write-Host ""
-                    Write-Host "Allure status counts:"
-
-                    $results |
-                        Group-Object status |
-                        Sort-Object Name |
-                        ForEach-Object {
-                            Write-Host "$($_.Name): $($_.Count)"
-                        }
-
-                    $historyResults = $results |
-                        Where-Object { $_.historyId }
-
-                    $uniqueHistoryIds = $historyResults |
-                        Select-Object -ExpandProperty historyId |
-                        Sort-Object -Unique
-
-                    Write-Host ""
-                    Write-Host "Unique Allure history IDs: $($uniqueHistoryIds.Count)"
-
-                    $duplicates = $historyResults |
-                        Group-Object historyId |
-                        Where-Object { $_.Count -gt 1 }
-
-                    Write-Host "Duplicate Allure history IDs: $($duplicates.Count)"
-
-                    if ($duplicates.Count -gt 0) {
-                        Write-Host ""
-                        Write-Host "Tests sharing the same Allure identity:"
-
-                        foreach ($duplicate in $duplicates) {
-                            Write-Host "--------------------------------"
-
-                            $duplicate.Group | ForEach-Object {
-                                Write-Host "$($_.name) | $($_.fullName) | $($_.status)"
-                            }
-                        }
-                    }
-                '''
             }
         }
     }
@@ -262,32 +229,35 @@ pipeline {
     post {
         always {
             script {
-                if (fileExists('allure-results')) {
-                    def resultCount = powershell(
-                        returnStdout: true,
-                        script: '''
-                            (
-                                Get-ChildItem `
-                                    "allure-results" `
-                                    -Filter "*-result.json"
-                            ).Count
-                        '''
-                    ).trim()
+                if (
+                    fileExists(
+                        'allure-results'
+                    )
+                ) {
+                    echo(
+                        'Publishing Allure report'
+                    )
 
-                    echo("Publishing ${resultCount} Allure result files")
-
-                    allure(
+                    allure([
                         includeProperties: false,
                         jdk: '',
-                        results: [[path: 'allure-results']]
-                    )
+                        results: [[
+                            path:
+                                'allure-results'
+                        ]]
+                    ])
                 } else {
-                    echo('No Allure results were generated')
+                    echo(
+                        'No Allure results were generated'
+                    )
                 }
             }
 
             archiveArtifacts(
-                artifacts: 'playwright-report/**,test-results/**,allure-results/**',
+                artifacts:
+                    'allure-report/**, ' +
+                    'playwright-report/**, ' +
+                    'test-results/**',
                 allowEmptyArchive: true
             )
         }
@@ -296,8 +266,14 @@ pipeline {
             echo 'Playwright tests passed'
         }
 
-        failure {
-            echo 'One or more Playwright tests failed'
+        unsuccessful {
+            echo(
+                'One or more Playwright tests failed or the build was interrupted'
+            )
+        }
+
+        cleanup {
+            echo 'Jenkins pipeline completed'
         }
     }
 }
