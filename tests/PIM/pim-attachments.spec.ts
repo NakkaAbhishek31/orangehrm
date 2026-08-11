@@ -28,12 +28,9 @@ test("TC_PIM_011 - Admin should upload an employee attachment @positive @upload 
     profilePicturePath: profilePicturePath,
   });
 
-
-await page.waitForURL(/.*pim\/viewPersonalDetails\/empNumber\/\d+$/, {
-  timeout: 60000, // 60 seconds
-});
-
-
+  await page.waitForURL(/.*pim\/viewPersonalDetails\/empNumber\/\d+$/, {
+    timeout: 60000, // 60 seconds
+  });
 
   await employeeAttachmentspage.clickonuploadtheAttachement();
   await employeeAttachmentspage.attachmentFileInput.setInputFiles(
@@ -60,7 +57,6 @@ await page.waitForURL(/.*pim\/viewPersonalDetails\/empNumber\/\d+$/, {
   await pimPage.clickOnFilterSearch();
   await pimPage.verifyNoEmployeeRecordsFound(employeeId);
 });
-
 
 test("TC_PIM_012 - Admin should download an employee attachment @positive @download @regression", async ({
   page,
@@ -89,10 +85,9 @@ test("TC_PIM_012 - Admin should download an employee attachment @positive @downl
     profilePicturePath: profilePicturePath,
   });
 
-await page.waitForURL(/.*pim\/viewPersonalDetails\/empNumber\/\d+$/, {
-  timeout: 60000, // 60 seconds
-});
-
+  await page.waitForURL(/.*pim\/viewPersonalDetails\/empNumber\/\d+$/, {
+    timeout: 60000, // 60 seconds
+  });
 
   await employeeAttachmentspage.clickonuploadtheAttachement();
   await employeeAttachmentspage.attachmentFileInput.setInputFiles(
@@ -115,11 +110,8 @@ await page.waitForURL(/.*pim\/viewPersonalDetails\/empNumber\/\d+$/, {
   await pimPage.clickOnFilterSearch();
   await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
   await pimPage.openEmployeeById(employeeId);
-  const download =
-  await employeeAttachmentspage.downloadAttachemnt(
-    'employee-handbook-template.pdf'
+  const download = await employeeAttachmentspage.downloadAttachemnt(
+    "employee-handbook-template.pdf",
   );
-expect(download.suggestedFilename()).toBe(
-  'employee-handbook-template.pdf'
-);
+  expect(download.suggestedFilename()).toBe("employee-handbook-template.pdf");
 });

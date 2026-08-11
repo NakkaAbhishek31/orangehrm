@@ -1,0 +1,330 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Admin\admin-users.spec.ts >> Admin - System Users >> TC_ADMIN_050 - Duplicate validation should appear for an existing username @negative @validation @regression
+- Location: tests\Admin\admin-users.spec.ts:210:7
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: locator('.oxd-autocomplete-option').filter({ hasText: 'Auto1786432502209280 Test User' }).first()
+Expected: visible
+Timeout: 20000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 20000ms
+  - waiting for locator('.oxd-autocomplete-option').filter({ hasText: 'Auto1786432502209280 Test User' }).first()
+
+```
+
+```yaml
+- complementary:
+  - navigation "Sidepanel":
+    - link "client brand banner":
+      - /url: https://www.orangehrm.com/
+      - img "client brand banner"
+    - textbox "Search"
+    - button ""
+    - separator
+    - list:
+      - listitem:
+        - link "Admin":
+          - /url: /web/index.php/admin/viewAdminModule
+      - listitem:
+        - link "PIM":
+          - /url: /web/index.php/pim/viewPimModule
+      - listitem:
+        - link "Leave":
+          - /url: /web/index.php/leave/viewLeaveModule
+      - listitem:
+        - link "Time":
+          - /url: /web/index.php/time/viewTimeModule
+      - listitem:
+        - link "Recruitment":
+          - /url: /web/index.php/recruitment/viewRecruitmentModule
+      - listitem:
+        - link "My Info":
+          - /url: /web/index.php/pim/viewMyDetails
+      - listitem:
+        - link "Performance":
+          - /url: /web/index.php/performance/viewPerformanceModule
+      - listitem:
+        - link "Dashboard":
+          - /url: /web/index.php/dashboard/index
+      - listitem:
+        - link "Directory":
+          - /url: /web/index.php/directory/viewDirectory
+      - listitem:
+        - link "Maintenance":
+          - /url: /web/index.php/maintenance/viewMaintenanceModule
+      - listitem:
+        - link "Claim":
+          - /url: /web/index.php/claim/viewClaimModule
+          - img
+          - text: Claim
+      - listitem:
+        - link "Buzz":
+          - /url: /web/index.php/buzz/viewBuzz
+- banner:
+  - heading "Admin" [level=6]
+  - link "Upgrade":
+    - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+    - button "Upgrade"
+  - list:
+    - listitem:
+      - img "profile picture"
+      - paragraph: mandaa Doe
+      - text: 
+  - navigation "Topbar Menu":
+    - list:
+      - listitem: User Management 
+      - listitem: Job 
+      - listitem: Organization 
+      - listitem: Qualifications 
+      - listitem:
+        - link "Nationalities":
+          - /url: "#"
+      - listitem:
+        - link "Corporate Branding":
+          - /url: "#"
+      - listitem: Configuration 
+      - button ""
+- heading "Add User" [level=6]
+- separator
+- text: User Role* ESS  Employee Name*
+- textbox "Type for hints...": Auto1786432502209280 Test User
+- listbox:
+  - option "No Records Found"
+- text: Status* -- Select --  Username*
+- textbox
+- text: Password*
+- textbox
+- paragraph: For a strong password, please use a hard to guess combination of text with upper and lower case characters, symbols and numbers
+- text: Confirm Password*
+- textbox
+- separator
+- paragraph: "* Required"
+- button "Cancel"
+- button "Save"
+- paragraph: OrangeHRM OS 5.9
+- paragraph:
+  - text: © 2005 - 2026
+  - link "OrangeHRM, Inc":
+    - /url: http://www.orangehrm.com
+  - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  327 | 
+  328 |     if (filters.employeeName !== undefined) {
+  329 |       await this.employeeNameInput.fill(filters.employeeName);
+  330 | 
+  331 |       const employeeOption = this.page
+  332 |         .locator(".oxd-autocomplete-option")
+  333 |         .filter({
+  334 |           hasText: filters.employeeName,
+  335 |         })
+  336 |         .first();
+  337 | 
+  338 |       await expect(employeeOption).toBeVisible({
+  339 |         timeout: 15_000,
+  340 |       });
+  341 | 
+  342 |       await employeeOption.click();
+  343 |     }
+  344 | 
+  345 |     if (filters.status !== undefined) {
+  346 |       await this.selectDropdownOption(this.statusDropdown, filters.status);
+  347 |     }
+  348 | 
+  349 |     const searchResponse = this.page.waitForResponse(
+  350 |       (response) =>
+  351 |         response.url().includes("/api/v2/admin/users") &&
+  352 |         response.request().method() === "GET" &&
+  353 |         response.ok(),
+  354 |       {
+  355 |         timeout: 20_000,
+  356 |       },
+  357 |     );
+  358 | 
+  359 |     await this.searchButton.click();
+  360 |     await searchResponse;
+  361 | 
+  362 |     await expect(this.loadingSpinner).toBeHidden();
+  363 |   }
+  364 | 
+  365 |   async verifySystemUserResult(expected: SystemUserFilters): Promise<void> {
+  366 |     await expect(this.userRows.first()).toBeVisible();
+  367 | 
+  368 |     const matchingRow = expected.username
+  369 |       ? this.userRows.filter({
+  370 |           has: this.page
+  371 |             .locator(".oxd-table-cell")
+  372 |             .nth(1)
+  373 |             .getByText(expected.username, {
+  374 |               exact: true,
+  375 |             }),
+  376 |         })
+  377 |       : this.userRows.first();
+  378 | 
+  379 |     await expect(matchingRow).toHaveCount(1);
+  380 | 
+  381 |     const cells = matchingRow.locator(".oxd-table-cell");
+  382 | 
+  383 |     if (expected.username !== undefined) {
+  384 |       await expect(cells.nth(1)).toHaveText(expected.username);
+  385 |     }
+  386 | 
+  387 |     if (expected.userRole !== undefined) {
+  388 |       await expect(cells.nth(2)).toHaveText(expected.userRole);
+  389 |     }
+  390 | 
+  391 |     if (expected.employeeName !== undefined) {
+  392 |       await expect(cells.nth(3)).toContainText(expected.employeeName);
+  393 |     }
+  394 | 
+  395 |     if (expected.status !== undefined) {
+  396 |       await expect(cells.nth(4)).toHaveText(expected.status);
+  397 |     }
+  398 |   }
+  399 | 
+  400 |   async resetSystemUserFilters(): Promise<void> {
+  401 |     await this.resetButton.click();
+  402 | 
+  403 |     await expect(this.usernameInput).toHaveValue("");
+  404 |     await expect(this.employeeNameInput).toHaveValue("");
+  405 |   }
+  406 | 
+  407 |   async gotoAddSystemUser(): Promise<void> {
+  408 |     await this.addButton.click();
+  409 |     await this.page.waitForURL(/admin\/saveSystemUser/, {
+  410 |       timeout: 20_000,
+  411 |     });
+  412 | 
+  413 |     await expect(this.addUserHeading).toBeVisible();
+  414 |   }
+  415 | 
+  416 |   async fillSystemUserForm(details: AddSystemUserDetails): Promise<void> {
+  417 |     await this.selectDropdownOption(this.addUserRoleDropdown, details.userRole);
+  418 | 
+  419 |     await this.addEmployeeNameInput.fill(details.employeeName);
+  420 | 
+  421 |     const matchingEmployee = this.autocompleteOptions
+  422 |       .filter({
+  423 |         hasText: details.employeeName,
+  424 |       })
+  425 |       .first();
+  426 | 
+> 427 |     await expect(matchingEmployee).toBeVisible({
+      |                                    ^ Error: expect(locator).toBeVisible() failed
+  428 |       timeout: 20_000,
+  429 |     });
+  430 | 
+  431 |     await matchingEmployee.click();
+  432 | 
+  433 |     await this.selectDropdownOption(this.addStatusDropdown, details.status);
+  434 | 
+  435 |     await this.addUsernameInput.fill(details.username);
+  436 | 
+  437 |     await this.addPasswordInput.fill(details.password);
+  438 | 
+  439 |     await this.addConfirmPasswordInput.fill(details.password);
+  440 |   }
+  441 | 
+  442 |   async saveSystemUser(): Promise<void> {
+  443 |     const createUserResponse = this.page.waitForResponse(
+  444 |       (response) =>
+  445 |         response.url().includes("/api/v2/admin/users") &&
+  446 |         response.request().method() === "POST" &&
+  447 |         response.ok(),
+  448 |       {
+  449 |         timeout: 20_000,
+  450 |       },
+  451 |     );
+  452 | 
+  453 |     const systemUsersPage = this.page.waitForURL(/admin\/viewSystemUsers/, {
+  454 |       timeout: 20_000,
+  455 |     });
+  456 | 
+  457 |     // Begin watching for the temporary toast
+  458 |     // before clicking Save.
+  459 |     const successToastAppears = expect(this.successToast).toContainText(
+  460 |       "Successfully Saved",
+  461 |       {
+  462 |         timeout: 20_000,
+  463 |       },
+  464 |     );
+  465 | 
+  466 |     await this.addUserSaveButton.click();
+  467 | 
+  468 |     await Promise.all([
+  469 |       createUserResponse,
+  470 |       systemUsersPage,
+  471 |       successToastAppears,
+  472 |     ]);
+  473 | 
+  474 |     await expect(this.systemUsersHeading).toBeVisible();
+  475 |   }
+  476 | 
+  477 |   async deleteSystemUserByUsername(username: string): Promise<void> {
+  478 |     const matchingRow = this.userRows.filter({
+  479 |       has: this.page.locator(".oxd-table-cell").nth(1).getByText(username, {
+  480 |         exact: true,
+  481 |       }),
+  482 |     });
+  483 | 
+  484 |     await expect(matchingRow).toHaveCount(1);
+  485 | 
+  486 |     await matchingRow
+  487 |       .locator("button")
+  488 |       .filter({
+  489 |         has: this.page.locator("i.bi-trash, i.bi-trash-fill"),
+  490 |       })
+  491 |       .click();
+  492 | 
+  493 |     const confirmationDialog = this.page.getByRole("dialog");
+  494 | 
+  495 |     await expect(confirmationDialog).toBeVisible();
+  496 | 
+  497 |     const deleteResponse = this.page.waitForResponse(
+  498 |       (response) =>
+  499 |         response.url().includes("/api/v2/admin/users") &&
+  500 |         response.request().method() === "DELETE" &&
+  501 |         response.ok(),
+  502 |       {
+  503 |         timeout: 20_000,
+  504 |       },
+  505 |     );
+  506 | 
+  507 |     // Start waiting before clicking because the toast
+  508 |     // may disappear quickly.
+  509 |     const deletedToastAppears = expect(
+  510 |       this.toastMessage.filter({
+  511 |         hasText: /Successfully Deleted/i,
+  512 |       }),
+  513 |     ).toBeVisible({
+  514 |       timeout: 20_000,
+  515 |     });
+  516 | 
+  517 |     await confirmationDialog
+  518 |       .getByRole("button", {
+  519 |         name: /Yes, Delete/i,
+  520 |       })
+  521 |       .click();
+  522 | 
+  523 |     await Promise.all([deleteResponse, deletedToastAppears]);
+  524 | 
+  525 |     await expect(confirmationDialog).toBeHidden();
+  526 |   }
+  527 | 
+```

@@ -6,10 +6,21 @@ pipeline {
     }
 
     parameters {
+        choice(
+            name: 'TEST_SUITE',
+            choices: [
+                'all',
+                'admin',
+                'pim',
+                'employee'
+            ],
+            description: 'Select all tests or a role/feature folder'
+        )
+
         string(
             name: 'TEST_FILES',
             defaultValue: 'all',
-            description: 'Enter all, one spec file, folder, or comma-separated spec files. Both / and \\ are accepted.'
+            description: 'Optional: all, one spec, folder, or comma-separated specs. Custom files override TEST_SUITE.'
         )
 
         choice(
@@ -18,26 +29,39 @@ pipeline {
                 'all',
                 '@smoke',
                 '@regression',
-                '@validation',
                 '@positive',
                 '@negative',
+                '@validation',
                 '@search',
+                '@filter',
                 '@pagination',
+                '@navigation',
                 '@upload',
                 '@download',
+                '@create',
+                '@edit',
                 '@delete',
+                '@bulk-delete',
+                '@cancel',
                 '@security',
                 '@account',
                 '@selection',
-                '@navigation'
+                '@details',
+                '@autocomplete'
             ],
-            description: 'Select the test tag'
+            description: 'Select a Playwright test tag'
         )
 
         choice(
             name: 'BROWSER',
             choices: ['chromium'],
-            description: 'Select the browser'
+            description: 'Select the Playwright browser project'
+        )
+
+        choice(
+            name: 'WORKERS',
+            choices: ['1', '2', '4'],
+            description: 'Number of Playwright workers; 1 is recommended for the shared OrangeHRM demo'
         )
     }
 
@@ -72,7 +96,10 @@ pipeline {
 
         stage('Install Playwright Browser') {
             steps {
-                bat 'npx playwright install chromium'
+                script {
+                    def selectedBrowser = params.BROWSER ?: 'chromium'
+                    bat "npx playwright install ${selectedBrowser}"
+                }
             }
         }
 
@@ -88,6 +115,7 @@ pipeline {
 
                     def testCommand = 'npx playwright test'
                     def requestedFiles = params.TEST_FILES?.trim()
+                    def selectedSuite = params.TEST_SUITE ?: 'all'
 
                     if (!requestedFiles) {
                         requestedFiles = 'all'
@@ -97,7 +125,6 @@ pipeline {
                         def selectedFiles = requestedFiles
                             .split(',')
                             .collect { file ->
-                                // Normalize Windows paths before validation.
                                 file.trim().replace('\\', '/')
                             }
                             .findAll { file -> file }
@@ -125,15 +152,30 @@ pipeline {
                             .join(' ')
 
                         testCommand += " ${fileArguments}"
+                    } else if (selectedSuite != 'all') {
+                        def suitePaths = [
+                            admin: 'tests/admin',
+                            pim: 'tests/pim',
+                            employee: 'tests/employee'
+                        ]
+
+                        def suitePath = suitePaths[selectedSuite]
+
+                        if (!suitePath) {
+                            error("Unsupported test suite: ${selectedSuite}")
+                        }
+
+                        testCommand += " \"${suitePath}\""
                     }
 
                     def selectedBrowser = params.BROWSER ?: 'chromium'
-                    testCommand += " --project=${selectedBrowser}"
+                    def selectedWorkers = params.WORKERS ?: '1'
 
-                    // OrangeHRM is a shared demo environment.
-                    testCommand += ' --workers=1'
+                    testCommand += " --project=${selectedBrowser}"
+                    testCommand += " --workers=${selectedWorkers}"
 
                     def selectedTag = params.TEST_TAG ?: 'all'
+
                     if (selectedTag != 'all') {
                         testCommand += " --grep \"${selectedTag}\""
                     }

@@ -1,16 +1,16 @@
 import { Locator, Page, expect } from "@playwright/test";
 
-export type SystemUserFilters = {
+export interface SystemUserFilters {
   username?: string;
-  userRole?: "Admin" | "ESS";
+  userRole?: string;
   employeeName?: string;
-  status?: "Enabled" | "Disabled";
-};
+  status?: string;
+}
 
 export type AddSystemUserDetails = {
-  userRole: "Admin" | "ESS";
+  userRole: string;
   employeeName: string;
-  status: "Enabled" | "Disabled";
+  status: string;
   username: string;
   password: string;
 };
@@ -51,10 +51,9 @@ export class AdminPage {
   readonly editUserSaveButton: Locator;
   readonly deleteSelectedButton: Locator;
   readonly nextPageButton: Locator;
-readonly previousPageButton: Locator;
- readonly passwordValidation: Locator;
- readonly employeeNameValidation:Locator;
- 
+  readonly previousPageButton: Locator;
+  readonly passwordValidation: Locator;
+  readonly employeeNameValidation: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -246,51 +245,43 @@ readonly previousPageButton: Locator;
       exact: true,
     });
 
- this.deleteSelectedButton = page
-  .locator(
-    '.orangehrm-horizontal-padding ' +
-    'button.oxd-button--label-danger'
-  )
-  .filter({
-    has: page.locator(
-      'i.bi-trash-fill'
-    ),
-  });
+    this.deleteSelectedButton = page
+      .locator(
+        ".orangehrm-horizontal-padding " + "button.oxd-button--label-danger",
+      )
+      .filter({
+        has: page.locator("i.bi-trash-fill"),
+      });
 
+    this.nextPageButton = page
+      .locator("button.oxd-pagination-page-item--previous-next")
+      .filter({
+        has: page.locator("i.bi-chevron-right"),
+      });
 
-    this.nextPageButton = page.locator(
-  'button.oxd-pagination-page-item--previous-next'
-).filter({
-  has: page.locator('i.bi-chevron-right'),
-});
+    this.previousPageButton = page
+      .locator("button.oxd-pagination-page-item--previous-next")
+      .filter({
+        has: page.locator("i.bi-chevron-left"),
+      });
 
-this.previousPageButton = page.locator(
-  'button.oxd-pagination-page-item--previous-next'
-).filter({
-  has: page.locator('i.bi-chevron-left'),
-});
+    this.passwordValidation = page
+      .locator(".oxd-input-group")
+      .filter({
+        has: page.getByText("Password", {
+          exact: true,
+        }),
+      })
+      .locator(".oxd-input-field-error-message");
 
-this.passwordValidation = page
-  .locator('.oxd-input-group')
-  .filter({
-    has: page.getByText('Password', {
-      exact: true,
-    }),
-  })
-  .locator('.oxd-input-field-error-message');
-
-this.employeeNameValidation = page
-  .locator('.oxd-input-group')
-  .filter({
-    has: page
-      .locator('label')
-      .getByText('Employee Name', {
-        exact: true,
-      }),
-  })
-  .locator('.oxd-input-field-error-message');
-
-
+    this.employeeNameValidation = page
+      .locator(".oxd-input-group")
+      .filter({
+        has: page.locator("label").getByText("Employee Name", {
+          exact: true,
+        }),
+      })
+      .locator(".oxd-input-field-error-message");
   }
 
   async gotoUserManagementUsers(): Promise<void> {
@@ -544,7 +535,7 @@ this.employeeNameValidation = page
     await expect(this.editUserHeading).toBeVisible();
   }
 
-  async updateSystemUserStatus(status: "Enabled" | "Disabled"): Promise<void> {
+  async updateSystemUserStatus(status: string): Promise<void> {
     await this.editStatusDropdown.click();
 
     await this.page
@@ -617,267 +608,187 @@ this.employeeNameValidation = page
     await expect(userRow).toBeVisible();
   }
   async getVisibleSystemUsernames(): Promise<string[]> {
-  await expect(
-    this.loadingSpinner
-  ).toBeHidden();
+    await expect(this.loadingSpinner).toBeHidden();
 
-  await expect(
-    this.userRows.first()
-  ).toBeVisible({
-    timeout: 15_000,
-  });
+    await expect(this.userRows.first()).toBeVisible({
+      timeout: 15_000,
+    });
 
-  return this.userRows
-    .locator('.oxd-table-cell')
-    .nth(1)
-    .allInnerTexts();
-}
+    return this.userRows.locator(".oxd-table-cell").nth(1).allInnerTexts();
+  }
 
-async goToNextSystemUsersPage(): Promise<void> {
-  await expect(
-    this.nextPageButton
-  ).toBeVisible();
+  async goToNextSystemUsersPage(): Promise<void> {
+    await expect(this.nextPageButton).toBeVisible();
 
-  await expect(
-    this.nextPageButton
-  ).toBeEnabled();
+    await expect(this.nextPageButton).toBeEnabled();
 
-  await this.nextPageButton.click();
+    await this.nextPageButton.click();
 
-  await expect(
-    this.loadingSpinner
-  ).toBeHidden();
-}
+    await expect(this.loadingSpinner).toBeHidden();
+  }
 
-async goToPreviousSystemUsersPage(): Promise<void> {
-  await expect(
-    this.previousPageButton
-  ).toBeVisible();
+  async goToPreviousSystemUsersPage(): Promise<void> {
+    await expect(this.previousPageButton).toBeVisible();
 
-  await expect(
-    this.previousPageButton
-  ).toBeEnabled();
+    await expect(this.previousPageButton).toBeEnabled();
 
-  await this.previousPageButton.click();
+    await this.previousPageButton.click();
 
-  await expect(
-    this.loadingSpinner
-  ).toBeHidden();
-}
+    await expect(this.loadingSpinner).toBeHidden();
+  }
 
-async selectSystemUsers(
-  usernames: string[]
-): Promise<void> {
-  for (const username of usernames) {
-    const userRow = this.userRows.filter({
-      has: this.page
-        .locator('.oxd-table-cell')
-        .nth(1)
-        .getByText(username, {
+  async selectSystemUsers(usernames: string[]): Promise<void> {
+    for (const username of usernames) {
+      const userRow = this.userRows.filter({
+        has: this.page.locator(".oxd-table-cell").nth(1).getByText(username, {
           exact: true,
         }),
-    });
+      });
 
-    await expect(userRow).toHaveCount(1);
+      await expect(userRow).toHaveCount(1);
 
-    const checkbox = userRow.locator(
-      'input[type="checkbox"]'
-    );
+      const checkbox = userRow.locator('input[type="checkbox"]');
 
-    await checkbox.check({
-      force: true,
-    });
+      await checkbox.check({
+        force: true,
+      });
 
-    await expect(checkbox).toBeChecked();
-  }
-}
-
-
-async selectAllVisibleSystemUsers(): Promise<void> {
-  await expect(
-    this.loadingSpinner
-  ).toBeHidden();
-
-  const headerCheckboxLabel =
-    this.page.locator(
-      '.oxd-table-header ' +
-      '.oxd-checkbox-wrapper label'
-    );
-
-  const headerCheckbox =
-    this.page.locator(
-      '.oxd-table-header ' +
-      'input[type="checkbox"]'
-    );
-
-  // Exclude disabled row checkboxes.
-  const selectableRowCheckboxes =
-    this.userRows.locator(
-      'input[type="checkbox"]:not(:disabled)'
-    );
-
-  const selectableRowCount =
-    await selectableRowCheckboxes.count();
-
-  expect(
-    selectableRowCount
-  ).toBeGreaterThan(0);
-
-  await headerCheckboxLabel.click();
-
-  await expect(
-    headerCheckbox
-  ).toBeChecked();
-
-  await expect
-    .poll(
-      async () =>
-        selectableRowCheckboxes.evaluateAll(
-          checkboxes =>
-            checkboxes.filter(
-              checkbox =>
-                (
-                  checkbox as HTMLInputElement
-                ).checked
-            ).length
-        ),
-      {
-        timeout: 15_000,
-      }
-    )
-    .toBe(selectableRowCount);
-}
-
-async deselectAllVisibleSystemUsers(): Promise<void> {
-  const headerCheckboxLabel =
-    this.page.locator(
-      '.oxd-table-header ' +
-      '.oxd-checkbox-wrapper label'
-    );
-
-  const headerCheckbox =
-    this.page.locator(
-      '.oxd-table-header ' +
-      'input[type="checkbox"]'
-    );
-
-  const selectableRowCheckboxes =
-    this.userRows.locator(
-      'input[type="checkbox"]:not(:disabled)'
-    );
-
-  await headerCheckboxLabel.click();
-
-  await expect(
-    headerCheckbox
-  ).not.toBeChecked();
-
-  await expect
-    .poll(
-      async () =>
-        selectableRowCheckboxes.evaluateAll(
-          checkboxes =>
-            checkboxes.filter(
-              checkbox =>
-                (
-                  checkbox as HTMLInputElement
-                ).checked
-            ).length
-        ),
-      {
-        timeout: 15_000,
-      }
-    )
-    .toBe(0);
-}
-
-async deleteSelectedSystemUsers(): Promise<void> {
-  await expect(
-    this.deleteSelectedButton
-  ).toBeVisible({
-    timeout: 15_000,
-  });
-
-  await this.deleteSelectedButton.click();
-
-  const confirmationDialog =
-    this.page.locator(
-      '.oxd-dialog-container'
-    );
-
-  await expect(
-    confirmationDialog
-  ).toBeVisible();
-
-  const confirmDeleteButton =
-    confirmationDialog.locator(
-      'button.oxd-button--label-danger'
-    );
-
-  await expect(
-    confirmDeleteButton
-  ).toBeVisible();
-
-  await confirmDeleteButton.click();
-
-  await expect(
-    confirmationDialog
-  ).toBeHidden({
-    timeout: 20_000,
-  });
-
-  await expect(
-    this.toastMessage.filter({
-      hasText: /Successfully Deleted/i,
-    })
-  ).toBeVisible({
-    timeout: 20_000,
-  });
-
-  await expect(
-    this.loadingSpinner
-  ).toBeHidden();
-}
-
-async updateSystemUsername(
-  updatedUsername: string
-): Promise<void> {
-  await this.addUsernameInput.fill(
-    updatedUsername
-  );
-
-  await this.addUsernameInput.blur();
-
-  await expect(
-    this.addUsernameInput
-  ).toHaveValue(updatedUsername);
-
-  await expect(
-    this.usernameValidation
-  ).toBeHidden();
-
-  const updatedToast = expect(
-    this.toastMessage.filter({
-      hasText: /Successfully Updated/i,
-    })
-  ).toBeVisible({
-    timeout: 20_000,
-  });
-
-  await this.editUserSaveButton.click();
-
-  await expect(this.page).toHaveURL(
-    /admin\/viewSystemUsers/,
-    {
-      timeout: 20_000,
+      await expect(checkbox).toBeChecked();
     }
-  );
+  }
 
-  await updatedToast;
+  async selectAllVisibleSystemUsers(): Promise<void> {
+    await expect(this.loadingSpinner).toBeHidden();
 
-  await expect(
-    this.systemUsersHeading
-  ).toBeVisible();
-}
+    const headerCheckboxLabel = this.page.locator(
+      ".oxd-table-header " + ".oxd-checkbox-wrapper label",
+    );
 
+    const headerCheckbox = this.page.locator(
+      ".oxd-table-header " + 'input[type="checkbox"]',
+    );
+
+    // Exclude disabled row checkboxes.
+    const selectableRowCheckboxes = this.userRows.locator(
+      'input[type="checkbox"]:not(:disabled)',
+    );
+
+    const selectableRowCount = await selectableRowCheckboxes.count();
+
+    expect(selectableRowCount).toBeGreaterThan(0);
+
+    await headerCheckboxLabel.click();
+
+    await expect(headerCheckbox).toBeChecked();
+
+    await expect
+      .poll(
+        async () =>
+          selectableRowCheckboxes.evaluateAll(
+            (checkboxes) =>
+              checkboxes.filter(
+                (checkbox) => (checkbox as HTMLInputElement).checked,
+              ).length,
+          ),
+        {
+          timeout: 15_000,
+        },
+      )
+      .toBe(selectableRowCount);
+  }
+
+  async deselectAllVisibleSystemUsers(): Promise<void> {
+    const headerCheckboxLabel = this.page.locator(
+      ".oxd-table-header " + ".oxd-checkbox-wrapper label",
+    );
+
+    const headerCheckbox = this.page.locator(
+      ".oxd-table-header " + 'input[type="checkbox"]',
+    );
+
+    const selectableRowCheckboxes = this.userRows.locator(
+      'input[type="checkbox"]:not(:disabled)',
+    );
+
+    await headerCheckboxLabel.click();
+
+    await expect(headerCheckbox).not.toBeChecked();
+
+    await expect
+      .poll(
+        async () =>
+          selectableRowCheckboxes.evaluateAll(
+            (checkboxes) =>
+              checkboxes.filter(
+                (checkbox) => (checkbox as HTMLInputElement).checked,
+              ).length,
+          ),
+        {
+          timeout: 15_000,
+        },
+      )
+      .toBe(0);
+  }
+
+  async deleteSelectedSystemUsers(): Promise<void> {
+    await expect(this.deleteSelectedButton).toBeVisible({
+      timeout: 15_000,
+    });
+
+    await this.deleteSelectedButton.click();
+
+    const confirmationDialog = this.page.locator(".oxd-dialog-container");
+
+    await expect(confirmationDialog).toBeVisible();
+
+    const confirmDeleteButton = confirmationDialog.locator(
+      "button.oxd-button--label-danger",
+    );
+
+    await expect(confirmDeleteButton).toBeVisible();
+
+    await confirmDeleteButton.click();
+
+    await expect(confirmationDialog).toBeHidden({
+      timeout: 20_000,
+    });
+
+    await expect(
+      this.toastMessage.filter({
+        hasText: /Successfully Deleted/i,
+      }),
+    ).toBeVisible({
+      timeout: 20_000,
+    });
+
+    await expect(this.loadingSpinner).toBeHidden();
+  }
+
+  async updateSystemUsername(updatedUsername: string): Promise<void> {
+    await this.addUsernameInput.fill(updatedUsername);
+
+    await this.addUsernameInput.blur();
+
+    await expect(this.addUsernameInput).toHaveValue(updatedUsername);
+
+    await expect(this.usernameValidation).toBeHidden();
+
+    const updatedToast = expect(
+      this.toastMessage.filter({
+        hasText: /Successfully Updated/i,
+      }),
+    ).toBeVisible({
+      timeout: 20_000,
+    });
+
+    await this.editUserSaveButton.click();
+
+    await expect(this.page).toHaveURL(/admin\/viewSystemUsers/, {
+      timeout: 20_000,
+    });
+
+    await updatedToast;
+
+    await expect(this.systemUsersHeading).toBeVisible();
+  }
 }

@@ -27,7 +27,6 @@ export type EmployeeWithLoginDetails = AddEmployeeDetails & {
   status?: "Enabled" | "Disabled";
 };
 
-
 export interface EmployeeData {
   firstName: string;
   middleName?: string;
@@ -35,7 +34,6 @@ export interface EmployeeData {
   employeeId?: string;
   profilePicturePath?: string;
 }
-
 
 export class PIMPage {
   readonly page: Page;
@@ -82,7 +80,6 @@ export class PIMPage {
   readonly usernameValidation: Locator;
   readonly canceldeletiondilogbutton: Locator;
   readonly addEmployeeIdInput: Locator;
-  
 
   constructor(page: Page) {
     this.page = page;
@@ -102,9 +99,9 @@ export class PIMPage {
       .locator(".oxd-loading-spinner")
       .first();
     this.employeeRows = page.locator(".oxd-table-body .oxd-table-card");
-  this.noRecordsFound = page
-  .locator(".oxd-toast-container")
-  .getByText("No Records Found", { exact: true });
+    this.noRecordsFound = page
+      .locator(".oxd-toast-container")
+      .getByText("No Records Found", { exact: true });
     this.employeeNameFilterInput = page.locator(
       "//div[@class='oxd-grid-4 orangehrm-full-width-grid']//div[1]//div[1]//div[2]//div[1]//div[1]//input[1]",
     );
@@ -252,10 +249,9 @@ export class PIMPage {
     });
 
     this.addEmployeeIdInput = page
-    .locator(".oxd-input-group")
-    .filter({ hasText: "Employee Id" })
-    .locator("input");
-    
+      .locator(".oxd-input-group")
+      .filter({ hasText: "Employee Id" })
+      .locator("input");
   }
 
   async gotoAddEmployee(): Promise<void> {
@@ -333,69 +329,66 @@ export class PIMPage {
 
   //   return employeeId;
   // }
-// async addEmployee(employee: EmployeeData): Promise<string> {
-//   await this.firstnameInput.fill(employee.firstName);
+  // async addEmployee(employee: EmployeeData): Promise<string> {
+  //   await this.firstnameInput.fill(employee.firstName);
 
-//   if (employee.middleName) {
-//     await this.middlenameInput.fill(employee.middleName);
-//   }
+  //   if (employee.middleName) {
+  //     await this.middlenameInput.fill(employee.middleName);
+  //   }
 
-//   await this.lastnameInput.fill(employee.lastName);
+  //   await this.lastnameInput.fill(employee.lastName);
 
-//   /*
-//    * OrangeHRM generates the same next ID when multiple workers
-//    * open Add Employee simultaneously. Override it with a unique ID.
-//    */
-//   const employeeId =
-//     employee.employeeId ??
-//     `${Date.now().toString().slice(-6)}${Math.floor(
-//       Math.random() * 1000
-//     )
-//       .toString()
-//       .padStart(3, "0")}`;
+  //   /*
+  //    * OrangeHRM generates the same next ID when multiple workers
+  //    * open Add Employee simultaneously. Override it with a unique ID.
+  //    */
+  //   const employeeId =
+  //     employee.employeeId ??
+  //     `${Date.now().toString().slice(-6)}${Math.floor(
+  //       Math.random() * 1000
+  //     )
+  //       .toString()
+  //       .padStart(3, "0")}`;
 
-//   await this.employeeID.fill(employeeId);
+  //   await this.employeeID.fill(employeeId);
 
-//   await this.SaveEmployeeButton.click();
+  //   await this.SaveEmployeeButton.click();
 
-//   await expect(this.page).toHaveURL(
-//     /pim\/viewPersonalDetails\/empNumber\/\d+/,
-//     {
-//       timeout: 30_000,
-//     }
-//   );
+  //   await expect(this.page).toHaveURL(
+  //     /pim\/viewPersonalDetails\/empNumber\/\d+/,
+  //     {
+  //       timeout: 30_000,
+  //     }
+  //   );
 
-//   await expect(this.personalDetailsHeading).toBeVisible({
-//     timeout: 15_000,
-//   });
+  //   await expect(this.personalDetailsHeading).toBeVisible({
+  //     timeout: 15_000,
+  //   });
 
-//   return employeeId;
-// }
+  //   return employeeId;
+  // }
 
+  async addEmployee(data: EmployeeData): Promise<string> {
+    await this.firstnameInput.fill(data.firstName);
 
-async addEmployee(data: EmployeeData): Promise<string> {
-  await this.firstnameInput.fill(data.firstName);
+    if (data.middleName !== undefined) {
+      await this.middlenameInput.fill(data.middleName);
+    }
 
-  if (data.middleName !== undefined) {
-    await this.middlenameInput.fill(data.middleName);
+    await this.lastnameInput.fill(data.lastName);
+
+    if (data.employeeId !== undefined) {
+      await this.employeeID.fill(data.employeeId);
+    }
+
+    if (data.profilePicturePath) {
+      await this.profilePictureInput.setInputFiles(data.profilePicturePath);
+    }
+
+    await this.SaveEmployeeButton.click();
+
+    return await this.employeeID.inputValue();
   }
-
-  await this.lastnameInput.fill(data.lastName);
-
-  if (data.employeeId !== undefined) {
-    await this.employeeID.fill(data.employeeId);
-  }
-
-  if (data.profilePicturePath) {
-    await this.profilePictureInput.setInputFiles(
-      data.profilePicturePath,
-    );
-  }
-
-  await this.SaveEmployeeButton.click();
-
-  return await this.employeeID.inputValue();
-}
 
   async gotoEmployeeList(): Promise<void> {
     await this.employeeListLink.click();
@@ -438,23 +431,21 @@ async addEmployee(data: EmployeeData): Promise<string> {
     await expect(this.noRecordsFound).not.toBeVisible();
   }
 
-async verifyNoEmployeeRecordsFound(employeeId: string) {
-  await expect(this.loadingSpinner).toBeHidden({
-    timeout: 15_000,
-  });
+  async verifyNoEmployeeRecordsFound(employeeId: string) {
+    await expect(this.loadingSpinner).toBeHidden({
+      timeout: 15_000,
+    });
 
-  await expect(this.employeeRows).toHaveCount(0, {
-    timeout: 15_000,
-  });
+    await expect(this.employeeRows).toHaveCount(0, {
+      timeout: 15_000,
+    });
 
-  await expect(this.employeeIdFilterInput).toHaveValue(
-    employeeId
-  );
-}
+    await expect(this.employeeIdFilterInput).toHaveValue(employeeId);
+  }
 
   async updatePersonalDetails(details: PersonalDetails): Promise<void> {
     await expect(this.personalDetailsHeading).toBeVisible();
-    //await expect(this.loadingSpinner).toBeHidden();
+    await expect(this.loadingSpinner).toBeHidden();
     await expect(this.personalDetailsSaveButton).toBeEnabled();
 
     if (details.middleName !== undefined) {
@@ -480,7 +471,7 @@ async verifyNoEmployeeRecordsFound(employeeId: string) {
 
     await expect(this.successToast).toContainText("Successfully Updated");
 
-    //await expect(this.loadingSpinner).toBeHidden();
+    await expect(this.loadingSpinner).toBeHidden();
 
     if (details.middleName !== undefined) {
       await expect(this.middlenameInput).toHaveValue(details.middleName);
@@ -669,11 +660,11 @@ async verifyNoEmployeeRecordsFound(employeeId: string) {
   ): Promise<void> {
     await this.employeeNameFilterInput.fill(partialName);
 
-  const matchingOption = this.page
-  .locator(".oxd-autocomplete-option")
-  .filter({ hasText: expectedFullName });
+    const matchingOption = this.page
+      .locator(".oxd-autocomplete-option")
+      .filter({ hasText: expectedFullName });
 
-  await matchingOption.waitFor({ state: "visible" });
+    await matchingOption.waitFor({ state: "visible" });
 
     await expect(matchingOption).toBeVisible({ timeout: 15000 });
     await matchingOption.click();

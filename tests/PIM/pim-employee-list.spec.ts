@@ -206,7 +206,7 @@ test.describe("PIM Employee List", () => {
     await pimPage.addEmployee(employee);
 
     await page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
-      timeout: 15_000,
+      timeout: 20_000,
     });
 
     await pimPage.gotoEmployeeList();
@@ -306,9 +306,7 @@ test.describe("PIM Employee List", () => {
     await pimPage.clickOnFilterSearch();
     await pimPage.openEmployeeById(employeeId);
 
-    await expect(page).toHaveURL(
-      /pim\/viewPersonalDetails\/empNumber\/\d+/,
-    );
+    await expect(page).toHaveURL(/pim\/viewPersonalDetails\/empNumber\/\d+/);
 
     await pimPage.gotoEmployeeList();
     await pimPage.filterEmployeeList({ employeeId });

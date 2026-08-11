@@ -1,0 +1,579 @@
+{
+  "TC_ADMIN_041": { "expectedUrlPattern": "admin/viewSystemUsers" },
+  "TC_ADMIN_042": { "username": "Admin" },
+  "TC_ADMIN_043": { "usernamePrefix": "Unknown", "emptyValue": "" },
+"TC_ADMIN_044": {
+    "userRole": "Admin",
+    "defaultDropdownValue": "Select"
+  },
+    "TC_ADMIN_045": { "status": "Enabled", "defaultDropdownValue": "Select" },
+  "TC_ADMIN_046": {
+    "filters": {
+      "username": "Admin",
+      "userRole": "Admin",
+      "status": "Enabled"
+    },
+    "emptyValue": "",
+    "defaultDropdownValue": "Select"
+  },
+  "TC_ADMIN_047": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "usernamePrefix": "ess",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    }
+  },
+  "TC_ADMIN_048": {
+    "expectedValidations": [
+      "Required",
+      "Required",
+      "Required",
+      "Required",
+      "Required",
+      "Required"
+    ],
+    "expectedUrlPattern": "admin/saveSystemUser"
+  },
+  "TC_ADMIN_049": {
+    "usernamePrefix": "cancel",
+    "password": "Test@12345",
+    "expectedUrlPattern": "admin/viewSystemUsers"
+  },
+  "TC_ADMIN_050": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "username": "Admin",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    },
+    "expectedErrorPattern": "Already exists"
+  },
+  "TC_ADMIN_051": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "usernamePrefix": "ess",
+      "password": "Test@12345",
+      "confirmPassword": "Wrong@12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    },
+    "expectedError": "Passwords do not match"
+  },
+  "TC_ADMIN_052": {
+    "expectedValidations": [
+      "Required",
+      "Required",
+      "Required",
+      "Required",
+      "Required",
+      "Passwords do not match"
+    ],
+    "expectedUrlPattern": "admin/saveSystemUser"
+  },
+  "TC_ADMIN_053": {
+    "filters": {
+      "username": "Admin",
+      "userRole": "Admin",
+      "status": "Enabled"
+    },
+    "emptyValue": "",
+    "defaultDropdownValue": "Select"
+  },
+  "TC_ADMIN_054": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "usernamePrefix": "ess",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "initialStatus": "Enabled",
+      "updatedStatus": "Disabled"
+    }
+  },
+  "TC_ADMIN_055": {
+    "timeout": 180000,
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "usernamePrefix": "ess",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    }
+  },
+  "TC_ADMIN_056": {
+    "timeout": 180000,
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "usernamePrefix": "ess",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    }
+  },
+  "TC_ADMIN_057": {
+    "timeout": 240000,
+    "firstEmployee": {
+      "firstNamePrefix": "AutoA",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "secondEmployee": {
+      "firstNamePrefix": "AutoB",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "firstUsernamePrefix": "essA",
+    "secondUsernamePrefix": "essB",
+    "password": "Test@12345",
+    "userRole": "ESS",
+    "status": "Enabled"
+  },
+  "TC_ADMIN_058": { "expectedMinimumRows": 1 },
+  "TC_ADMIN_059": {
+    "skipMessage": "System Users currently contains only one page",
+    "pollTimeout": 15000
+  },
+  "TC_ADMIN_060": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "username": "abc",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    },
+    "expectedError": "Should be at least 5 characters"
+  },
+  "TC_ADMIN_061": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "usernamePrefix": "ess",
+      "password": "12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    },
+    "expectedErrorPattern": "characters|lower-case|upper-case|number"
+  },
+  "TC_ADMIN_062": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "usernamePrefix": "ess",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    },
+    "emptyValue": ""
+  },
+  "TC_ADMIN_063": {
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "originalUsernamePrefix": "ess",
+      "updatedUsernamePrefix": "updated",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    }
+  },
+  "TC_ADMIN_064": {
+    "timeout": 180000,
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "originalUsernamePrefix": "ess",
+      "cancelledUsernamePrefix": "cancel",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "status": "Enabled"
+    }
+  },
+  "TC_ADMIN_065": {
+    "invalidEmployeeNamePrefix": "UnknownEmployee",
+    "usernamePrefix": "ess",
+    "password": "Test@12345",
+    "userRole": "ESS",
+    "status": "Enabled",
+    "expectedAutocompleteMessage": "No Records Found",
+    "expectedError": "Invalid"
+  },
+  "TC_ADMIN_066": {
+    "timeout": 180000,
+    "employee": {
+      "firstNamePrefix": "Auto",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "systemUser": {
+      "usernamePrefix": "ess",
+      "password": "Test@12345",
+      "userRole": "ESS",
+      "status": "Disabled"
+    }
+  },
+  "TC_ADMIN_067": {
+    "username": "Admin",
+    "userRole": "Admin",
+    "status": "Enabled"
+  },
+  "TC_ADMIN_068": { "username": "Admin" },
+
+  "TC_PIM_070": { "invalidEmployeeIdPrefix": "999" },
+  "TC_PIM_071": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Delete",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_072": {
+    "employeeId": "999999",
+    "employeeName": "Test Employee",
+    "emptyValue": ""
+  },
+  "TC_PIM_073": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Open",
+      "middleName": "Test",
+      "lastName": "Details"
+    }
+  },
+  "TC_PIM_074": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Cancel",
+      "middleName": "Test",
+      "lastName": "Delete"
+    }
+  },
+  "TC_PIM_075": {
+    "timeout": 120000,
+    "firstEmployee": {
+      "firstNamePrefix": "MismatchA",
+      "middleName": "Test",
+      "lastName": "First"
+    },
+    "secondEmployee": {
+      "firstNamePrefix": "MismatchB",
+      "middleName": "Test",
+      "lastName": "Second"
+    }
+  },
+  "TC_PIM_076": {
+    "timeout": 120000,
+    "firstEmployee": {
+      "firstNamePrefix": "First",
+      "middleName": "Test",
+      "lastName": "Employee"
+    },
+    "secondEmployee": {
+      "firstNamePrefix": "Second",
+      "middleName": "Test",
+      "lastName": "Employee"
+    }
+  },
+  "TC_PIM_077": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Persist",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_078": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Partial",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "partialNameLength": 9
+  },
+  "TC_PIM_079": {
+    "timeout": 90000,
+    "invalidEmployeeIdPrefix": "9",
+    "emptyValue": ""
+  },
+  "TC_PIM_080": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Double",
+      "middleName": "Test",
+      "lastName": "Search"
+    },
+    "skipReason": "Original TC_PIM_080 implementation is incomplete"
+  },
+  "TC_PIM_081": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Details",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_082": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "ResetName",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "emptyValue": ""
+  },
+  "TC_PIM_083": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Match",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_084": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "CancelOpen",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_085": {
+    "timeout": 150000,
+    "firstEmployee": {
+      "firstNamePrefix": "Delete",
+      "middleName": "Test",
+      "lastName": "First"
+    },
+    "secondEmployee": {
+      "firstNamePrefix": "Remain",
+      "middleName": "Test",
+      "lastName": "Second"
+    }
+  },
+  "TC_PIM_086": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Reset",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "emptyValue": ""
+  },
+  "TC_PIM_087": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Cancel",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_088": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Open",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_089": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Delete",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_090": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Combined",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_091": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Reset",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "emptyValue": ""
+  },
+  "TC_PIM_092": {
+    "timeout": 150000,
+    "firstEmployee": {
+      "firstNamePrefix": "Delete",
+      "middleName": "Test",
+      "lastName": "First"
+    },
+    "secondEmployee": {
+      "firstNamePrefix": "Remain",
+      "middleName": "Test",
+      "lastName": "Second"
+    }
+  },
+  "TC_PIM_093": {
+    "timeout": 150000,
+    "sharedFirstNamePrefix": "Similar",
+    "middleName": "Test",
+    "firstLastName": "First",
+    "secondLastName": "Second"
+  },
+  "TC_PIM_094": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Replace",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "invalidEmployeeId": "999999999"
+  },
+  "TC_PIM_095": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Details",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_096": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Valid",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "invalidEmployeeId": "999999999"
+  },
+  "TC_PIM_097": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Partial",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "partialNameLength": 10
+  },
+  "TC_PIM_098": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Cancel",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_099": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "ResetAll",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "emptyValue": ""
+  },
+  "TC_PIM_100": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Return",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_101": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "CannotOpen",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_102": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Refresh",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "spinnerTimeout": 15000
+  },
+  "TC_PIM_103": {
+    "timeout": 120000,
+    "employee": {
+      "firstNamePrefix": "Retain",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+  "TC_PIM_104": {
+    "timeout": 150000,
+    "firstEmployee": {
+      "firstNamePrefix": "BulkFirst",
+      "middleName": "Test",
+      "lastName": "User"
+    },
+    "secondEmployee": {
+      "firstNamePrefix": "BulkSecond",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  },
+    "TC_PIM_069": {
+    "employee": {
+      "firstNamePrefix": "Name",
+      "middleName": "Test",
+      "lastName": "Search"
+    }
+  },
+  "TC_PIM_105": {
+    "employee": {
+      "firstNamePrefix": "Find",
+      "middleName": "Test",
+      "lastName": "User"
+    }
+  }
+}

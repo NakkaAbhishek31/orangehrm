@@ -3,13 +3,74 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:all": "playwright test",
+
+    "test:admin": "playwright test tests/admin",
+    "test:pim": "playwright test tests/pim",
+    "test:employee": "playwright test tests/employee",
+
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:positive": "playwright test --grep @positive",
+    "test:negative": "playwright test --grep @negative",
+    "test:validation": "playwright test --grep @validation",
+    "test:search": "playwright test --grep @search",
+    "test:filter": "playwright test --grep @filter",
+    "test:pagination": "playwright test --grep @pagination",
+    "test:navigation": "playwright test --grep @navigation",
+    "test:upload": "playwright test --grep @upload",
+    "test:download": "playwright test --grep @download",
+    "test:create": "playwright test --grep @create",
+    "test:edit": "playwright test --grep @edit",
+    "test:delete": "playwright test --grep @delete",
+    "test:bulk-delete": "playwright test --grep @bulk-delete",
+    "test:cancel": "playwright test --grep @cancel",
+    "test:security": "playwright test --grep @security",
+    "test:account": "playwright test --grep @account",
+    "test:selection": "playwright test --grep @selection",
+    "test:details": "playwright test --grep @details",
+    "test:autocomplete": "playwright test --grep @autocomplete",
+
+    "test:admin:smoke": "playwright test tests/admin --grep @smoke",
+    "test:admin:regression": "playwright test tests/admin --grep @regression",
+    "test:pim:smoke": "playwright test tests/pim --grep @smoke",
+    "test:pim:regression": "playwright test tests/pim --grep @regression",
+    "test:pim:positive": "playwright test tests/pim --grep @positive",
+    "test:pim:negative": "playwright test tests/pim --grep @negative",
+
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+
+    "test:ci": "playwright test --project=chromium --workers=1",
+    "test:ci:smoke": "playwright test --project=chromium --workers=1 --grep @smoke",
+    "test:ci:regression": "playwright test --project=chromium --workers=1 --grep @regression",
+
+    "test:list": "playwright test --list",
+    "test:last-failed": "playwright test --last-failed",
+
+    "report": "playwright show-report",
+    "report:open": "playwright show-report playwright-report",
+
+    "install:browsers": "playwright install",
+    "install:chromium": "playwright install chromium",
+    "codegen": "playwright codegen"
+  },
   "keywords": [],
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.62.0",
-    "@types/node": "^26.1.2",
+    "@types/node": "^26.2.0",
     "allure-commandline": "^2.43.0",
     "allure-playwright": "^3.10.2"
   }
+
+
+  
 }
