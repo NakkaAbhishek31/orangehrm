@@ -22,6 +22,9 @@ export class LeavePage {
   readonly includePastEmployeesLabel: Locator;
   readonly autocompleteOptions: Locator;
   readonly employeeNameValidation: Locator;
+  readonly fromDateValidation: Locator;
+  readonly nextPageButton: Locator;
+readonly previousPageButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -141,6 +144,39 @@ export class LeavePage {
         }),
       })
       .locator(".oxd-input-field-error-message");
+      this.fromDateValidation = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page
+      .locator('label')
+      .getByText('From Date', {
+        exact: true,
+      }),
+  })
+  .locator(
+    '.oxd-input-field-error-message'
+  );
+
+ this.nextPageButton = page
+  .locator(
+    'button.oxd-pagination-page-item--previous-next'
+  )
+  .filter({
+    has: page.locator(
+      'i.bi-chevron-right'
+    ),
+  });
+
+this.previousPageButton = page
+  .locator(
+    'button.oxd-pagination-page-item--previous-next'
+  )
+  .filter({
+    has: page.locator(
+      'i.bi-chevron-left'
+    ),
+  });
+
   }
 
   async verifyLeaveListPage(): Promise<void> {
@@ -232,4 +268,37 @@ export class LeavePage {
 
     return leaveType;
   }
+
+  async removeSelectedLeaveStatus(
+  status: string
+): Promise<void> {
+  const selectedStatus =
+    this.leaveStatusDropdown.locator(
+      '.oxd-select-text-selected'
+    ).filter({
+      hasText: status,
+    });
+
+  await expect(
+    selectedStatus
+  ).toBeVisible();
+
+  await selectedStatus
+    .locator('.oxd-select-text--close')
+    .click();
+
+  await expect(
+    selectedStatus
+  ).toHaveCount(0);
+}
+
+async getVisibleLeaveRecords():
+Promise<string[]> {
+  await expect(
+    this.loadingSpinner
+  ).toBeHidden();
+
+  return this.leaveRows.allInnerTexts();
+}
+
 }

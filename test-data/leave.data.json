@@ -19,5 +19,29 @@
   "fromDaysOffset": -90,
   "toDaysOffset": 0,
   "leaveStatus": "Rejected"
-}
+},
+
+  "TC_LEAVE_119": {
+    "leaveStatus": "Pending Approval"
+  },
+  "TC_LEAVE_120": {
+    "invalidFromDate": "2026-99-99",
+    "expectedValidation": "Should be a valid date"
+  },
+  "TC_LEAVE_121": {
+    "partialEmployeeName": "a",
+    "leaveStatus": "Rejected"
+  },
+  "TC_LEAVE_122": {
+    "leaveStatus": "Rejected"
+  },
+  "TC_LEAVE_123": {
+    "fromDaysOffset": -90,
+    "toDaysOffset": 0,
+    "leaveStatus": "Rejected"
+  },
+  "TC_LEAVE_124": {
+    "fromDaysOffset": -365,
+    "toDaysOffset": 0
+  }
 }
