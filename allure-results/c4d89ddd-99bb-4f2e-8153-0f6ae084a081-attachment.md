@@ -1,0 +1,898 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Admin\admin-users.spec.ts >> Admin - System Users >> TC_ADMIN_045 - Admin should filter system users by enabled status @positive @filter @regression
+- Location: tests\Admin\admin-users.spec.ts:95:8
+
+# Error details
+
+```
+Error: expect(locator).toHaveText(expected) failed
+
+Locator: locator('.oxd-table-body .oxd-table-card').first().locator('.oxd1-table-cell').nth(4)
+Expected: "Enabled"
+Timeout: 20000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toHaveText" with timeout 20000ms
+  - waiting for locator('.oxd-table-body .oxd-table-card').first().locator('.oxd1-table-cell').nth(4)
+
+```
+
+```yaml
+- complementary:
+  - navigation "Sidepanel":
+    - link "client brand banner":
+      - /url: https://www.orangehrm.com/
+      - img "client brand banner"
+    - textbox "Search"
+    - button ""
+    - separator
+    - list:
+      - listitem:
+        - link "Admin":
+          - /url: /web/index.php/admin/viewAdminModule
+      - listitem:
+        - link "PIM":
+          - /url: /web/index.php/pim/viewPimModule
+      - listitem:
+        - link "Leave":
+          - /url: /web/index.php/leave/viewLeaveModule
+      - listitem:
+        - link "Time":
+          - /url: /web/index.php/time/viewTimeModule
+      - listitem:
+        - link "Recruitment":
+          - /url: /web/index.php/recruitment/viewRecruitmentModule
+      - listitem:
+        - link "My Info":
+          - /url: /web/index.php/pim/viewMyDetails
+      - listitem:
+        - link "Performance":
+          - /url: /web/index.php/performance/viewPerformanceModule
+      - listitem:
+        - link "Dashboard":
+          - /url: /web/index.php/dashboard/index
+      - listitem:
+        - link "Directory":
+          - /url: /web/index.php/directory/viewDirectory
+      - listitem:
+        - link "Maintenance":
+          - /url: /web/index.php/maintenance/viewMaintenanceModule
+      - listitem:
+        - link "Claim":
+          - /url: /web/index.php/claim/viewClaimModule
+          - img
+          - text: Claim
+      - listitem:
+        - link "Buzz":
+          - /url: /web/index.php/buzz/viewBuzz
+- banner:
+  - heading "Admin" [level=6]
+  - heading "/ User Management" [level=6]
+  - link "Upgrade":
+    - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+    - button "Upgrade"
+  - list:
+    - listitem:
+      - img "profile picture"
+      - paragraph: mandaa user
+      - text: 
+  - navigation "Topbar Menu":
+    - list:
+      - listitem: User Management 
+      - listitem: Job 
+      - listitem: Organization 
+      - listitem: Qualifications 
+      - listitem:
+        - link "Nationalities":
+          - /url: "#"
+      - listitem:
+        - link "Corporate Branding":
+          - /url: "#"
+      - listitem: Configuration 
+      - button ""
+- heading "System Users" [level=5]
+- button ""
+- separator
+- text: Username
+- textbox
+- text: User Role -- Select --  Employee Name
+- textbox "Type for hints..."
+- text: Status Enabled 
+- separator
+- button "Reset"
+- button "Search"
+- button " Add"
+- separator
+- text: (53) Records Found
+- table:
+  - rowgroup:
+    - row " Username  User Role  Employee Name  Status  Actions":
+      - columnheader "":
+        - checkbox ""
+        - text: 
+      - columnheader "Username "
+      - columnheader "User Role "
+      - columnheader "Employee Name "
+      - columnheader "Status "
+      - columnheader "Actions"
+  - rowgroup:
+    - row " Admin Admin mandaa user Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Admin"
+      - cell "Admin"
+      - cell "mandaa user"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " admin2 Admin Radha Gupta Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "admin2"
+      - cell "Admin"
+      - cell "Radha Gupta"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " akhil1604 ESS Akhill test Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "akhil1604"
+      - cell "ESS"
+      - cell "Akhill test"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " akhil6497 ESS Akhill test Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "akhil6497"
+      - cell "ESS"
+      - cell "Akhill test"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " auraqa_1786515697747 Admin aaaa aaaa Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "auraqa_1786515697747"
+      - cell "Admin"
+      - cell "aaaa aaaa"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " auraqa_1786517645365 Admin aaaa aaaa Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "auraqa_1786517645365"
+      - cell "Admin"
+      - cell "aaaa aaaa"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " AutoUser25662 Admin Akhill test Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "AutoUser25662"
+      - cell "Admin"
+      - cell "Akhill test"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " auto_user_1786515731 ESS Peter Anderson Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "auto_user_1786515731"
+      - cell "ESS"
+      - cell "Peter Anderson"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " auto_user_1786516568 ESS Peter Anderson Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "auto_user_1786516568"
+      - cell "ESS"
+      - cell "Peter Anderson"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " ess1786514914661985 ESS Auto1786514914661985 User Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "ess1786514914661985"
+      - cell "ESS"
+      - cell "Auto1786514914661985 User"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " ess178651588968790 ESS Auto178651588968790 User Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "ess178651588968790"
+      - cell "ESS"
+      - cell "Auto178651588968790 User"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " FMLName ESS Qwerty LName Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "FMLName"
+      - cell "ESS"
+      - cell "Qwerty LName"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " FMLName1 ESS FName LName Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "FMLName1"
+      - cell "ESS"
+      - cell "FName LName"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr073746 ESS Hmgr QA073746 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr073746"
+      - cell "ESS"
+      - cell "Hmgr QA073746"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr167226 ESS Hmgr QA167226 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr167226"
+      - cell "ESS"
+      - cell "Hmgr QA167226"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr244192 ESS Hmgr QA244192 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr244192"
+      - cell "ESS"
+      - cell "Hmgr QA244192"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr372847 ESS Hmgr QA372847 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr372847"
+      - cell "ESS"
+      - cell "Hmgr QA372847"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr430998 ESS Hmgr QA430998 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr430998"
+      - cell "ESS"
+      - cell "Hmgr QA430998"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr452519 ESS Hmgr QA452519 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr452519"
+      - cell "ESS"
+      - cell "Hmgr QA452519"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr545386 ESS Hmgr QA545386 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr545386"
+      - cell "ESS"
+      - cell "Hmgr QA545386"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr569275 ESS Hmgr QA569275 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr569275"
+      - cell "ESS"
+      - cell "Hmgr QA569275"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr605446 ESS Hmgr QA605446 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr605446"
+      - cell "ESS"
+      - cell "Hmgr QA605446"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr666923 ESS Hmgr QA666923 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr666923"
+      - cell "ESS"
+      - cell "Hmgr QA666923"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr791917 ESS Hmgr QA791917 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr791917"
+      - cell "ESS"
+      - cell "Hmgr QA791917"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Hmgr967983 ESS Hmgr QA967983 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Hmgr967983"
+      - cell "ESS"
+      - cell "Hmgr QA967983"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr073746 ESS Intvr QA073746 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr073746"
+      - cell "ESS"
+      - cell "Intvr QA073746"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr167226 ESS Intvr QA167226 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr167226"
+      - cell "ESS"
+      - cell "Intvr QA167226"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr244192 ESS Intvr QA244192 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr244192"
+      - cell "ESS"
+      - cell "Intvr QA244192"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr372847 ESS Intvr QA372847 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr372847"
+      - cell "ESS"
+      - cell "Intvr QA372847"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr430998 ESS Intvr QA430998 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr430998"
+      - cell "ESS"
+      - cell "Intvr QA430998"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr452519 ESS Intvr QA452519 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr452519"
+      - cell "ESS"
+      - cell "Intvr QA452519"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr545386 ESS Intvr QA545386 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr545386"
+      - cell "ESS"
+      - cell "Intvr QA545386"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr569275 ESS Intvr QA569275 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr569275"
+      - cell "ESS"
+      - cell "Intvr QA569275"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr605446 ESS Intvr QA605446 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr605446"
+      - cell "ESS"
+      - cell "Intvr QA605446"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr666923 ESS Intvr QA666923 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr666923"
+      - cell "ESS"
+      - cell "Intvr QA666923"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr791917 ESS Intvr QA791917 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr791917"
+      - cell "ESS"
+      - cell "Intvr QA791917"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Intvr967983 ESS Intvr QA967983 Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Intvr967983"
+      - cell "ESS"
+      - cell "Intvr QA967983"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Jobinsam@6742 ESS Jobin Sam Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Jobinsam@6742"
+      - cell "ESS"
+      - cell "Jobin Sam"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Praveen ESS Ranga Akunuri Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Praveen"
+      - cell "ESS"
+      - cell "Ranga Akunuri"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " RaviMB Admin Ravi B Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "RaviMB"
+      - cell "Admin"
+      - cell "Ravi B"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " tatsuuu ESS tatsav latha Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "tatsuuu"
+      - cell "ESS"
+      - cell "tatsav latha"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Test Supervisor ESS Test Supervisor Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Test Supervisor"
+      - cell "ESS"
+      - cell "Test Supervisor"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " test.leave.employee ESS Test Leave Employee Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "test.leave.employee"
+      - cell "ESS"
+      - cell "Test Leave Employee"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " test.supervisor ESS Test Supervisor Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "test.supervisor"
+      - cell "ESS"
+      - cell "Test Supervisor"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " test12345 ESS Virat Kohli Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "test12345"
+      - cell "ESS"
+      - cell "Virat Kohli"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " test1@gmail.com Admin Charles Carter Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "test1@gmail.com"
+      - cell "Admin"
+      - cell "Charles Carter"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " TESTUser_1786514906963 Admin Rahul Das Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "TESTUser_1786514906963"
+      - cell "Admin"
+      - cell "Rahul Das"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " TESTUser_1786515640198 Admin Rahul Das Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "TESTUser_1786515640198"
+      - cell "Admin"
+      - cell "Rahul Das"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " TESTUser_1786516475030 Admin Rahul Das Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "TESTUser_1786516475030"
+      - cell "Admin"
+      - cell "Rahul Das"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " TESTUser_1786517167406 Admin Rahul Das Enabled  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "TESTUser_1786517167406"
+      - cell "Admin"
+      - cell "Rahul Das"
+      - cell "Enabled"
+      - cell " ":
+        - button ""
+        - button ""
+- navigation "Pagination Navigation":
+  - list:
+    - listitem:
+      - button "1"
+    - listitem:
+      - button "2"
+    - listitem:
+      - button ""
+- paragraph: OrangeHRM OS 5.9
+- paragraph:
+  - text: © 2005 - 2026
+  - link "OrangeHRM, Inc":
+    - /url: http://www.orangehrm.com
+  - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  8   |   d: { firstNamePrefix: string; middleName: string; lastName: string },
+  9   |   value = unique(),
+  10  | ) => ({
+  11  |   firstName: `${d.firstNamePrefix}${value}`,
+  12  |   middleName: d.middleName,
+  13  |   lastName: d.lastName,
+  14  | });
+  15  | 
+  16  | test.describe("Admin - System Users", () => {
+  17  |   test.beforeEach(async ({ loginPage }) => {
+  18  |     await loginPage.visitPage();
+  19  |     await loginPage.login(
+  20  |       loginData.validAdmin.username,
+  21  |       loginData.validAdmin.password,
+  22  |     );
+  23  |     await loginPage.verifyLoginSuccessful();
+  24  |   });
+  25  | 
+  26  |   test("TC_ADMIN_041 - Admin should navigate to the System Users page @smoke @navigation @regression", async ({
+  27  |     page,
+  28  |     navigationPage,
+  29  |     adminPage,
+  30  |   }) => {
+  31  |     await navigationPage.gotoAdmin();
+  32  |     await adminPage.gotoUserManagementUsers();
+  33  |     await expect(page).toHaveURL(
+  34  |       new RegExp(adminData.TC_ADMIN_041.expectedUrlPattern),
+  35  |     );
+  36  |     await expect(adminPage.systemUsersHeading).toBeVisible();
+  37  |     await expect(adminPage.usernameInput).toBeVisible();
+  38  |     await expect(adminPage.userRoleDropdown).toBeVisible();
+  39  |     await expect(adminPage.employeeNameInput).toBeVisible();
+  40  |     await expect(adminPage.statusDropdown).toBeVisible();
+  41  |     await expect(adminPage.searchButton).toBeVisible();
+  42  |     await expect(adminPage.resetButton).toBeVisible();
+  43  |     await expect(adminPage.addButton).toBeVisible();
+  44  |     await expect(adminPage.systemUsersTable).toBeVisible();
+  45  |   });
+  46  | 
+  47  |   test("TC_ADMIN_042 - Admin should search for a system user by username @positive @search @regression", async ({
+  48  |     navigationPage,
+  49  |     adminPage,
+  50  |   }) => {
+  51  |     const data = adminData.TC_ADMIN_042;
+  52  |     await navigationPage.gotoAdmin();
+  53  |     await adminPage.gotoUserManagementUsers();
+  54  |     await adminPage.searchSystemUsers({ username: data.username });
+  55  |     await adminPage.verifySystemUserResult({ username: data.username });
+  56  |     await adminPage.resetSystemUserFilters();
+  57  |   });
+  58  | 
+  59  |   test("TC_ADMIN_043 - Admin should see no records for a nonexistent username @negative @search @regression", async ({
+  60  |     navigationPage,
+  61  |     adminPage,
+  62  |   }) => {
+  63  |     const data = adminData.TC_ADMIN_043;
+  64  |     const username = `${data.usernamePrefix}${unique()}`;
+  65  |     await navigationPage.gotoAdmin();
+  66  |     await adminPage.gotoUserManagementUsers();
+  67  |     await adminPage.searchSystemUsers({ username });
+  68  |     await expect(adminPage.noRecordsFound).toBeVisible();
+  69  |     await expect(adminPage.userRows).toHaveCount(0);
+  70  |     await expect(adminPage.usernameInput).toHaveValue(username);
+  71  |     await adminPage.resetSystemUserFilters();
+  72  |     await expect(adminPage.usernameInput).toHaveValue(data.emptyValue);
+  73  |   });
+  74  | 
+  75  |   test("TC_ADMIN_044 - Admin should filter system users by user role @positive @filter @regression", async ({
+  76  |     navigationPage,
+  77  |     adminPage,
+  78  |   }) => {
+  79  |     const data = adminData.TC_ADMIN_044;
+  80  |     await navigationPage.gotoAdmin();
+  81  |     await adminPage.gotoUserManagementUsers();
+  82  |     await adminPage.searchSystemUsers({ userRole: data.userRole });
+  83  |     const count = await adminPage.userRows.count();
+  84  |     expect(count).toBeGreaterThan(0);
+  85  |     for (let i = 0; i < count; i++)
+  86  |       await expect(
+  87  |         adminPage.userRows.nth(i).locator(".oxd-table-cell").nth(2),
+  88  |       ).toHaveText(data.userRole);
+  89  |     await adminPage.resetSystemUserFilters();
+  90  |     await expect(adminPage.userRoleDropdown).toContainText(
+  91  |       data.defaultDropdownValue,
+  92  |     );
+  93  |   });
+  94  | 
+  95  |   test.only("TC_ADMIN_045 - Admin should filter system users by enabled status @positive @filter @regression", async ({
+  96  |     navigationPage,
+  97  |     adminPage,
+  98  |   }) => {
+  99  |     const data = adminData.TC_ADMIN_045;
+  100 |     await navigationPage.gotoAdmin();
+  101 |     await adminPage.gotoUserManagementUsers();
+  102 |     await adminPage.searchSystemUsers({ status: data.status });
+  103 |     const count = await adminPage.userRows.count();
+  104 |     expect(count).toBeGreaterThan(0);
+  105 |     for (let i = 0; i < count; i++)
+  106 |       await expect(
+  107 |         adminPage.userRows.nth(i).locator(".oxd1-table-cell").nth(4),
+> 108 |       ).toHaveText(data.status);
+      |         ^ Error: expect(locator).toHaveText(expected) failed
+  109 |     await adminPage.resetSystemUserFilters();
+  110 |     await expect(adminPage.statusDropdown).toContainText(
+  111 |       data.defaultDropdownValue,
+  112 |     );
+  113 |   });
+  114 | 
+  115 |   test("TC_ADMIN_046 - Admin should search using username, role, and status filters @positive @filter @regression", async ({
+  116 |     navigationPage,
+  117 |     adminPage,
+  118 |   }) => {
+  119 |     const data = adminData.TC_ADMIN_046;
+  120 |     await navigationPage.gotoAdmin();
+  121 |     await adminPage.gotoUserManagementUsers();
+  122 |     await adminPage.searchSystemUsers(data.filters);
+  123 |     await expect(adminPage.userRows.first()).toBeVisible();
+  124 |     await adminPage.resetSystemUserFilters();
+  125 |     await expect(adminPage.usernameInput).toHaveValue(data.emptyValue);
+  126 |     await expect(adminPage.userRoleDropdown).toContainText(
+  127 |       data.defaultDropdownValue,
+  128 |     );
+  129 |     await expect(adminPage.statusDropdown).toContainText(
+  130 |       data.defaultDropdownValue,
+  131 |     );
+  132 |   });
+  133 | 
+  134 |   test("TC_ADMIN_047 - Admin should add a new ESS system user successfully @positive @create @regression", async ({
+  135 |     navigationPage,
+  136 |     pimPage,
+  137 |     adminPage,
+  138 |   }) => {
+  139 |     const data = adminData.TC_ADMIN_047;
+  140 |     const value = unique();
+  141 |     const employee = employeeFrom(data.employee, value);
+  142 |     const username = `${data.systemUser.usernamePrefix}${value}`;
+  143 |     const employeeName = `${employee.firstName} ${employee.middleName} ${employee.lastName}`;
+  144 |     await navigationPage.gotoPIM();
+  145 |     await pimPage.gotoAddEmployee();
+  146 |     const employeeId = await pimPage.addEmployee(employee);
+  147 |     await navigationPage.gotoAdmin();
+  148 |     await adminPage.gotoUserManagementUsers();
+  149 |     await adminPage.gotoAddSystemUser();
+  150 |     await adminPage.fillSystemUserForm({
+  151 |       ...data.systemUser,
+  152 |       employeeName,
+  153 |       username,
+  154 |     });
+  155 |     await adminPage.saveSystemUser();
+  156 |     await adminPage.searchSystemUsers({ username });
+  157 |     await adminPage.verifySystemUserResult({
+  158 |       username,
+  159 |       userRole: data.systemUser.userRole,
+  160 |       employeeName: `${employee.firstName} ${employee.lastName}`,
+  161 |       status: data.systemUser.status,
+  162 |     });
+  163 |     await adminPage.deleteSystemUserByUsername(username);
+  164 |     await navigationPage.gotoPIM();
+  165 |     await pimPage.gotoEmployeeList();
+  166 |     await pimPage.filterEmployeeList({ employeeId });
+  167 |     await pimPage.clickOnFilterSearch();
+  168 |     await pimPage.deleteEmployeeById(employeeId);
+  169 |   });
+  170 | 
+  171 |   test("TC_ADMIN_048 - Required validation should appear when System User fields are empty @negative @validation @regression", async ({
+  172 |     page,
+  173 |     navigationPage,
+  174 |     adminPage,
+  175 |   }) => {
+  176 |     const data = adminData.TC_ADMIN_048;
+  177 |     await navigationPage.gotoAdmin();
+  178 |     await adminPage.gotoUserManagementUsers();
+  179 |     await adminPage.gotoAddSystemUser();
+  180 |     await adminPage.addUserSaveButton.click();
+  181 |     await expect(adminPage.validationMessages).toHaveCount(
+  182 |       data.expectedValidations.length,
+  183 |     );
+  184 |     await expect(adminPage.validationMessages).toHaveText(
+  185 |       data.expectedValidations,
+  186 |     );
+  187 |     await expect(page).toHaveURL(new RegExp(data.expectedUrlPattern));
+  188 |   });
+  189 | 
+  190 |   test("TC_ADMIN_049 - Admin should cancel adding a new System User @negative @cancel @regression", async ({
+  191 |     page,
+  192 |     navigationPage,
+  193 |     adminPage,
+  194 |   }) => {
+  195 |     const data = adminData.TC_ADMIN_049;
+  196 |     const username = `${data.usernamePrefix}${unique()}`;
+  197 |     await navigationPage.gotoAdmin();
+  198 |     await adminPage.gotoUserManagementUsers();
+  199 |     await adminPage.gotoAddSystemUser();
+  200 |     await adminPage.addUsernameInput.fill(username);
+  201 |     await adminPage.addPasswordInput.fill(data.password);
+  202 |     await adminPage.addConfirmPasswordInput.fill(data.password);
+  203 |     await adminPage.addUserCancelButton.click();
+  204 |     await expect(page).toHaveURL(new RegExp(data.expectedUrlPattern));
+  205 |     await adminPage.searchSystemUsers({ username });
+  206 |     await expect(adminPage.userRows).toHaveCount(0);
+  207 |   });
+  208 | 
+```

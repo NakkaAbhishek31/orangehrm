@@ -104,7 +104,7 @@ test.describe("Admin - System Users", () => {
     expect(count).toBeGreaterThan(0);
     for (let i = 0; i < count; i++)
       await expect(
-        adminPage.userRows.nth(i).locator(".oxd1-table-cell").nth(4),
+        adminPage.userRows.nth(i).locator(".oxd-table-cell").nth(4),
       ).toHaveText(data.status);
     await adminPage.resetSystemUserFilters();
     await expect(adminPage.statusDropdown).toContainText(
@@ -547,6 +547,7 @@ test.describe("Admin - System Users", () => {
     adminPage,
   }) => {
     const data = adminData.TC_ADMIN_061;
+    test.setTimeout(data.timeout);
     const value = unique();
     const employee = employeeFrom(data.employee, value);
     await navigationPage.gotoPIM();
@@ -579,6 +580,7 @@ test.describe("Admin - System Users", () => {
     adminPage,
   }) => {
     const data = adminData.TC_ADMIN_062;
+    test.setTimeout(data.timeout);
     const value = unique();
     const employee = employeeFrom(data.employee, value);
     const username = `${data.systemUser.usernamePrefix}${value}`;

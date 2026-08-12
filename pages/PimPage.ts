@@ -377,17 +377,31 @@ export class PIMPage {
 
     await this.lastnameInput.fill(data.lastName);
 
-    if (data.employeeId !== undefined) {
-      await this.employeeID.fill(data.employeeId);
-    }
+    const employeeId =
+      data.employeeId ??
+      `${Date.now().toString().slice(-8)}${Math.floor(Math.random() * 10)}`;
+    await this.employeeID.fill(employeeId);
 
     if (data.profilePicturePath) {
       await this.profilePictureInput.setInputFiles(data.profilePicturePath);
     }
 
-    await this.SaveEmployeeButton.click();
+    const createEmployeeResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/pim/employees") &&
+        response.request().method() === "POST" &&
+        response.ok(),
+      { timeout: 20_000 },
+    );
 
-    return await this.employeeID.inputValue();
+    await this.SaveEmployeeButton.click();
+    await createEmployeeResponse;
+    await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
+      timeout: 20_000,
+    });
+    await expect(this.loadingSpinner).toBeHidden({ timeout: 20_000 });
+
+    return employeeId;
   }
 
   async gotoEmployeeList(): Promise<void> {
@@ -412,7 +426,17 @@ export class PIMPage {
   }
 
   async clickOnFilterSearch(): Promise<void> {
+    const employeeListResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/pim/employees") &&
+        response.request().method() === "GET" &&
+        response.ok(),
+      { timeout: 20_000 },
+    );
+
     await this.filterSearchButton.click();
+    await employeeListResponse;
+    await expect(this.loadingSpinner).toBeHidden({ timeout: 20_000 });
   }
 
   async verifyEmployeeSearchResult(

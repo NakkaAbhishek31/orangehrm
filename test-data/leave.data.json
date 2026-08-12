@@ -14,5 +14,10 @@
   
   "TC_LEAVE_116": {
     "employeeName": "UnknownEmployeeAutomation"
-  }
+  },
+  "TC_LEAVE_117": {
+  "fromDaysOffset": -90,
+  "toDaysOffset": 0,
+  "leaveStatus": "Rejected"
+}
 }

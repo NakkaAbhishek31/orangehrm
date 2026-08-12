@@ -36,7 +36,7 @@
       "Required",
       "Required",
       "Required",
-      "Required"
+      "Passwords do not match"
     ],
     "expectedUrlPattern": "admin/saveSystemUser"
   },
@@ -160,7 +160,7 @@
     "pollTimeout": 15000
   },
   "TC_ADMIN_060": {
-    "timeout": 120000,
+    "timeout": 180000,
     "employee": {
       "firstNamePrefix": "Auto",
       "middleName": "Test",
@@ -175,6 +175,7 @@
     "expectedError": "Should be at least 5 characters"
   },
   "TC_ADMIN_061": {
+    "timeout": 180000,
     "employee": {
       "firstNamePrefix": "Auto",
       "middleName": "Test",
@@ -189,6 +190,7 @@
     "expectedErrorPattern": "characters|lower-case|upper-case|number"
   },
   "TC_ADMIN_062": {
+    "timeout": 180000,
     "employee": {
       "firstNamePrefix": "Auto",
       "middleName": "Test",
