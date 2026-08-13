@@ -779,7 +779,7 @@ test('TC_LEAVE_125 - Admin should filter Leave List by Scheduled status @positiv
   }
 );
 
-test.('TC_LEAVE_126 - Admin should filter Leave List by Taken status @positive @filter @regression',
+test('TC_LEAVE_126 - Admin should filter Leave List by Taken status @positive @filter @regression',
   async ({
     navigationPage,
     leavepage,
