@@ -610,7 +610,7 @@ test.describe("Admin - System Users", () => {
     await pimPage.deleteEmployeeById(employeeId);
   });
 
-test.only('TC_ADMIN_063 - Admin should update an existing System User username @positive @edit @regression',
+test('TC_ADMIN_063 - Admin should update an existing System User username @positive @edit @regression',
   async ({
     navigationPage,
     pimPage,
