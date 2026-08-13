@@ -420,7 +420,7 @@ test.describe("Admin - System Users", () => {
     await pimPage.deleteEmployeeById(employeeId);
   });
 
-  test.only("TC_ADMIN_057 - Admin should delete multiple System Users using bulk selection @positive @bulk-delete @regression", async ({
+  test("TC_ADMIN_057 - Admin should delete multiple System Users using bulk selection @positive @bulk-delete @regression", async ({
     navigationPage,
     pimPage,
     adminPage,
