@@ -994,8 +994,6 @@ test('TC_LEAVE_127 - Admin should filter Leave List by Cancelled status @positiv
   }
 );
 
-
-
 test('TC_LEAVE_128 - Admin should filter Leave List using multiple statuses @positive @filter @regression',
   async ({
     navigationPage,
@@ -1084,94 +1082,6 @@ test('TC_LEAVE_128 - Admin should filter Leave List using multiple statuses @pos
   }
 );
 
-test(
-  'TC_LEAVE_128 - Admin should filter Leave List using multiple statuses @positive @filter @regression',
-  async ({
-    navigationPage,
-    leavepage,
-  }) => {
-    const data =
-      leaveData.TC_LEAVE_128;
-
-    await navigationPage.gotoLeave();
-
-    await leavepage.waitForDefaultDateRange();
-
-    const firstStatus =
-      leavepage.leaveStatusField.getByText(
-        data.firstStatus,
-        { exact: true }
-      );
-
-    const secondStatus =
-      leavepage.leaveStatusField.getByText(
-        data.secondStatus,
-        { exact: true }
-      );
-
-    if ((await firstStatus.count()) === 0) {
-      await leavepage.selectLeaveStatus(
-        data.firstStatus
-      );
-    }
-
-    if ((await secondStatus.count()) === 0) {
-      await leavepage.selectLeaveStatus(
-        data.secondStatus
-      );
-    }
-
-    await expect(firstStatus).toBeVisible();
-    await expect(secondStatus).toBeVisible();
-
-    await leavepage.searchButton.click();
-
-    await expect(
-      leavepage.loadingSpinner
-    ).toBeHidden();
-
-    await expect(firstStatus).toBeVisible();
-    await expect(secondStatus).toBeVisible();
-
-    await expect(
-      leavepage.leaveRows
-        .first()
-        .or(leavepage.noRecordsFound)
-    ).toBeVisible({
-      timeout: 15_000,
-    });
-
-    const rowCount =
-      await leavepage.leaveRows.count();
-
-    if (rowCount > 0) {
-      for (
-        let index = 0;
-        index < rowCount;
-        index++
-      ) {
-        const statusText = (
-          await leavepage.leaveRows
-            .nth(index)
-            .locator('.oxd-table-cell')
-            .nth(5)
-            .innerText()
-        ).trim();
-
-        expect([
-          data.firstStatus,
-          data.secondStatus,
-        ]).toContain(statusText);
-      }
-    } else {
-      await expect(
-        leavepage.noRecordsFound
-      ).toBeVisible();
-    }
-
-    await leavepage.resetButton.click();
-  }
-);
 test('TC_LEAVE_129 - Reset should restore default Leave Status selections @positive @reset @filter @regression',
   async ({
     navigationPage,
@@ -1239,4 +1149,6 @@ test('TC_LEAVE_129 - Reset should restore default Leave Status selections @posit
       .toBe(defaultStatusText);
   }
 );
+
+
 });
