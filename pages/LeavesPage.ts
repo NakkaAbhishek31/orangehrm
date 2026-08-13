@@ -25,6 +25,8 @@ export class LeavePage {
   readonly fromDateValidation: Locator;
   readonly nextPageButton: Locator;
 readonly previousPageButton: Locator;
+readonly selectedLeaveStatuses: Locator;
+readonly leaveStatusField: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -108,6 +110,21 @@ readonly previousPageButton: Locator;
         exact: true,
       });
 
+      this.selectedLeaveStatuses = page.locator(
+  '.oxd-input-group'
+).filter({
+  has: page
+    .locator('label')
+    .getByText(
+      'Show Leave with Status',
+      {
+        exact: true,
+      }
+    ),
+}).locator(
+  '.oxd-select-text-selected'
+);
+
     this.dateValidationMessages = page
       .locator("form")
       .locator(".oxd-input-field-error-message");
@@ -167,6 +184,23 @@ readonly previousPageButton: Locator;
     ),
   });
 
+
+  this.leaveStatusField = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page
+      .locator('label')
+      .getByText(
+        'Show Leave with Status',
+        { exact: true }
+      ),
+  });
+
+this.leaveStatusDropdown =
+  this.leaveStatusField.locator(
+    '.oxd-select-text'
+  );
+
 this.previousPageButton = page
   .locator(
     'button.oxd-pagination-page-item--previous-next'
@@ -201,18 +235,41 @@ this.previousPageButton = page
     await expect(this.leaveTable).toBeVisible();
   }
 
-  async selectLeaveStatus(status: string): Promise<void> {
-    await this.leaveStatusDropdown.click();
+async selectLeaveStatus(
+  status: string
+): Promise<void> {
+  await this.leaveStatusDropdown.click();
 
-    const option = this.dropdownOptions.filter({
-      hasText: new RegExp(`^${status}$`, "i"),
-    });
+  const dropdown =
+    this.page.locator(
+      '.oxd-select-dropdown:visible'
+    );
 
-    await expect(option).toBeVisible();
+  await expect(dropdown).toBeVisible();
 
-    await option.click();
-  }
+  const option = dropdown
+    .locator('.oxd-select-option')
+    .filter({
+      hasText: new RegExp(
+        `^\\s*${status}\\s*$`,
+        'i'
+      ),
+    })
+    .first();
 
+  await expect(option).toBeVisible();
+
+  await option.click();
+
+  await expect(
+    this.leaveStatusField.getByText(
+      status,
+      { exact: true }
+    )
+  ).toBeVisible({
+    timeout: 10_000,
+  });
+}
   async setIncludePastEmployees(shouldInclude: boolean): Promise<void> {
     const isChecked = await this.includePastEmployeesCheckbox.isChecked();
 
@@ -300,5 +357,62 @@ Promise<string[]> {
 
   return this.leaveRows.allInnerTexts();
 }
+
+async waitForDefaultDateRange(): Promise<{
+  fromDate: string;
+  toDate: string;
+}> {
+  await expect(
+    this.fromDateInput
+  ).toBeVisible();
+
+  await expect(
+    this.toDateInput
+  ).toBeVisible();
+
+  await expect
+    .poll(
+      async () =>
+        (
+          await this.fromDateInput
+            .inputValue()
+        ).trim(),
+      {
+        timeout: 20_000,
+        message:
+          'Waiting for From Date to be populated',
+      }
+    )
+    .not.toBe('');
+
+  await expect
+    .poll(
+      async () =>
+        (
+          await this.toDateInput
+            .inputValue()
+        ).trim(),
+      {
+        timeout: 20_000,
+        message:
+          'Waiting for To Date to be populated',
+      }
+    )
+    .not.toBe('');
+
+  const fromDate = (
+    await this.fromDateInput.inputValue()
+  ).trim();
+
+  const toDate = (
+    await this.toDateInput.inputValue()
+  ).trim();
+
+  return {
+    fromDate,
+    toDate,
+  };
+}
+
 
 }

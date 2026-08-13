@@ -43,5 +43,24 @@
   "TC_LEAVE_124": {
     "fromDaysOffset": -365,
     "toDaysOffset": 0
-  }
+  },
+    "TC_LEAVE_125":{
+"leaveStatus": "Scheduled",
+"defaultStatus": "Select"
+    },
+    
+    "TC_LEAVE_126":{
+"leaveStatus": "Taken",
+"defaultStatus":"-- Select --"
+    },
+    "TC_LEAVE_127": {
+  "leaveStatus": "Cancelled"
+},
+"TC_LEAVE_128": {
+  "firstStatus": "Rejected",
+  "secondStatus": "Cancelled"
+},
+"TC_LEAVE_129": {
+  "leaveStatus": "Pending Approval"
 }
+  }
