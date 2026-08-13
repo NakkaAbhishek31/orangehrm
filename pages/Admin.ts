@@ -387,7 +387,17 @@ export class AdminPage {
   }
 
   async resetSystemUserFilters(): Promise<void> {
+    const resetResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/admin/users") &&
+        response.request().method() === "GET" &&
+        response.ok(),
+      { timeout: 20_000 },
+    );
+
     await this.resetButton.click();
+    await resetResponse;
+    await expect(this.loadingSpinner).toBeHidden({ timeout: 20_000 });
 
     await expect(this.usernameInput).toHaveValue("");
     await expect(this.employeeNameInput).toHaveValue("");
@@ -489,7 +499,7 @@ export class AdminPage {
         response.request().method() === "DELETE" &&
         response.ok(),
       {
-        timeout: 20_000,
+        timeout: 15_000,
       },
     );
 
@@ -500,7 +510,7 @@ export class AdminPage {
         hasText: /Successfully Deleted/i,
       }),
     ).toBeVisible({
-      timeout: 20_000,
+      timeout: 10_000,
     });
 
     await confirmationDialog
@@ -648,13 +658,16 @@ export class AdminPage {
       await expect(userRow).toHaveCount(1);
 
       const checkbox = userRow.locator('input[type="checkbox"]');
+      const checkboxLabel = userRow.locator(".oxd-checkbox-wrapper label");
 
-      await checkbox.check({
-        force: true,
-      });
+      await expect(checkboxLabel).toBeVisible();
+      await checkboxLabel.click();
 
       await expect(checkbox).toBeChecked();
     }
+
+    await expect(this.deleteSelectedButton).toBeVisible({ timeout: 15_000 });
+    await expect(this.deleteSelectedButton).toBeEnabled();
   }
 
   async selectAllVisibleSystemUsers(): Promise<void> {
@@ -734,20 +747,31 @@ export class AdminPage {
     await expect(this.deleteSelectedButton).toBeVisible({
       timeout: 15_000,
     });
+    await expect(this.deleteSelectedButton).toBeEnabled();
 
     await this.deleteSelectedButton.click();
 
-    const confirmationDialog = this.page.locator(".oxd-dialog-container");
+    const confirmationDialog = this.page.getByRole("dialog");
 
     await expect(confirmationDialog).toBeVisible();
 
-    const confirmDeleteButton = confirmationDialog.locator(
-      "button.oxd-button--label-danger",
-    );
+    const confirmDeleteButton = confirmationDialog
+      .locator("button.oxd-button--label-danger")
+      .filter({ hasText: /Yes,\s*Delete/i });
 
     await expect(confirmDeleteButton).toBeVisible();
+    await expect(confirmDeleteButton).toBeEnabled();
+
+    const deleteResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/admin/users") &&
+        response.request().method() === "DELETE" &&
+        response.ok(),
+      { timeout: 20_000 },
+    );
 
     await confirmDeleteButton.click();
+    await deleteResponse;
 
     await expect(confirmationDialog).toBeHidden({
       timeout: 20_000,
@@ -765,6 +789,7 @@ export class AdminPage {
   }
 
   async updateSystemUsername(updatedUsername: string): Promise<void> {
+    await this.addUsernameInput.clear();
     await this.addUsernameInput.fill(updatedUsername);
 
     await this.addUsernameInput.blur();
@@ -773,22 +798,20 @@ export class AdminPage {
 
     await expect(this.usernameValidation).toBeHidden();
 
-    const updatedToast = expect(
-      this.toastMessage.filter({
-        hasText: /Successfully Updated/i,
-      }),
-    ).toBeVisible({
-      timeout: 20_000,
-    });
+    const updateUserResponse = this.page.waitForResponse(
+      (response) =>
+        /\/api\/v2\/admin\/users\/\d+$/.test(response.url()) &&
+        response.request().method() === "PUT" &&
+        response.ok(),
+      { timeout: 20_000 },
+    );
 
     await this.editUserSaveButton.click();
+    await updateUserResponse;
 
     await expect(this.page).toHaveURL(/admin\/viewSystemUsers/, {
       timeout: 20_000,
     });
-
-    await updatedToast;
-
     await expect(this.systemUsersHeading).toBeVisible();
   }
 }

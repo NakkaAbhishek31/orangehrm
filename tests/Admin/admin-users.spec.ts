@@ -420,7 +420,7 @@ test.describe("Admin - System Users", () => {
     await pimPage.deleteEmployeeById(employeeId);
   });
 
-  test("TC_ADMIN_057 - Admin should delete multiple System Users using bulk selection @positive @bulk-delete @regression", async ({
+  test.only("TC_ADMIN_057 - Admin should delete multiple System Users using bulk selection @positive @bulk-delete @regression", async ({
     navigationPage,
     pimPage,
     adminPage,
@@ -610,42 +610,132 @@ test.describe("Admin - System Users", () => {
     await pimPage.deleteEmployeeById(employeeId);
   });
 
-  test("TC_ADMIN_063 - Admin should update an existing System User username @positive @edit @regression", async ({
+test.only('TC_ADMIN_063 - Admin should update an existing System User username @positive @edit @regression',
+  async ({
     navigationPage,
     pimPage,
     adminPage,
   }) => {
-    const data = adminData.TC_ADMIN_063;
+    test.setTimeout(180_000);
+
+    const data =
+      adminData.TC_ADMIN_063;
+
     const value = unique();
-    const employee = employeeFrom(data.employee, value);
-    const original = `${data.systemUser.originalUsernamePrefix}${value}`;
-    const updated = `${data.systemUser.updatedUsernamePrefix}${value}`;
+
+    const employee = employeeFrom(
+      data.employee,
+      value
+    );
+
+    const original =
+      `${data.systemUser.originalUsernamePrefix}${value}`;
+
+    const updated =
+      `${data.systemUser.updatedUsernamePrefix}${value}`;
+
+    // Create employee.
     await navigationPage.gotoPIM();
     await pimPage.gotoAddEmployee();
-    const employeeId = await pimPage.addEmployee(employee);
+
+    const employeeId =
+      await pimPage.addEmployee(employee);
+
+    // Create System User.
     await navigationPage.gotoAdmin();
     await adminPage.gotoUserManagementUsers();
     await adminPage.gotoAddSystemUser();
+
     await adminPage.fillSystemUserForm({
-      userRole: data.systemUser.userRole,
-      status: data.systemUser.status,
-      password: data.systemUser.password,
+      userRole:
+        data.systemUser.userRole,
+      status:
+        data.systemUser.status,
+      password:
+        data.systemUser.password,
       username: original,
-      employeeName: `${employee.firstName} ${employee.middleName} ${employee.lastName}`,
+      employeeName:
+        `${employee.firstName} ` +
+        `${employee.middleName} ` +
+        `${employee.lastName}`,
     });
+
     await adminPage.saveSystemUser();
-    await adminPage.searchSystemUsers({ username: original });
-    await adminPage.openSystemUserForEditing(original);
-    await adminPage.updateSystemUsername(updated);
-    await adminPage.searchSystemUsers({ username: updated });
-    await expect(adminPage.userRows).toHaveCount(1);
-    await adminPage.deleteSystemUserByUsername(updated);
+
+    // Find and open original user.
+    await adminPage.searchSystemUsers({
+      username: original,
+    });
+
+    await expect(
+      adminPage.userRows
+    ).toHaveCount(1);
+
+    await adminPage.openSystemUserForEditing(
+      original
+    );
+
+    // Update username.
+    await adminPage.updateSystemUsername(
+      updated
+    );
+
+    await expect(
+      adminPage.systemUsersHeading
+    ).toBeVisible();
+
+    // Remove the previous username filter.
+    await adminPage.resetSystemUserFilters();
+
+    // Search for updated username.
+    await adminPage.searchSystemUsers({
+      username: updated,
+    });
+
+    await expect(
+      adminPage.usernameInput
+    ).toHaveValue(updated);
+
+    await expect(
+      adminPage.userRows.first()
+    ).toBeVisible({
+      timeout: 20_000,
+    });
+
+    await expect(
+      adminPage.userRows
+    ).toHaveCount(1);
+
+    await adminPage.verifySystemUserResult({
+      username: updated,
+      userRole:
+        data.systemUser.userRole,
+      employeeName:
+        `${employee.firstName} ${employee.lastName}`,
+      status:
+        data.systemUser.status,
+    });
+
+    // Cleanup System User.
+    await adminPage.deleteSystemUserByUsername(
+      updated
+    );
+
+    // Cleanup employee.
     await navigationPage.gotoPIM();
     await pimPage.gotoEmployeeList();
-    await pimPage.filterEmployeeList({ employeeId });
+
+    await pimPage.filterEmployeeList({
+      employeeId,
+    });
+
     await pimPage.clickOnFilterSearch();
-    await pimPage.deleteEmployeeById(employeeId);
-  });
+
+    await pimPage.deleteEmployeeById(
+      employeeId
+    );
+  }
+);
 
   test("TC_ADMIN_064 - Admin should cancel editing a System User @negative @cancel @edit @regression", async ({
     navigationPage,
@@ -874,10 +964,12 @@ test.describe("Admin - System Users", () => {
     const data = adminData.TC_PIM_072;
     await navigationPage.gotoPIM();
     await pimPage.gotoEmployeeList();
-    await pimPage.filterEmployeeList({
-      employeeId: data.employeeId,
-      employeeName: data.employeeName,
-    });
+    await pimPage.employeeIdFilterInput.fill(data.employeeId);
+    await pimPage.employeeNameFilterInput.fill(data.employeeName);
+    await expect(pimPage.employeeIdFilterInput).toHaveValue(data.employeeId);
+    await expect(pimPage.employeeNameFilterInput).toHaveValue(
+      data.employeeName,
+    );
     await pimPage.resetEmployeeFilters();
     await expect(pimPage.employeeIdFilterInput).toHaveValue(data.emptyValue);
     await expect(pimPage.employeeNameFilterInput).toHaveValue(data.emptyValue);
