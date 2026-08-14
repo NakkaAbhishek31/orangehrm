@@ -1150,5 +1150,300 @@ test('TC_LEAVE_129 - Reset should restore default Leave Status selections @posit
   }
 );
 
+test(
+  'TC_LEAVE_130 - Admin should filter Leave List by Rejected and Cancelled statuses @positive @filter @regression',
+  async ({
+    navigationPage,
+    leavepage,
+  }) => {
+    const data =
+      leaveData.TC_LEAVE_130;
+
+    await navigationPage.gotoLeave();
+
+    await leavepage.waitForDefaultDateRange();
+
+    for (const status of data.statuses) {
+      const selectedStatus =
+        leavepage.leaveStatusField.getByText(
+          status,
+          { exact: true }
+        );
+
+      if (
+        (await selectedStatus.count()) === 0
+      ) {
+        await leavepage.selectLeaveStatus(
+          status
+        );
+      }
+
+      await expect(
+        selectedStatus
+      ).toBeVisible();
+    }
+
+    await leavepage.searchButton.click();
+
+    await expect(
+      leavepage.loadingSpinner
+    ).toBeHidden();
+
+    for (const status of data.statuses) {
+      await expect(
+        leavepage.leaveStatusField.getByText(
+          status,
+          { exact: true }
+        )
+      ).toBeVisible();
+    }
+
+    await expect(
+      leavepage.leaveRows
+        .first()
+        .or(leavepage.noRecordsFound)
+    ).toBeVisible({
+      timeout: 15_000,
+    });
+
+    const rowCount =
+      await leavepage.leaveRows.count();
+
+    if (rowCount > 0) {
+      for (
+        let index = 0;
+        index < rowCount;
+        index++
+      ) {
+        const statusText = (
+          await leavepage.leaveRows
+            .nth(index)
+            .locator('.oxd-table-cell')
+            .nth(5)
+            .innerText()
+        ).trim();
+
+        const matchesSelectedStatus =
+          data.statuses.some(status =>
+            statusText.includes(status)
+          );
+
+        expect(
+          matchesSelectedStatus
+        ).toBeTruthy();
+      }
+    } else {
+      await expect(
+        leavepage.noRecordsFound
+      ).toBeVisible();
+    }
+
+    await leavepage.resetButton.click();
+
+    await expect(
+      leavepage.loadingSpinner
+    ).toBeHidden();
+  }
+);
+test(
+  'TC_LEAVE_131 - Admin should remove one status from multiple selected statuses @positive @filter @regression',
+  async ({
+    navigationPage,
+    leavepage,
+  }) => {
+    const data =
+      leaveData.TC_LEAVE_131;
+
+    await navigationPage.gotoLeave();
+
+    await leavepage.waitForDefaultDateRange();
+
+    for (const status of data.statuses) {
+      const selectedStatus =
+        leavepage.leaveStatusField.getByText(
+          status,
+          { exact: true }
+        );
+
+      if (
+        (await selectedStatus.count()) === 0
+      ) {
+        await leavepage.selectLeaveStatus(
+          status
+        );
+      }
+
+      await expect(
+        selectedStatus
+      ).toBeVisible();
+    }
+
+    await leavepage.removeSelectedLeaveStatus(
+      data.statusToRemove
+    );
+
+    await expect(
+      leavepage.leaveStatusField.getByText(
+        data.statusToRemove,
+        { exact: true }
+      )
+    ).toHaveCount(0);
+
+    await expect(
+      leavepage.leaveStatusField.getByText(
+        data.remainingStatus,
+        { exact: true }
+      )
+    ).toBeVisible();
+
+    await leavepage.searchButton.click();
+
+    await expect(
+      leavepage.loadingSpinner
+    ).toBeHidden();
+
+    await expect(
+      leavepage.leaveRows
+        .first()
+        .or(leavepage.noRecordsFound)
+    ).toBeVisible({
+      timeout: 15_000,
+    });
+
+    const rowCount =
+      await leavepage.leaveRows.count();
+
+    if (rowCount > 0) {
+      for (
+        let index = 0;
+        index < rowCount;
+        index++
+      ) {
+        const statusCell =
+          leavepage.leaveRows
+            .nth(index)
+            .locator('.oxd-table-cell')
+            .nth(5);
+
+        await expect(
+          statusCell
+        ).toContainText(
+          data.remainingStatus
+        );
+
+        await expect(
+          statusCell
+        ).not.toContainText(
+          data.statusToRemove
+        );
+      }
+    } else {
+      await expect(
+        leavepage.noRecordsFound
+      ).toBeVisible();
+    }
+
+    await leavepage.resetButton.click();
+  }
+);
+
+test(
+  'TC_LEAVE_132 - Leave List date range should remain unchanged after status search @positive @persistence @regression',
+  async ({
+    navigationPage,
+    leavepage,
+  }) => {
+    const data =
+      leaveData.TC_LEAVE_132;
+
+    await navigationPage.gotoLeave();
+
+    const defaultDates =
+      await leavepage.waitForDefaultDateRange();
+
+    const selectedStatus =
+      leavepage.leaveStatusField.getByText(
+        data.leaveStatus,
+        { exact: true }
+      );
+
+    if (
+      (await selectedStatus.count()) === 0
+    ) {
+      await leavepage.selectLeaveStatus(
+        data.leaveStatus
+      );
+    }
+
+    await expect(
+      selectedStatus
+    ).toBeVisible();
+
+    await leavepage.searchButton.click();
+
+    await expect(
+      leavepage.loadingSpinner
+    ).toBeHidden();
+
+    await expect(
+      leavepage.fromDateInput
+    ).toHaveValue(
+      defaultDates.fromDate
+    );
+
+    await expect(
+      leavepage.toDateInput
+    ).toHaveValue(
+      defaultDates.toDate
+    );
+
+    await expect(
+      selectedStatus
+    ).toBeVisible();
+
+    await expect(
+      leavepage.leaveRows
+        .first()
+        .or(leavepage.noRecordsFound)
+    ).toBeVisible({
+      timeout: 15_000,
+    });
+
+    const rowCount =
+      await leavepage.leaveRows.count();
+
+    if (rowCount > 0) {
+      for (
+        let index = 0;
+        index < rowCount;
+        index++
+      ) {
+        const statusCell =
+          leavepage.leaveRows
+            .nth(index)
+            .locator('.oxd-table-cell')
+            .nth(5);
+
+        await expect(
+          statusCell
+        ).toContainText(
+          data.leaveStatus
+        );
+      }
+    } else {
+      await expect(
+        leavepage.noRecordsFound
+      ).toBeVisible();
+    }
+
+    await leavepage.resetButton.click();
+
+    await expect(
+      leavepage.loadingSpinner
+    ).toBeHidden();
+
+    await leavepage.waitForDefaultDateRange();
+  }
+);
 
 });

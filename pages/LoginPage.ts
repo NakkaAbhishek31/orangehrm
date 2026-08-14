@@ -39,7 +39,11 @@ export class LoginPage {
   }
 
   async verifyLoginSuccessful(): Promise<void> {
-    await expect(this.page).toHaveURL(/dashboard/);
+    await expect(this.page).toHaveURL(
+      /\/(dashboard\/index|pim\/viewPersonalDetails\/empNumber\/\d+)/,
+      { timeout: 20_000 },
+    );
+    await expect(this.profileMenu).toBeVisible({ timeout: 20_000 });
   }
 
   async verifyLoginUnsuccessful(): Promise<void> {

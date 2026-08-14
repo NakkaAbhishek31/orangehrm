@@ -62,5 +62,22 @@
 },
 "TC_LEAVE_129": {
   "leaveStatus": "Pending Approval"
+},
+"TC_LEAVE_130": {
+  "statuses": [
+    "Rejected",
+    "Cancelled"
+  ]
+},
+"TC_LEAVE_131": {
+  "statuses": [
+    "Rejected",
+    "Cancelled"
+  ],
+  "statusToRemove": "Rejected",
+  "remainingStatus": "Cancelled"
+},
+"TC_LEAVE_132": {
+  "leaveStatus": "Pending Approval"
 }
   }

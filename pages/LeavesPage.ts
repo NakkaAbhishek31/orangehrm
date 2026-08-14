@@ -326,28 +326,28 @@ async selectLeaveStatus(
     return leaveType;
   }
 
-  async removeSelectedLeaveStatus(
-  status: string
-): Promise<void> {
-  const selectedStatus =
-    this.leaveStatusDropdown.locator(
-      '.oxd-select-text-selected'
-    ).filter({
-      hasText: status,
-    });
+//   async removeSelectedLeaveStatus(
+//   status: string
+// ): Promise<void> {
+//   const selectedStatus =
+//     this.leaveStatusDropdown.locator(
+//       '.oxd-select-text-selected'
+//     ).filter({
+//       hasText: status,
+//     });
 
-  await expect(
-    selectedStatus
-  ).toBeVisible();
+//   await expect(
+//     selectedStatus
+//   ).toBeVisible();
 
-  await selectedStatus
-    .locator('.oxd-select-text--close')
-    .click();
+//   await selectedStatus
+//     .locator('.oxd-select-text--close')
+//     .click();
 
-  await expect(
-    selectedStatus
-  ).toHaveCount(0);
-}
+//   await expect(
+//     selectedStatus
+//   ).toHaveCount(0);
+// }
 
 async getVisibleLeaveRecords():
 Promise<string[]> {
@@ -412,6 +412,38 @@ async waitForDefaultDateRange(): Promise<{
     fromDate,
     toDate,
   };
+}
+
+async removeSelectedLeaveStatus(
+  status: string
+): Promise<void> {
+  const statusElement =
+    this.leaveStatusField.getByText(
+      status,
+      { exact: true }
+    );
+
+  await expect(
+    statusElement
+  ).toBeVisible();
+
+  const statusContainer =
+    statusElement.locator('..');
+
+  const removeButton =
+    statusContainer.locator(
+      'i.bi-x, i.oxd-icon'
+    );
+
+  await expect(
+    removeButton
+  ).toBeVisible();
+
+  await removeButton.click();
+
+  await expect(
+    statusElement
+  ).toHaveCount(0);
 }
 
 

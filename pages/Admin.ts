@@ -681,10 +681,16 @@ export class AdminPage {
       ".oxd-table-header " + 'input[type="checkbox"]',
     );
 
-    // Exclude disabled row checkboxes.
-    const selectableRowCheckboxes = this.userRows.locator(
-      'input[type="checkbox"]:not(:disabled)',
-    );
+    // OrangeHRM protects the built-in logged-in Admin row, but its hidden
+    // checkbox does not have a native disabled attribute.
+    const selectableRowCheckboxes = this.userRows
+      .filter({
+        hasNot: this.page
+          .locator(".oxd-table-cell")
+          .nth(1)
+          .getByText("Admin", { exact: true }),
+      })
+      .locator('input[type="checkbox"]');
 
     const selectableRowCount = await selectableRowCheckboxes.count();
 
@@ -719,9 +725,14 @@ export class AdminPage {
       ".oxd-table-header " + 'input[type="checkbox"]',
     );
 
-    const selectableRowCheckboxes = this.userRows.locator(
-      'input[type="checkbox"]:not(:disabled)',
-    );
+    const selectableRowCheckboxes = this.userRows
+      .filter({
+        hasNot: this.page
+          .locator(".oxd-table-cell")
+          .nth(1)
+          .getByText("Admin", { exact: true }),
+      })
+      .locator('input[type="checkbox"]');
 
     await headerCheckboxLabel.click();
 
@@ -789,14 +800,16 @@ export class AdminPage {
   }
 
   async updateSystemUsername(updatedUsername: string): Promise<void> {
-    await this.addUsernameInput.clear();
-    await this.addUsernameInput.fill(updatedUsername);
+    await this.addUsernameInput.click();
+    await this.addUsernameInput.press("ControlOrMeta+A");
+    await this.addUsernameInput.pressSequentially(updatedUsername);
 
     await this.addUsernameInput.blur();
 
     await expect(this.addUsernameInput).toHaveValue(updatedUsername);
 
     await expect(this.usernameValidation).toBeHidden();
+    await expect(this.editUserSaveButton).toBeEnabled();
 
     const updateUserResponse = this.page.waitForResponse(
       (response) =>
@@ -807,7 +820,11 @@ export class AdminPage {
     );
 
     await this.editUserSaveButton.click();
-    await updateUserResponse;
+    const response = await updateUserResponse;
+    const requestBody = response.request().postDataJSON() as {
+      username?: string;
+    };
+    expect(requestBody.username).toBe(updatedUsername);
 
     await expect(this.page).toHaveURL(/admin\/viewSystemUsers/, {
       timeout: 20_000,
