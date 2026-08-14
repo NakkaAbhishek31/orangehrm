@@ -28,7 +28,7 @@ test.describe("PIM Employee List", () => {
     await loginPage.verifyLoginSuccessful();
   });
 
-  test.only("TC_RECRUITMENT_133 - Admin should navigate to the Candidates page @smoke @navigation @regression", async ({
+  test("TC_RECRUITMENT_133 - Admin should navigate to the Candidates page @smoke @navigation @regression", async ({
     page,
     navigationPage,
     recruitmentPage,
@@ -70,7 +70,7 @@ test.describe("PIM Employee List", () => {
     await expect(recruitmentPage.candidatesTable).toBeVisible();
   });
 
-  test.only("TC_RECRUITMENT_134 - Admin should search Candidates using a valid application date range @positive @search @regression", async ({
+  test("TC_RECRUITMENT_134 - Admin should search Candidates using a valid application date range @positive @search @regression", async ({
     navigationPage,
     recruitmentPage,
   }) => {
@@ -115,7 +115,7 @@ test.describe("PIM Employee List", () => {
     await recruitmentPage.restButton.click();
   });
 
-  test.only("TC_RECRUITMENT_135 - Validation should appear when From Date is later than To Date @negative @validation @regression", async ({
+  test("TC_RECRUITMENT_135 - Validation should appear when From Date is later than To Date @negative @validation @regression", async ({
     navigationPage,
     recruitmentPage,
   }) => {
@@ -154,7 +154,7 @@ test.describe("PIM Employee List", () => {
     await expect(recruitmentPage.toDateValidation).toBeHidden();
   });
 
-  test.only("TC_RECRUITMENT_136 - Admin should reset Candidate search filters @positive @filter @regression", async ({
+  test("TC_RECRUITMENT_136 - Admin should reset Candidate search filters @positive @filter @regression", async ({
     navigationPage,
     recruitmentPage,
   }) => {
@@ -219,7 +219,7 @@ test.describe("PIM Employee List", () => {
     });
   });
 
-  test.only("TC_RECRUITMENT_137 - Admin should filter Candidates by job title @positive @filter @regression", async ({
+  test("TC_RECRUITMENT_137 - Admin should filter Candidates by job title @positive @filter @regression", async ({
     navigationPage,
     recruitmentPage,
   }) => {
@@ -260,7 +260,7 @@ test.describe("PIM Employee List", () => {
     );
   });
 
- test.only('TC_RECRUITMENT_138 - Admin should filter Candidates by candidate status @positive @filter @regression',
+ test('TC_RECRUITMENT_138 - Admin should filter Candidates by candidate status @positive @filter @regression',
   async ({ navigationPage, recruitmentPage }) => {
     // Read Candidate Status and default dropdown value from JSON.
       const data = recruitmentData.TC_RECRUITMENT_138;
@@ -323,7 +323,7 @@ test.describe("PIM Employee List", () => {
   }
 );
 
-test.only( 'TC_RECRUITMENT_139 - Admin should filter Candidates by vacancy @positive @filter @regression',
+test( 'TC_RECRUITMENT_139 - Admin should filter Candidates by vacancy @positive @filter @regression',
   async ({
     navigationPage,
     recruitmentPage,
