@@ -485,7 +485,7 @@ test.describe("Admin - System Users", () => {
     await expect(adminPage.deleteSelectedButton).not.toBeVisible();
   });
 
-  test.only("TC_ADMIN_059 - Admin should navigate through System Users pages @pagination @regression", async ({
+  test("TC_ADMIN_059 - Admin should navigate through System Users pages @pagination @regression", async ({
     navigationPage,
     adminPage,
   }) => {
@@ -610,7 +610,7 @@ test.describe("Admin - System Users", () => {
     await pimPage.deleteEmployeeById(employeeId);
   });
 
-test.only('TC_ADMIN_063 - Admin should update an existing System User username @positive @edit @regression',
+test('TC_ADMIN_063 - Admin should update an existing System User username @positive @edit @regression',
   async ({
     navigationPage,
     pimPage,
