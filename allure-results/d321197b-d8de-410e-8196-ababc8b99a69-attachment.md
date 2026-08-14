@@ -1,0 +1,293 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Recruitment\recruitment.spec.ts >> PIM Employee List >> TC_RECRUITMENT_133 - Admin should navigate to the Candidates page @smoke @navigation @regression
+- Location: tests\Recruitment\recruitment.spec.ts:31:8
+
+# Error details
+
+```
+Error: expect(received).toBeGreaterThan(expected)
+
+Expected: > 0
+Received:   0
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=f3e3]:
+  - generic:
+    - complementary [ref=f3e4]:
+      - navigation "Sidepanel" [ref=f3e5]:
+        - generic [ref=f3e6]:
+          - link [ref=f3e7] [cursor=pointer]:
+            - /url: https://www.orangehrm.com/
+            - img "client brand banner" [ref=f3e9]
+          - text: 
+        - generic [ref=f3e10]:
+          - generic [ref=f3e11]:
+            - generic [ref=f3e12]:
+              - textbox "Search" [ref=f3e15]
+              - button "" [ref=f3e16] [cursor=pointer]
+            - separator [ref=f3e18]
+          - list [ref=f3e19]:
+            - listitem [ref=f3e20]:
+              - link "Admin" [ref=f3e21] [cursor=pointer]:
+                - /url: /web/index.php/admin/viewAdminModule
+            - listitem [ref=f3e25]:
+              - link "PIM" [ref=f3e26] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewPimModule
+            - listitem [ref=f3e41]:
+              - link "Leave" [ref=f3e42] [cursor=pointer]:
+                - /url: /web/index.php/leave/viewLeaveModule
+            - listitem [ref=f3e46]:
+              - link "Time" [ref=f3e47] [cursor=pointer]:
+                - /url: /web/index.php/time/viewTimeModule
+            - listitem [ref=f3e54]:
+              - link "Recruitment" [ref=f3e55] [cursor=pointer]:
+                - /url: /web/index.php/recruitment/viewRecruitmentModule
+            - listitem [ref=f3e62]:
+              - link "My Info" [ref=f3e63] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewMyDetails
+            - listitem [ref=f3e70]:
+              - link "Performance" [ref=f3e71] [cursor=pointer]:
+                - /url: /web/index.php/performance/viewPerformanceModule
+            - listitem [ref=f3e80]:
+              - link "Dashboard" [ref=f3e81] [cursor=pointer]:
+                - /url: /web/index.php/dashboard/index
+            - listitem [ref=f3e85]:
+              - link "Directory" [ref=f3e86] [cursor=pointer]:
+                - /url: /web/index.php/directory/viewDirectory
+            - listitem [ref=f3e90]:
+              - link "Maintenance" [ref=f3e91] [cursor=pointer]:
+                - /url: /web/index.php/maintenance/viewMaintenanceModule
+            - listitem [ref=f3e96]:
+              - link "Claim" [ref=f3e97] [cursor=pointer]:
+                - /url: /web/index.php/claim/viewClaimModule
+            - listitem [ref=f3e105]:
+              - link "Buzz" [ref=f3e106] [cursor=pointer]:
+                - /url: /web/index.php/buzz/viewBuzz
+    - banner [ref=f3e110]:
+      - generic [ref=f3e111]:
+        - generic [ref=f3e112]:
+          - text: 
+          - heading "Recruitment" [level=6] [ref=f3e114]
+        - link [ref=f3e116]:
+          - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+          - button "Upgrade" [ref=f3e117] [cursor=pointer]
+        - list [ref=f3e123]:
+          - listitem [ref=f3e124]:
+            - generic [ref=f3e125] [cursor=pointer]:
+              - img "profile picture" [ref=f3e126]
+              - paragraph [ref=f3e127]: manda user
+              - generic [ref=f3e128]: 
+      - navigation "Topbar Menu" [ref=f3e130]:
+        - list [ref=f3e131]:
+          - listitem [ref=f3e132] [cursor=pointer]:
+            - link "Candidates" [ref=f3e133]:
+              - /url: "#"
+          - listitem [ref=f3e134] [cursor=pointer]:
+            - link "Vacancies" [ref=f3e135]:
+              - /url: "#"
+          - button "" [ref=f3e137] [cursor=pointer]
+  - generic [ref=f3e139]:
+    - generic [ref=f3e141]:
+      - generic [ref=f3e142]:
+        - generic [ref=f3e143]:
+          - heading "Candidates" [level=5] [ref=f3e145]
+          - button "" [ref=f3e148] [cursor=pointer]
+        - separator [ref=f3e150]
+        - generic [ref=f3e152]:
+          - generic [ref=f3e154]:
+            - generic [ref=f3e156]:
+              - generic [ref=f3e157]: Job Title
+              - generic [ref=f3e161] [cursor=pointer]:
+                - generic [ref=f3e162]: "-- Select --"
+                - generic [ref=f3e163]: 
+            - generic [ref=f3e166]:
+              - generic [ref=f3e167]: Vacancy
+              - generic [ref=f3e171] [cursor=pointer]:
+                - generic [ref=f3e172]: "-- Select --"
+                - generic [ref=f3e173]: 
+            - generic [ref=f3e176]:
+              - generic [ref=f3e177]: Hiring Manager
+              - generic [ref=f3e181] [cursor=pointer]:
+                - generic [ref=f3e182]: "-- Select --"
+                - generic [ref=f3e183]: 
+            - generic [ref=f3e186]:
+              - generic [ref=f3e187]: Status
+              - generic [ref=f3e191] [cursor=pointer]:
+                - generic [ref=f3e192]: "-- Select --"
+                - generic [ref=f3e193]: 
+          - generic [ref=f3e196]:
+            - generic [ref=f3e198]:
+              - generic [ref=f3e199]: Candidate Name
+              - textbox "Type for hints..." [ref=f3e204]
+            - generic [ref=f3e206]:
+              - generic [ref=f3e207]: Keywords
+              - textbox "Enter comma seperated words..." [ref=f3e210]
+            - generic [ref=f3e212]:
+              - generic [ref=f3e213]: Date of Application
+              - generic [ref=f3e217]:
+                - textbox "From" [ref=f3e218]
+                - generic [ref=f3e219] [cursor=pointer]: 
+            - generic [ref=f3e226]:
+              - textbox "To" [ref=f3e227]
+              - generic [ref=f3e228] [cursor=pointer]: 
+          - generic [ref=f3e232]:
+            - generic [ref=f3e233]: Method of Application
+            - generic [ref=f3e237] [cursor=pointer]:
+              - generic [ref=f3e238]: "-- Select --"
+              - generic [ref=f3e239]: 
+          - separator [ref=f3e241]
+          - generic [ref=f3e242]:
+            - button "Reset" [ref=f3e243] [cursor=pointer]
+            - button "Search" [ref=f3e244] [cursor=pointer]
+      - generic [ref=f3e245]:
+        - button " Add" [ref=f3e247] [cursor=pointer]:
+          - generic [ref=f3e248]: 
+          - text: Add
+        - table [ref=f3e250]
+    - generic [ref=f3e255]:
+      - paragraph [ref=f3e256]: OrangeHRM OS 5.9
+      - paragraph [ref=f3e257]:
+        - text: © 2005 - 2026
+        - link "OrangeHRM, Inc" [ref=f3e258] [cursor=pointer]:
+          - /url: http://www.orangehrm.com
+        - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  1   | import { expect } from "@playwright/test";
+  2   | import { test } from "../../fixtures/baseTest";
+  3   | import loginData from "../../test-data/login.data.json";
+  4   | import recruitmentData from "../../test-data/recruitment.data.json";
+  5   | 
+  6   | const dateFromOffset = (daysOffset: number): string => {
+  7   |   const date = new Date();
+  8   | 
+  9   |   date.setDate(date.getDate() + daysOffset);
+  10  | 
+  11  |   const year = date.getFullYear();
+  12  | 
+  13  |   const day = String(date.getDate()).padStart(2, "0");
+  14  | 
+  15  |   const month = String(date.getMonth() + 1).padStart(2, "0");
+  16  | 
+  17  |   // OrangeHRM format: yyyy-dd-mm
+  18  |   return `${year}-${day}-${month}`;
+  19  | };
+  20  | 
+  21  | test.describe("PIM Employee List", () => {
+  22  |   test.beforeEach(async ({ loginPage }) => {
+  23  |     await loginPage.visitPage();
+  24  |     await loginPage.login(
+  25  |       loginData.validAdmin.username,
+  26  |       loginData.validAdmin.password,
+  27  |     );
+  28  |     await loginPage.verifyLoginSuccessful();
+  29  |   });
+  30  | 
+  31  |   test.only("TC_RECRUITMENT_133 - Admin should navigate to the Candidates page @smoke @navigation @regression", async ({
+  32  |     page,
+  33  |     navigationPage,
+  34  |     recruitmentPage,
+  35  |   }) => {
+  36  |     const data = recruitmentData.TC_RECRUITMENT_133;
+  37  |     // Click Recruitment in the main navigation.
+  38  |     await navigationPage.gotoRecruitment();
+  39  |     // Navigate to Candidates.
+  40  |     await recruitmentPage.navigateToCandidate();
+  41  |     // Verify the Candidates URL.
+  42  |     await expect(page).toHaveURL(new RegExp(`${data.expectedUrlPath}$`));
+  43  |     // Verify the Candidates heading.
+  44  | 
+  45  |     await expect(recruitmentPage.candidatePageHeading).toHaveText(
+  46  |       data.pageHeading,
+  47  |     );
+  48  |     // Verify Job Title filter.
+  49  |     await expect(recruitmentPage.jobTitleDropdown).toBeVisible();
+  50  |     // Verify Vacancy filter.
+  51  |     await expect(recruitmentPage.vacancyDropdown).toBeVisible();
+  52  | 
+  53  |     // Verify Hiring Manager filter.
+  54  |     await expect(recruitmentPage.hiringManagerDropdown).toBeVisible();
+  55  | 
+  56  |     // Verify Candidate Status filter.
+  57  |     await expect(recruitmentPage.candidateStatusDropdown).toBeVisible();
+  58  | 
+  59  |     // Verify Candidate Name input.
+  60  |     await expect(recruitmentPage.candidateNameInput).toBeVisible();
+  61  | 
+  62  |     // Verify From Date and To Date.
+  63  |     await expect(recruitmentPage.fromDateInput).toBeVisible();
+  64  |     await expect(recruitmentPage.toDateInput).toBeVisible();
+  65  |     // Verify Search and Reset buttons.
+  66  |     await expect(recruitmentPage.restButton).toBeVisible();
+  67  |     await expect(recruitmentPage.searchButton).toBeVisible();
+  68  | 
+  69  |     // Verify the Candidates results table.
+> 70  |     expect(await recruitmentPage.candidateRows.count()).toBeGreaterThan(0);
+      |                                                         ^ Error: expect(received).toBeGreaterThan(expected)
+  71  |     await expect(recruitmentPage.candidateRows.first()).toBeVisible();
+  72  |   });
+  73  | 
+  74  |   test("TC_RECRUITMENT_134 - Admin should search Candidates using a valid application date range @positive @search @regression", async ({
+  75  |     navigationPage,
+  76  |     recruitmentPage,
+  77  |   }) => {
+  78  |     // Read the date offsets from recruitment JSON data.
+  79  |     const data = recruitmentData.TC_RECRUITMENT_134;
+  80  |     // Generate From Date and To Date dynamically.
+  81  |     const fromDate = dateFromOffset(data.fromDaysOffset);
+  82  | 
+  83  |     const toDate = dateFromOffset(data.toDaysOffset);
+  84  | 
+  85  |     // Navigate to Recruitment → Candidates.
+  86  |     await navigationPage.gotoRecruitment();
+  87  |     await recruitmentPage.navigateToCandidate();
+  88  |     // Wait until both application date fields are visible.
+  89  |     await expect(recruitmentPage.fromDateInput).toBeVisible();
+  90  |     await expect(recruitmentPage.toDateInput).toBeVisible();
+  91  |     // Fill the From Date.
+  92  |     // Fill the To Date.
+  93  |     await recruitmentPage.fromDateInput.fill(fromDate);
+  94  |     await recruitmentPage.toDateInput.fill(toDate);
+  95  |     // Click Search.
+  96  |     await recruitmentPage.searchButton.click();
+  97  | 
+  98  |     // Wait for the loading spinner to disappear.
+  99  |     await expect(recruitmentPage.loadingSpinner).toBeHidden({
+  100 |       timeout: 20_000,
+  101 |     });
+  102 |     // Verify both entered date values remain displayed.
+  103 |       await expect(recruitmentPage.fromDateInput).toHaveValue(fromDate);
+  104 |       await expect(recruitmentPage.fromDateInput).toHaveValue(toDate);
+  105 | 
+  106 |     await expect(
+  107 |   recruitmentPage.candidateRows
+  108 |     .first()
+  109 |     .or(recruitmentPage.noRecordsFound)
+  110 | ).toBeVisible({
+  111 |   timeout: 15_000,
+  112 | });
+  113 | 
+  114 |     // Verify no date-validation messages appear.
+  115 |     await expect(
+  116 |   recruitmentPage.dateValidationMessages
+  117 | ).toHaveCount(0);
+  118 | 
+  119 |     // Reset the filters.
+  120 |      await recruitmentPage.restButton.click();
+  121 |   });
+  122 | });
+  123 | 
+```

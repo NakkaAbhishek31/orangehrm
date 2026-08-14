@@ -4,11 +4,13 @@ export class NavigationPage {
   readonly page: Page;
   readonly PIMLink: Locator;
   readonly adminLink: Locator;
+  readonly recruitmentLink:Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.PIMLink = page.getByRole("link", { name: "PIM", exact: true });
     this.adminLink = page.getByRole("link", { name: "Admin", exact: true });
+    this.recruitmentLink=page.getByRole('link', { name: 'Recruitment' });
   }
 
   async gotoPIM(): Promise<void> {
@@ -35,4 +37,14 @@ export class NavigationPage {
     /leave\/viewLeaveList/
   );
 }
+
+  async gotoRecruitment(): Promise<void> {
+  
+   await this.recruitmentLink.click();
+   await expect(this.page).toHaveURL(
+     /recruitment\/viewCandidates/
+  );
+}
+
+
 }

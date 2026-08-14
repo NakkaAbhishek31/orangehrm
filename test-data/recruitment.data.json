@@ -1,0 +1,33 @@
+{
+  "TC_RECRUITMENT_133": {
+    "pageHeading": "Candidates",
+    "expectedUrlPath": "/web/index.php/recruitment/viewCandidates"
+  },
+
+  "TC_RECRUITMENT_134": {
+  "fromDaysOffset": -30,
+  "toDaysOffset": 0
+},
+"TC_RECRUITMENT_135": {
+  "fromDaysOffset": 30,
+  "toDaysOffset": 0,
+  "validationMessage": "To date should be after from date"
+},
+"TC_RECRUITMENT_136": {
+  "jobTitle": "Software Engineer",
+  "candidateStatus": "Application Initiated",
+  "fromDaysOffset": -30,
+  "toDaysOffset": 0,
+  "defaultDropdownValue": "-- Select --"
+},
+"TC_RECRUITMENT_138": {
+  "candidateStatus": "Application Initiated",
+  "defaultDropdownValue": "-- Select --"
+},
+"TC_RECRUITMENT_139": {
+  "defaultDropdownValue": "-- Select --"
+},
+"TC_RECRUITMENT_140": {
+  "defaultDropdownValue": "-- Select --"
+}
+}
