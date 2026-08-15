@@ -38,11 +38,8 @@ pipeline {
         skipDefaultCheckout(true)
         timestamps()
         disableConcurrentBuilds()
+   timeout(time: 3, unit: 'HOURS')
 
-        timeout(
-               timeout(time: 3, unit: 'HOURS')
-
-        )
 
         buildDiscarder(
             logRotator(
