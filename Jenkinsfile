@@ -20,7 +20,7 @@ pipeline {
         string(
             name: 'TEST_TARGET',
             defaultValue: 'tests',
-            description: 'Example: tests/Admin/admin-user.spec.ts or tests'
+            description: 'Example: tests/Admin/admin-users.spec.ts or tests'
         )
 
         choice(
