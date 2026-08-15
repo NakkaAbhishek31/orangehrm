@@ -40,8 +40,12 @@ pipeline {
         disableConcurrentBuilds()
 
         timeout(
-            time: 90,
-            unit: 'MINUTES'
+            time: 2,
+           unit: 'HOURS',
+            timestamps()
+
+    disableConcurrentBuilds()
+
         )
 
         buildDiscarder(
