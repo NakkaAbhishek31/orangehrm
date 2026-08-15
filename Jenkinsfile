@@ -41,8 +41,6 @@ pipeline {
 
         timeout(
                timeout(time: 3, unit: 'HOURS')
-    timestamps()
-    disableConcurrentBuilds()
 
         )
 
