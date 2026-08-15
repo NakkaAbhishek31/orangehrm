@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import{test} from '../../fixtures/baseTest';
 
 test('TC_PIM_010 - Admin should navigate through Employee List pages @pagination @regression',
-  async ({ page, loginPage, navigationPage, pimPage }) => {
+  async ({ loginPage, navigationPage, pimPage }) => {
 
     await loginPage.visitPage();
     await loginPage.login('Admin', 'admin123');
@@ -12,8 +12,7 @@ test('TC_PIM_010 - Admin should navigate through Employee List pages @pagination
     await pimPage.gotoEmployeeList();
     await expect(pimPage.loadingSpinner).toBeHidden();
 
-    const pageOneEmployeeIds =
-      await pimPage.getVisibleEmployeeIds();
+    const pageOneEmployeeIds =await pimPage.getVisibleEmployeeIds();
 
     expect(pageOneEmployeeIds.length).toBeGreaterThan(0);
    const nextButtonAvaliable=await pimPage.nextPageButton.count();

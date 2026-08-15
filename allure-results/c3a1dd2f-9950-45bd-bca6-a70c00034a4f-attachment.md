@@ -1,0 +1,413 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Leave\leave.spec.ts >> Leaves - leaves for  Users >> TC_LEAVE_111 - Validation should appear when From Date is later than To Date @negative @validation @regression
+- Location: tests\Leave\leave.spec.ts:87:7
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByText('No Records Found', { exact: true })
+Expected: visible
+Timeout: 20000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 20000ms
+  - waiting for getByText('No Records Found', { exact: true })
+
+```
+
+```yaml
+- complementary:
+  - navigation "Sidepanel":
+    - link "client brand banner":
+      - /url: https://www.orangehrm.com/
+      - img "client brand banner"
+    - textbox "Search"
+    - button ""
+    - separator
+    - list:
+      - listitem:
+        - link "Admin":
+          - /url: /web/index.php/admin/viewAdminModule
+      - listitem:
+        - link "PIM":
+          - /url: /web/index.php/pim/viewPimModule
+      - listitem:
+        - link "Leave":
+          - /url: /web/index.php/leave/viewLeaveModule
+      - listitem:
+        - link "Time":
+          - /url: /web/index.php/time/viewTimeModule
+      - listitem:
+        - link "Recruitment":
+          - /url: /web/index.php/recruitment/viewRecruitmentModule
+      - listitem:
+        - link "My Info":
+          - /url: /web/index.php/pim/viewMyDetails
+      - listitem:
+        - link "Performance":
+          - /url: /web/index.php/performance/viewPerformanceModule
+      - listitem:
+        - link "Dashboard":
+          - /url: /web/index.php/dashboard/index
+      - listitem:
+        - link "Directory":
+          - /url: /web/index.php/directory/viewDirectory
+      - listitem:
+        - link "Maintenance":
+          - /url: /web/index.php/maintenance/viewMaintenanceModule
+      - listitem:
+        - link "Claim":
+          - /url: /web/index.php/claim/viewClaimModule
+          - img
+          - text: Claim
+      - listitem:
+        - link "Buzz":
+          - /url: /web/index.php/buzz/viewBuzz
+- banner:
+  - heading "Leave" [level=6]
+  - link "Upgrade":
+    - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+    - button "Upgrade"
+  - list:
+    - listitem:
+      - img "profile picture"
+      - paragraph: manda user
+      - text: 
+  - navigation "Topbar Menu":
+    - list:
+      - listitem:
+        - link "Apply":
+          - /url: "#"
+      - listitem:
+        - link "My Leave":
+          - /url: "#"
+      - listitem: Entitlements 
+      - listitem: Reports 
+      - listitem: Configure 
+      - listitem:
+        - link "Leave List":
+          - /url: "#"
+      - listitem:
+        - link "Assign Leave":
+          - /url: "#"
+      - button ""
+- heading "Leave List" [level=5]
+- button ""
+- separator
+- text: From Date
+- textbox "yyyy-dd-mm": 2026-25-08
+- text:  To Date
+- textbox "yyyy-dd-mm": 2026-15-08
+- text:  To date should be after from date Show Leave with Status* -- Select --  Pending Approval  Leave Type -- Select --  Employee Name
+- textbox "Type for hints..."
+- text: Sub Unit -- Select -- 
+- paragraph: Include Past Employees
+- checkbox
+- separator
+- paragraph: "* Required"
+- button "Reset"
+- button "Search"
+- text: (4) Records Found
+- table:
+  - rowgroup:
+    - row " Date Employee Name Leave Type Leave Balance (Days) Number of Days Status Comments Actions":
+      - columnheader "":
+        - checkbox ""
+        - text: 
+      - columnheader "Date"
+      - columnheader "Employee Name"
+      - columnheader "Leave Type"
+      - columnheader "Leave Balance (Days)"
+      - columnheader "Number of Days"
+      - columnheader "Status"
+      - columnheader "Comments"
+      - columnheader "Actions"
+  - rowgroup:
+    - row " 2026-11-12 Rajaa P CAN - Vacation 148.00 1.00 Pending Approval (1.00) Approve Reject ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "2026-11-12"
+      - cell "Rajaa P"
+      - cell "CAN - Vacation"
+      - cell "148.00"
+      - cell "1.00"
+      - cell "Pending Approval (1.00)"
+      - cell
+      - cell "Approve Reject ":
+        - button "Approve"
+        - button "Reject"
+        - listitem:
+          - button ""
+    - row " 2026-09-10 Rajaa P CAN - Personal 148.00 1.00 Pending Approval (1.00) Approve Reject ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "2026-09-10"
+      - cell "Rajaa P"
+      - cell "CAN - Personal"
+      - cell "148.00"
+      - cell "1.00"
+      - cell "Pending Approval (1.00)"
+      - cell
+      - cell "Approve Reject ":
+        - button "Approve"
+        - button "Reject"
+        - listitem:
+          - button ""
+    - row " 2026-12-06 Rajaa P CAN - Vacation 148.00 1.00 Pending Approval (1.00) Approve Reject ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "2026-12-06"
+      - cell "Rajaa P"
+      - cell "CAN - Vacation"
+      - cell "148.00"
+      - cell "1.00"
+      - cell "Pending Approval (1.00)"
+      - cell
+      - cell "Approve Reject ":
+        - button "Approve"
+        - button "Reject"
+        - listitem:
+          - button ""
+    - row " 2026-12-01 Rajaa P CAN - Personal 148.00 1.00 Pending Approval (1.00) Approve Reject ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "2026-12-01"
+      - cell "Rajaa P"
+      - cell "CAN - Personal"
+      - cell "148.00"
+      - cell "1.00"
+      - cell "Pending Approval (1.00)"
+      - cell
+      - cell "Approve Reject ":
+        - button "Approve"
+        - button "Reject"
+        - listitem:
+          - button ""
+- paragraph: OrangeHRM OS 5.9
+- paragraph:
+  - text: © 2005 - 2026
+  - link "OrangeHRM, Inc":
+    - /url: http://www.orangehrm.com
+  - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  20  | const unique = () => `${Date.now()}${Math.floor(Math.random() * 1000)}`;
+  21  | const employeeFrom = (
+  22  |   d: { firstNamePrefix: string; middleName: string; lastName: string },
+  23  |   value = unique(),
+  24  | ) => ({
+  25  |   firstName: `${d.firstNamePrefix}${value}`,
+  26  |   middleName: d.middleName,
+  27  |   lastName: d.lastName,
+  28  | });
+  29  | 
+  30  | test.describe("Leaves - leaves for  Users", () => {
+  31  |   test.beforeEach(async ({ loginPage }) => {
+  32  |     await loginPage.visitPage();
+  33  |     await loginPage.login(
+  34  |       loginData.validAdmin.username,
+  35  |       loginData.validAdmin.password,
+  36  |     );
+  37  |     await loginPage.verifyLoginSuccessful();
+  38  |   });
+  39  | 
+  40  |   test("TC_LEAVE_109 - Admin should navigate to the Leave List page @smoke @navigation @regression", async ({
+  41  |     page,
+  42  |     loginPage,
+  43  |     navigationPage,
+  44  |     leavepage,
+  45  |   }) => {
+  46  |     // Click Leave in the main navigation.
+  47  |     await navigationPage.gotoLeave();
+  48  |     // Verify the Leave List URL and heading and inputs.
+  49  |     await expect(page).toHaveURL(/leave\/viewLeaveList/);
+  50  |     await leavepage.verifyLeaveListPage();
+  51  |   });
+  52  | 
+  53  |   test("TC_LEAVE_110 - Admin should search the Leave List using a valid date range @positive @search @regression", async ({
+  54  |     page,
+  55  |     navigationPage,
+  56  |     leavepage,
+  57  |   }) => {
+  58  |     const fromDate = dateFromOffset(leaveData.validDateRange.fromDaysOffset);
+  59  | 
+  60  |     const toDate = dateFromOffset(leaveData.validDateRange.toDaysOffset);
+  61  | 
+  62  |     // Navigate to Leave → Leave List.
+  63  |     await navigationPage.gotoLeave();
+  64  | 
+  65  |     await leavepage.fromDateInput.fill(fromDate);
+  66  |     await leavepage.toDateInput.fill(toDate);
+  67  |     await expect(leavepage.fromDateInput).toHaveValue(fromDate);
+  68  |     await expect(leavepage.toDateInput).toHaveValue(toDate);
+  69  |     // Click Search.
+  70  |     await leavepage.searchButton.click();
+  71  |     // Wait for the Leave List request and loading spinner.
+  72  |     await expect(leavepage.loadingSpinner).toBeHidden();
+  73  |     // Verify the entered date values remain displayed.
+  74  |     await expect(leavepage.fromDateInput).toHaveValue(fromDate);
+  75  | 
+  76  |     await expect(leavepage.toDateInput).toHaveValue(toDate);
+  77  | 
+  78  |     await expect(
+  79  |       leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+  80  |     ).toBeVisible({
+  81  |       timeout: 15_000,
+  82  |     });
+  83  | 
+  84  |     await expect(leavepage.dateValidationMessages).toHaveCount(0);
+  85  |   });
+  86  | 
+  87  |   test("TC_LEAVE_111 - Validation should appear when From Date is later than To Date @negative @validation @regression", async ({
+  88  |     page,
+  89  |     navigationPage,
+  90  |     leavepage,
+  91  |   }) => {
+  92  |     // Generate From Date using invalidDateRange.fromDaysOffset.
+  93  |     const fromDate = dateFromOffset(leaveData.invalidDateRange.fromDaysOffset);
+  94  | 
+  95  |     // Generate To Date using invalidDateRange.toDaysOffset.
+  96  | 
+  97  |     const toDate = dateFromOffset(leaveData.invalidDateRange.toDaysOffset);
+  98  | 
+  99  |     // Navigate to Leave → Leave List.
+  100 |     await navigationPage.gotoLeave();
+  101 |     // Enter the future From Date.
+  102 |     await leavepage.fromDateInput.fill(fromDate);
+  103 |     // Enter the earlier To Date.
+  104 |     await leavepage.toDateInput.fill(toDate);
+  105 |     // Click Search.
+  106 |     await leavepage.searchButton.click();
+  107 |     // Verify the date-range validation appears.
+  108 |     await expect(leavepage.toDateValidation).toBeVisible();
+  109 |     // Verify the validation message says:
+  110 |     // “To date should be after from date”.
+  111 |     await expect(leavepage.toDateValidation).toHaveText(
+  112 |       "To date should be after from date",
+  113 |     );
+  114 | 
+  115 |     // Search should be blocked.
+  116 |     await expect(page).toHaveURL(/leave\/viewLeaveList/);
+  117 | 
+  118 |     // Verify no search results are loaded.
+  119 | 
+> 120 |     await expect(leavepage.noRecordsFound).toBeVisible();
+      |                                            ^ Error: expect(locator).toBeVisible() failed
+  121 |     // Verify the entered dates remain unchanged.
+  122 |     await expect(leavepage.fromDateInput).toHaveValue(fromDate);
+  123 |     await expect(leavepage.toDateInput).toHaveValue(toDate);
+  124 |   });
+  125 | 
+  126 |   test("TC_LEAVE_112 - Admin should reset Leave List search filters @positive @filter @regression", async ({
+  127 |     page,
+  128 |     navigationPage,
+  129 |     leavepage,
+  130 |   }) => {
+  131 |     await navigationPage.gotoLeave();
+  132 | 
+  133 |     // Store default filter values.
+  134 |     const { fromDate: defaultFromDate, toDate: defaultToDate } =
+  135 |       await leavepage.waitForDefaultDateRange();
+  136 | 
+  137 |     const defaultStatusText = (
+  138 |       await leavepage.leaveStatusDropdown.innerText()
+  139 |     ).trim();
+  140 | 
+  141 |     const defaultLeaveTypeText = (
+  142 |       await leavepage.leaveTypeDropdown.innerText()
+  143 |     ).trim();
+  144 | 
+  145 |     // Generate different valid dates.
+  146 |     const changedFromDate = dateFromOffset(-60);
+  147 | 
+  148 |     const changedToDate = dateFromOffset(-15);
+  149 | 
+  150 |     await leavepage.fromDateInput.fill(changedFromDate);
+  151 | 
+  152 |     await leavepage.toDateInput.fill(changedToDate);
+  153 | 
+  154 |     // Select Rejected status.
+  155 |     await leavepage.leaveStatusDropdown.click();
+  156 | 
+  157 |     const statusOptions = page.locator(".oxd-select-dropdown:visible");
+  158 | 
+  159 |     await expect(statusOptions).toBeVisible();
+  160 | 
+  161 |     await statusOptions
+  162 |       .locator(".oxd-select-option")
+  163 |       .filter({
+  164 |         hasText: /^Rejected$/,
+  165 |       })
+  166 |       .click();
+  167 | 
+  168 |     // Verify filters were changed.
+  169 |     await expect(leavepage.fromDateInput).toHaveValue(changedFromDate);
+  170 | 
+  171 |     await expect(leavepage.toDateInput).toHaveValue(changedToDate);
+  172 | 
+  173 |     // Reset all filters.
+  174 |     await leavepage.resetButton.click();
+  175 | 
+  176 |     await expect(leavepage.loadingSpinner).toBeHidden();
+  177 | 
+  178 |     // Verify dates return to defaults.
+  179 |     await expect(leavepage.fromDateInput).toHaveValue(defaultFromDate);
+  180 | 
+  181 |     await expect(leavepage.toDateInput).toHaveValue(defaultToDate);
+  182 | 
+  183 |     // Verify status returns to its default value.
+  184 |     await expect
+  185 |       .poll(async () =>
+  186 |         (await leavepage.leaveStatusDropdown.innerText()).trim(),
+  187 |       )
+  188 |       .toContain("-- Select --");
+  189 | 
+  190 |     // Verify Leave Type returns to default.
+  191 |     await expect
+  192 |       .poll(async () => (await leavepage.leaveTypeDropdown.innerText()).trim())
+  193 |       .toBe(defaultLeaveTypeText);
+  194 | 
+  195 |     // Verify Employee Name is cleared.
+  196 |     await expect(leavepage.employeeNameInput).toHaveValue("");
+  197 | 
+  198 |   });
+  199 | 
+  200 |   test("TC_LEAVE_114 - Admin should filter the Leave List by leave type @positive @filter @regression", async ({
+  201 |     navigationPage,
+  202 |     leavepage,
+  203 |   }) => {
+  204 |     await navigationPage.gotoLeave();
+  205 | 
+  206 |     const leaveType = await leavepage.selectFirstAvailableLeaveType();
+  207 | 
+  208 |     await leavepage.searchButton.click();
+  209 | 
+  210 |     await expect(leavepage.loadingSpinner).toBeHidden();
+  211 | 
+  212 |     await expect(leavepage.leaveTypeDropdown).toContainText(leaveType);
+  213 | 
+  214 |     await expect(
+  215 |       leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+  216 |     ).toBeVisible({
+  217 |       timeout: 15_000,
+  218 |     });
+  219 | 
+  220 |     const rowCount = await leavepage.leaveRows.count();
+```

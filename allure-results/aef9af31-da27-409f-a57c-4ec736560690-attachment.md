@@ -1,0 +1,363 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Leave\leave.spec.ts >> Leaves - leaves for  Users >> TC_LEAVE_109 - Admin should navigate to the Leave List page @smoke @navigation @regression
+- Location: tests\Leave\leave.spec.ts:40:7
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: locator('.oxd-input-group').filter({ hasText: 'Include Past Employees' }).locator('input[type="checkbox"]')
+Expected: visible
+Timeout: 20000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 20000ms
+  - waiting for locator('.oxd-input-group').filter({ hasText: 'Include Past Employees' }).locator('input[type="checkbox"]')
+
+```
+
+```yaml
+- complementary:
+  - navigation "Sidepanel":
+    - link "client brand banner":
+      - /url: https://www.orangehrm.com/
+      - img "client brand banner"
+    - textbox "Search"
+    - button ""
+    - separator
+    - list:
+      - listitem:
+        - link "Admin":
+          - /url: /web/index.php/admin/viewAdminModule
+      - listitem:
+        - link "PIM":
+          - /url: /web/index.php/pim/viewPimModule
+      - listitem:
+        - link "Leave":
+          - /url: /web/index.php/leave/viewLeaveModule
+      - listitem:
+        - link "Time":
+          - /url: /web/index.php/time/viewTimeModule
+      - listitem:
+        - link "Recruitment":
+          - /url: /web/index.php/recruitment/viewRecruitmentModule
+      - listitem:
+        - link "My Info":
+          - /url: /web/index.php/pim/viewMyDetails
+      - listitem:
+        - link "Performance":
+          - /url: /web/index.php/performance/viewPerformanceModule
+      - listitem:
+        - link "Dashboard":
+          - /url: /web/index.php/dashboard/index
+      - listitem:
+        - link "Directory":
+          - /url: /web/index.php/directory/viewDirectory
+      - listitem:
+        - link "Maintenance":
+          - /url: /web/index.php/maintenance/viewMaintenanceModule
+      - listitem:
+        - link "Claim":
+          - /url: /web/index.php/claim/viewClaimModule
+          - img
+          - text: Claim
+      - listitem:
+        - link "Buzz":
+          - /url: /web/index.php/buzz/viewBuzz
+- banner:
+  - heading "Leave" [level=6]
+  - link "Upgrade":
+    - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+    - button "Upgrade"
+  - list:
+    - listitem:
+      - img "profile picture"
+      - paragraph: John user
+      - text: 
+  - navigation "Topbar Menu":
+    - list:
+      - listitem:
+        - link "Apply":
+          - /url: "#"
+      - listitem:
+        - link "My Leave":
+          - /url: "#"
+      - listitem: Entitlements 
+      - listitem: Reports 
+      - listitem: Configure 
+      - listitem:
+        - link "Leave List":
+          - /url: "#"
+      - listitem:
+        - link "Assign Leave":
+          - /url: "#"
+      - button ""
+- heading "Leave List" [level=5]
+- button ""
+- separator
+- text: From Date
+- textbox "yyyy-dd-mm": 2026-01-01
+- text:  To Date
+- textbox "yyyy-dd-mm": 2026-31-12
+- text:  Show Leave with Status* -- Select --  Pending Approval  Leave Type -- Select --  Employee Name
+- textbox "Type for hints..."
+- text: Sub Unit -- Select -- 
+- paragraph: Include Past Employees
+- checkbox
+- separator
+- paragraph: "* Required"
+- button "Reset"
+- button "Search"
+- text: (1) Record Found
+- table:
+  - rowgroup:
+    - row " Date Employee Name Leave Type Leave Balance (Days) Number of Days Status Comments Actions":
+      - columnheader "":
+        - checkbox ""
+        - text: 
+      - columnheader "Date"
+      - columnheader "Employee Name"
+      - columnheader "Leave Type"
+      - columnheader "Leave Balance (Days)"
+      - columnheader "Number of Days"
+      - columnheader "Status"
+      - columnheader "Comments"
+      - columnheader "Actions"
+  - rowgroup:
+    - row " 2026-20-08 to 2026-21-08 John akhilhjkl user CAN - Personal 3.00 2.00 Pending Approval (2.00) QA testing - leave application ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "2026-20-08 to 2026-21-08"
+      - cell "John akhilhjkl user"
+      - cell "CAN - Personal"
+      - cell "3.00"
+      - cell "2.00"
+      - cell "Pending Approval (2.00)"
+      - cell "QA testing - leave application"
+      - cell "":
+        - listitem:
+          - button ""
+- paragraph: OrangeHRM OS 5.9
+- paragraph:
+  - text: © 2005 - 2026
+  - link "OrangeHRM, Inc":
+    - /url: http://www.orangehrm.com
+  - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  129 |       .locator("form")
+  130 |       .locator(".oxd-input-field-error-message");
+  131 | 
+  132 |     this.toDateValidation = page
+  133 |       .locator(".oxd-input-group")
+  134 |       .filter({
+  135 |         has: page.locator("label").getByText("To Date", {
+  136 |           exact: true,
+  137 |         }),
+  138 |       })
+  139 |       .locator(".oxd-input-field-error-message");
+  140 | 
+  141 |     this.dropdownOptions = page.locator(
+  142 |       ".oxd-select-dropdown:visible " + ".oxd-select-option",
+  143 |     );
+  144 | 
+  145 |     this.includePastEmployeesLabel = page
+  146 |       .locator(".oxd-input-group")
+  147 |       .filter({
+  148 |         hasText: "Include Past Employees",
+  149 |       })
+  150 |       .locator(".oxd-checkbox-wrapper label");
+  151 | 
+  152 |     this.autocompleteOptions = page.locator(
+  153 |       ".oxd-autocomplete-dropdown:visible " + ".oxd-autocomplete-option",
+  154 |     );
+  155 | 
+  156 |     this.employeeNameValidation = page
+  157 |       .locator(".oxd-input-group")
+  158 |       .filter({
+  159 |         has: page.locator("label").getByText("Employee Name", {
+  160 |           exact: true,
+  161 |         }),
+  162 |       })
+  163 |       .locator(".oxd-input-field-error-message");
+  164 |       this.fromDateValidation = page
+  165 |   .locator('.oxd-input-group')
+  166 |   .filter({
+  167 |     has: page
+  168 |       .locator('label')
+  169 |       .getByText('From Date', {
+  170 |         exact: true,
+  171 |       }),
+  172 |   })
+  173 |   .locator(
+  174 |     '.oxd-input-field-error-message'
+  175 |   );
+  176 | 
+  177 |  this.nextPageButton = page
+  178 |   .locator(
+  179 |     'button.oxd-pagination-page-item--previous-next'
+  180 |   )
+  181 |   .filter({
+  182 |     has: page.locator(
+  183 |       'i.bi-chevron-right'
+  184 |     ),
+  185 |   });
+  186 | 
+  187 | 
+  188 |   this.leaveStatusField = page
+  189 |   .locator('.oxd-input-group')
+  190 |   .filter({
+  191 |     has: page
+  192 |       .locator('label')
+  193 |       .getByText(
+  194 |         'Show Leave with Status',
+  195 |         { exact: true }
+  196 |       ),
+  197 |   });
+  198 | 
+  199 | this.leaveStatusDropdown =
+  200 |   this.leaveStatusField.locator(
+  201 |     '.oxd-select-text'
+  202 |   );
+  203 | 
+  204 | this.previousPageButton = page
+  205 |   .locator(
+  206 |     'button.oxd-pagination-page-item--previous-next'
+  207 |   )
+  208 |   .filter({
+  209 |     has: page.locator(
+  210 |       'i.bi-chevron-left'
+  211 |     ),
+  212 |   });
+  213 | 
+  214 |   }
+  215 | 
+  216 |   async verifyLeaveListPage(): Promise<void> {
+  217 |     await expect(this.leaveListHeading).toBeVisible();
+  218 | 
+  219 |     await expect(this.fromDateInput).toBeVisible();
+  220 | 
+  221 |     await expect(this.toDateInput).toBeVisible();
+  222 | 
+  223 |     await expect(this.leaveStatusDropdown).toBeVisible();
+  224 | 
+  225 |     await expect(this.employeeNameInput).toBeVisible();
+  226 | 
+  227 |     await expect(this.leaveTypeDropdown).toBeVisible();
+  228 | 
+> 229 |     await expect(this.includePastEmployeesCheckbox).toBeVisible();
+      |                                                     ^ Error: expect(locator).toBeVisible() failed
+  230 | 
+  231 |     await expect(this.searchButton).toBeVisible();
+  232 | 
+  233 |     await expect(this.resetButton).toBeVisible();
+  234 | 
+  235 |     await expect(this.leaveTable).toBeVisible();
+  236 |   }
+  237 | 
+  238 | async selectLeaveStatus(
+  239 |   status: string
+  240 | ): Promise<void> {
+  241 |   await this.leaveStatusDropdown.click();
+  242 | 
+  243 |   const dropdown =
+  244 |     this.page.locator(
+  245 |       '.oxd-select-dropdown:visible'
+  246 |     );
+  247 | 
+  248 |   await expect(dropdown).toBeVisible();
+  249 | 
+  250 |   const option = dropdown
+  251 |     .locator('.oxd-select-option')
+  252 |     .filter({
+  253 |       hasText: new RegExp(
+  254 |         `^\\s*${status}\\s*$`,
+  255 |         'i'
+  256 |       ),
+  257 |     })
+  258 |     .first();
+  259 | 
+  260 |   await expect(option).toBeVisible();
+  261 | 
+  262 |   await option.click();
+  263 | 
+  264 |   await expect(
+  265 |     this.leaveStatusField.getByText(
+  266 |       status,
+  267 |       { exact: true }
+  268 |     )
+  269 |   ).toBeVisible({
+  270 |     timeout: 10_000,
+  271 |   });
+  272 | }
+  273 |   async setIncludePastEmployees(shouldInclude: boolean): Promise<void> {
+  274 |     const isChecked = await this.includePastEmployeesCheckbox.isChecked();
+  275 | 
+  276 |     if (isChecked !== shouldInclude) {
+  277 |       await this.includePastEmployeesLabel.click();
+  278 |     }
+  279 | 
+  280 |     if (shouldInclude) {
+  281 |       await expect(this.includePastEmployeesCheckbox).toBeChecked();
+  282 |     } else {
+  283 |       await expect(this.includePastEmployeesCheckbox).not.toBeChecked();
+  284 |     }
+  285 |   }
+  286 | 
+  287 |   async selectFirstAvailableEmployee(partialName: string): Promise<string> {
+  288 |     await this.employeeNameInput.fill(partialName);
+  289 | 
+  290 |     const validOptions = this.autocompleteOptions.filter({
+  291 |       hasNotText: /Searching|No Records Found/i,
+  292 |     });
+  293 | 
+  294 |     await expect(validOptions.first()).toBeVisible({
+  295 |       timeout: 15_000,
+  296 |     });
+  297 | 
+  298 |     const firstEmployeeOption = validOptions.first();
+  299 | 
+  300 |     const employeeName = (await firstEmployeeOption.innerText()).trim();
+  301 | 
+  302 |     await firstEmployeeOption.click();
+  303 | 
+  304 |     await expect(this.employeeNameInput).toHaveValue(employeeName);
+  305 | 
+  306 |     return employeeName;
+  307 |   }
+  308 | 
+  309 |   async selectFirstAvailableLeaveType(): Promise<string> {
+  310 |     await this.leaveTypeDropdown.click();
+  311 | 
+  312 |     await expect(this.dropdownOptions.first()).toBeVisible();
+  313 | 
+  314 |     const optionCount = await this.dropdownOptions.count();
+  315 | 
+  316 |     expect(optionCount).toBeGreaterThan(1);
+  317 | 
+  318 |     const firstLeaveTypeOption = this.dropdownOptions.nth(1);
+  319 | 
+  320 |     const leaveType = (await firstLeaveTypeOption.innerText()).trim();
+  321 | 
+  322 |     await firstLeaveTypeOption.click();
+  323 | 
+  324 |     await expect(this.leaveTypeDropdown).toContainText(leaveType);
+  325 | 
+  326 |     return leaveType;
+  327 |   }
+  328 | 
+  329 | //   async removeSelectedLeaveStatus(
+```

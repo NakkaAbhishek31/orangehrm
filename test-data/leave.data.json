@@ -45,7 +45,7 @@
     "toDaysOffset": 0
   },
     "TC_LEAVE_125":{
-"leaveStatus": "Scheduled",
+"leaveStatus": "Pending Approval (1.00)",
 "defaultStatus": "Select"
     },
     

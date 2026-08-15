@@ -1,0 +1,239 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Leave\leave.spec.ts >> Leaves - leaves for  Users >> TC_LEAVE_114 - Admin should filter the Leave List by leave type @positive @filter @regression
+- Location: tests\Leave\leave.spec.ts:201:7
+
+# Error details
+
+```
+Error: expect(locator).toContainText(expected) failed
+
+Locator: locator('.oxd-input-group').filter({ has: locator('label').getByText('Leave Type', { exact: true }) }).locator('.oxd-select-text')
+Expected substring: "No Records Found"
+Received string:    "-- Select --"
+Timeout: 20000ms
+
+Call log:
+  - Expect "toContainText" with timeout 20000ms
+  - waiting for locator('.oxd-input-group').filter({ has: locator('label').getByText('Leave Type', { exact: true }) }).locator('.oxd-select-text')
+    42 × locator resolved to <div data-v-67d2aedf="" data-v-13cf171c="" class="oxd-select-text oxd-select-text--active">…</div>
+       - unexpected value "-- Select --"
+
+```
+
+```yaml
+- text: "-- Select -- "
+```
+
+# Test source
+
+```ts
+  227 |     await expect(this.leaveTypeDropdown).toBeVisible();
+  228 | 
+  229 |     await expect(this.searchButton).toBeVisible();
+  230 | 
+  231 |     await expect(this.resetButton).toBeVisible();
+  232 | 
+  233 |     await expect(this.leaveTable).toBeVisible();
+  234 |   }
+  235 | 
+  236 | async selectLeaveStatus(
+  237 |   status: string
+  238 | ): Promise<void> {
+  239 |   await this.leaveStatusDropdown.click();
+  240 | 
+  241 |   const dropdown =
+  242 |     this.page.locator(
+  243 |       '.oxd-select-dropdown:visible'
+  244 |     );
+  245 | 
+  246 |   await expect(dropdown).toBeVisible();
+  247 | 
+  248 |   const option = dropdown
+  249 |     .locator('.oxd-select-option')
+  250 |     .filter({
+  251 |       hasText: new RegExp(
+  252 |         `^\\s*${status}\\s*$`,
+  253 |         'i'
+  254 |       ),
+  255 |     })
+  256 |     .first();
+  257 | 
+  258 |   await expect(option).toBeVisible();
+  259 | 
+  260 |   await option.click();
+  261 | 
+  262 |   await expect(
+  263 |     this.leaveStatusField.getByText(
+  264 |       status,
+  265 |       { exact: true }
+  266 |     )
+  267 |   ).toBeVisible({
+  268 |     timeout: 10_000,
+  269 |   });
+  270 | }
+  271 |   async setIncludePastEmployees(shouldInclude: boolean): Promise<void> {
+  272 |     const isChecked = await this.includePastEmployeesCheckbox.isChecked();
+  273 | 
+  274 |     if (isChecked !== shouldInclude) {
+  275 |       await this.includePastEmployeesLabel.click();
+  276 |     }
+  277 | 
+  278 |     if (shouldInclude) {
+  279 |       await expect(this.includePastEmployeesCheckbox).toBeChecked();
+  280 |     } else {
+  281 |       await expect(this.includePastEmployeesCheckbox).not.toBeChecked();
+  282 |     }
+  283 |   }
+  284 | 
+  285 |   async selectFirstAvailableEmployee(partialName: string): Promise<string> {
+  286 |     await this.employeeNameInput.fill(partialName);
+  287 | 
+  288 |     const validOptions = this.autocompleteOptions.filter({
+  289 |       hasNotText: /Searching|No Records Found/i,
+  290 |     });
+  291 | 
+  292 |     await expect(validOptions.first()).toBeVisible({
+  293 |       timeout: 15_000,
+  294 |     });
+  295 | 
+  296 |     const firstEmployeeOption = validOptions.first();
+  297 | 
+  298 |     const employeeName = (await firstEmployeeOption.innerText()).trim();
+  299 | 
+  300 |     await firstEmployeeOption.click();
+  301 | 
+  302 |     await expect(this.employeeNameInput).toHaveValue(employeeName);
+  303 | 
+  304 |     return employeeName;
+  305 |   }
+  306 | 
+  307 |   async selectFirstAvailableLeaveType(): Promise<string> {
+  308 |     await this.leaveTypeDropdown.click();
+  309 | 
+  310 |     await expect(this.dropdownOptions.first()).toBeVisible();
+  311 | 
+  312 |     const leaveTypeOptions = this.dropdownOptions.filter({
+  313 |       hasNotText: /^-- Select --$/,
+  314 |     });
+  315 | 
+  316 |     if ((await leaveTypeOptions.count()) === 0) {
+  317 |       await this.page.keyboard.press("Escape");
+  318 |       return "-- Select --";
+  319 |     }
+  320 | 
+  321 |     const firstLeaveTypeOption = leaveTypeOptions.first();
+  322 | 
+  323 |     const leaveType = (await firstLeaveTypeOption.innerText()).trim();
+  324 | 
+  325 |     await firstLeaveTypeOption.click();
+  326 | 
+> 327 |     await expect(this.leaveTypeDropdown).toContainText(leaveType);
+      |                                          ^ Error: expect(locator).toContainText(expected) failed
+  328 | 
+  329 |     return leaveType;
+  330 |   }
+  331 | 
+  332 | //   async removeSelectedLeaveStatus(
+  333 | //   status: string
+  334 | // ): Promise<void> {
+  335 | //   const selectedStatus =
+  336 | //     this.leaveStatusDropdown.locator(
+  337 | //       '.oxd-select-text-selected'
+  338 | //     ).filter({
+  339 | //       hasText: status,
+  340 | //     });
+  341 | 
+  342 | //   await expect(
+  343 | //     selectedStatus
+  344 | //   ).toBeVisible();
+  345 | 
+  346 | //   await selectedStatus
+  347 | //     .locator('.oxd-select-text--close')
+  348 | //     .click();
+  349 | 
+  350 | //   await expect(
+  351 | //     selectedStatus
+  352 | //   ).toHaveCount(0);
+  353 | // }
+  354 | 
+  355 | async getVisibleLeaveRecords():
+  356 | Promise<string[]> {
+  357 |   await expect(
+  358 |     this.loadingSpinner
+  359 |   ).toBeHidden();
+  360 | 
+  361 |   return this.leaveRows.allInnerTexts();
+  362 | }
+  363 | 
+  364 | async waitForDefaultDateRange(): Promise<{
+  365 |   fromDate: string;
+  366 |   toDate: string;
+  367 | }> {
+  368 |   await expect(
+  369 |     this.fromDateInput
+  370 |   ).toBeVisible();
+  371 | 
+  372 |   await expect(
+  373 |     this.toDateInput
+  374 |   ).toBeVisible();
+  375 | 
+  376 |   await expect
+  377 |     .poll(
+  378 |       async () =>
+  379 |         (
+  380 |           await this.fromDateInput
+  381 |             .inputValue()
+  382 |         ).trim(),
+  383 |       {
+  384 |         timeout: 20_000,
+  385 |         message:
+  386 |           'Waiting for From Date to be populated',
+  387 |       }
+  388 |     )
+  389 |     .not.toBe('');
+  390 | 
+  391 |   await expect
+  392 |     .poll(
+  393 |       async () =>
+  394 |         (
+  395 |           await this.toDateInput
+  396 |             .inputValue()
+  397 |         ).trim(),
+  398 |       {
+  399 |         timeout: 20_000,
+  400 |         message:
+  401 |           'Waiting for To Date to be populated',
+  402 |       }
+  403 |     )
+  404 |     .not.toBe('');
+  405 | 
+  406 |   const fromDate = (
+  407 |     await this.fromDateInput.inputValue()
+  408 |   ).trim();
+  409 | 
+  410 |   const toDate = (
+  411 |     await this.toDateInput.inputValue()
+  412 |   ).trim();
+  413 | 
+  414 |   return {
+  415 |     fromDate,
+  416 |     toDate,
+  417 |   };
+  418 | }
+  419 | 
+  420 | async removeSelectedLeaveStatus(
+  421 |   status: string
+  422 | ): Promise<void> {
+  423 |   const statusElement = this.selectedLeaveStatuses.filter({
+  424 |     hasText: new RegExp(`^\\s*${status}\\s*$`, "i"),
+  425 |   });
+  426 | 
+  427 |   await expect(
+```

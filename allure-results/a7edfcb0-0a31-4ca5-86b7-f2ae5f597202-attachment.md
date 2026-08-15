@@ -1,0 +1,239 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Leave\leave.spec.ts >> Leaves - leaves for  Users >> TC_LEAVE_118 - Admin should include past employees in Leave List search @positive @filter @regression
+- Location: tests\Leave\leave.spec.ts:391:7
+
+# Error details
+
+```
+Error: expect(locator).not.toBeChecked() failed
+
+Locator:  getByText('Include Past Employees', { exact: true }).locator('xpath=ancestor::*[.//input[@type=\'checkbox\']][1]').getByRole('checkbox')
+Expected: not checked
+Received: checked
+Timeout:  20000ms
+
+Call log:
+  - Expect "not toBeChecked" with timeout 20000ms
+  - waiting for getByText('Include Past Employees', { exact: true }).locator('xpath=ancestor::*[.//input[@type=\'checkbox\']][1]').getByRole('checkbox')
+    43 × locator resolved to <input type="checkbox" data-v-8e4757dc=""/>
+       - unexpected value "checked"
+
+```
+
+```yaml
+- checkbox [checked]
+```
+
+# Test source
+
+```ts
+  324 |     await leavepage.resetButton.click();
+  325 | 
+  326 |     await expect(leavepage.employeeNameInput).toHaveValue("");
+  327 | 
+  328 |     await expect(leavepage.employeeNameValidation).toBeHidden();
+  329 |   });
+  330 | 
+  331 |   test("TC_LEAVE_117 - Admin should search using combined date, status, and leave type filters @positive @filter @regression", async ({
+  332 |     navigationPage,
+  333 |     leavepage,
+  334 |   }) => {
+  335 |     const data = leaveData.TC_LEAVE_117;
+  336 |     // Read the date offsets and status from JSON.
+  337 |     await navigationPage.gotoLeave();
+  338 |     const { fromDate: defaultFromDate, toDate: defaultToDate } =
+  339 |       await leavepage.waitForDefaultDateRange();
+  340 | 
+  341 |     // Generate dynamic dates from JSON offsets.
+  342 |     const fromDate = dateFromOffset(data.fromDaysOffset);
+  343 | 
+  344 |     const toDate = dateFromOffset(data.toDaysOffset);
+  345 | 
+  346 |     await leavepage.fromDateInput.fill(fromDate);
+  347 | 
+  348 |     await leavepage.toDateInput.fill(toDate);
+  349 |     // Select the configured Leave Status.
+  350 |     await leavepage.selectLeaveStatus(data.leaveStatus);
+  351 |     // Select the first available Leave Type dynamically.
+  352 |     const leaveType = await leavepage.selectFirstAvailableLeaveType();
+  353 | 
+  354 |     await expect(leavepage.fromDateInput).toHaveValue(fromDate);
+  355 | 
+  356 |     await expect(leavepage.toDateInput).toHaveValue(toDate);
+  357 | 
+  358 |     await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+  359 | 
+  360 |     await expect(leavepage.leaveTypeDropdown).toContainText(leaveType);
+  361 |     // Click Search.
+  362 |     await leavepage.searchButton.click();
+  363 | 
+  364 |     // Wait for the loading spinner to disappear.
+  365 |     await expect(leavepage.loadingSpinner).toBeHidden();
+  366 | 
+  367 |     // Verify all entered filters remain selected.
+  368 |     await expect(leavepage.fromDateInput).toHaveValue(fromDate);
+  369 |     await expect(leavepage.toDateInput).toHaveValue(toDate);
+  370 |     await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+  371 | 
+  372 |     await expect(leavepage.leaveTypeDropdown).toContainText(leaveType);
+  373 |     await expect(
+  374 |       leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+  375 |     ).toBeVisible({
+  376 |       timeout: 15_000,
+  377 |     });
+  378 | 
+  379 |     // Reset filters.
+  380 |     await leavepage.resetButton.click();
+  381 | 
+  382 |     await expect(leavepage.loadingSpinner).toBeHidden();
+  383 | 
+  384 |     await expect(leavepage.fromDateInput).toHaveValue(defaultFromDate);
+  385 | 
+  386 |     await expect(leavepage.toDateInput).toHaveValue(defaultToDate);
+  387 | 
+  388 |     await expect(leavepage.leaveTypeDropdown).toContainText("Select");
+  389 |   });
+  390 | 
+  391 |   test("TC_LEAVE_118 - Admin should include past employees in Leave List search @positive @filter @regression", async ({
+  392 |     navigationPage,
+  393 |     leavepage,
+  394 |   }) => {
+  395 |     // Navigate to Leave → Leave List.
+  396 |     await navigationPage.gotoLeave();
+  397 |     await expect(leavepage.includePastEmployeesCheckbox).not.toBeChecked();
+  398 | 
+  399 |     // Verify Include Past Employees is unchecked initially.
+  400 |     await leavepage.setIncludePastEmployees(true);
+  401 |     // Enable Include Past Employees.
+  402 |     await expect(leavepage.includePastEmployeesCheckbox).toBeChecked();
+  403 | 
+  404 |     // Verify the checkbox becomes checked.
+  405 | 
+  406 |     // Click Search.
+  407 |     await leavepage.searchButton.click();
+  408 | 
+  409 |     // Wait for the loading spinner to disappear.
+  410 |     await expect(leavepage.loadingSpinner).toBeHidden();
+  411 |     // Verify the checkbox remains checked after searching.
+  412 |     await expect(leavepage.includePastEmployeesCheckbox).toBeChecked();
+  413 |     // Verify either leave rows or “No Records Found” appears.
+  414 |     await expect(
+  415 |       leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+  416 |     ).toBeVisible({
+  417 |       timeout: 15_000,
+  418 |     });
+  419 |     // Click Reset.
+  420 | 
+  421 |     await leavepage.resetButton.click();
+  422 |     // Verify Include Past Employees returns to unchecked.
+  423 |     await expect(leavepage.loadingSpinner).toBeHidden();
+> 424 |     await expect(leavepage.includePastEmployeesCheckbox).not.toBeChecked();
+      |                                                              ^ Error: expect(locator).not.toBeChecked() failed
+  425 |   });
+  426 | 
+  427 |   test("TC_LEAVE_119 - Admin should filter Leave List by Pending Approval status @positive @filter @regression", async ({
+  428 |     navigationPage,
+  429 |     leavepage,
+  430 |   }) => {
+  431 |     const data = leaveData.TC_LEAVE_119;
+  432 | 
+  433 |     await navigationPage.gotoLeave();
+  434 | 
+  435 |     await leavepage.selectLeaveStatus(data.leaveStatus);
+  436 | 
+  437 |     await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+  438 | 
+  439 |     await leavepage.searchButton.click();
+  440 | 
+  441 |     await expect(leavepage.loadingSpinner).toBeHidden();
+  442 | 
+  443 |     await expect(
+  444 |       leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+  445 |     ).toBeVisible({
+  446 |       timeout: 15_000,
+  447 |     });
+  448 | 
+  449 |     const rowCount = await leavepage.leaveRows.count();
+  450 | 
+  451 |     if (rowCount > 0) {
+  452 |       for (let index = 0; index < rowCount; index++) {
+  453 |         const statusCell = leavepage.leaveRows
+  454 |           .nth(index)
+  455 |           .locator(".oxd-table-cell")
+  456 |           .nth(6);
+  457 | 
+  458 |         await expect(statusCell).toContainText(data.leaveStatus);
+  459 |       }
+  460 |     }
+  461 | 
+  462 |     await leavepage.resetButton.click();
+  463 |   });
+  464 | 
+  465 |   test("TC_LEAVE_120 - Invalid date validation should appear for an incorrect From Date @negative @validation @regression", async ({
+  466 |     page,
+  467 |     navigationPage,
+  468 |     leavepage,
+  469 |   }) => {
+  470 |     const data = leaveData.TC_LEAVE_120;
+  471 | 
+  472 |     await navigationPage.gotoLeave();
+  473 | 
+  474 |     await leavepage.fromDateInput.fill(data.invalidFromDate);
+  475 | 
+  476 |     await leavepage.fromDateInput.blur();
+  477 | 
+  478 |     await leavepage.searchButton.click();
+  479 | 
+  480 |     await expect(leavepage.fromDateValidation).toBeVisible();
+  481 | 
+  482 |     await expect(leavepage.fromDateValidation).toContainText(
+  483 |       data.expectedValidation,
+  484 |     );
+  485 | 
+  486 |     await expect(page).toHaveURL(/leave\/viewLeaveList/);
+  487 | 
+  488 |     await expect(leavepage.fromDateInput).toHaveValue(data.invalidFromDate);
+  489 | 
+  490 |     await leavepage.resetButton.click();
+  491 | 
+  492 |     await expect(leavepage.fromDateValidation).toBeHidden();
+  493 |   });
+  494 | 
+  495 |   test("TC_LEAVE_121 - Admin should filter Leave List using employee name and leave status @positive @filter @autocomplete @regression", async ({
+  496 |     navigationPage,
+  497 |     leavepage,
+  498 |   }) => {
+  499 |     const data = leaveData.TC_LEAVE_121;
+  500 | 
+  501 |     await navigationPage.gotoLeave();
+  502 | 
+  503 |     const employeeName = await leavepage.selectFirstAvailableEmployee(
+  504 |       data.partialEmployeeName,
+  505 |     );
+  506 | 
+  507 |     await leavepage.selectLeaveStatus(data.leaveStatus);
+  508 | 
+  509 |     await leavepage.searchButton.click();
+  510 | 
+  511 |     await expect(leavepage.loadingSpinner).toBeHidden();
+  512 | 
+  513 |     await expect(leavepage.employeeNameInput).toHaveValue(employeeName);
+  514 | 
+  515 |     await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+  516 | 
+  517 |     await expect(
+  518 |       leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+  519 |     ).toBeVisible({
+  520 |       timeout: 15_000,
+  521 |     });
+  522 | 
+  523 |     const rowCount = await leavepage.leaveRows.count();
+  524 | 
+```

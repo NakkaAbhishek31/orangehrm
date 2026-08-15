@@ -14,7 +14,6 @@ const dateFromOffset = (daysOffset: number): string => {
 
   const month = String(date.getMonth() + 1).padStart(2, "0");
 
-
   return `${year}-${day}-${month}`;
 };
 
@@ -260,203 +259,153 @@ test.describe("PIM Employee List", () => {
     );
   });
 
- test('TC_RECRUITMENT_138 - Admin should filter Candidates by candidate status @positive @filter @regression',
-  async ({ navigationPage, recruitmentPage }) => {
+  test("TC_RECRUITMENT_138 - Admin should filter Candidates by candidate status @positive @filter @regression", async ({
+    navigationPage,
+    recruitmentPage,
+  }) => {
     // Read Candidate Status and default dropdown value from JSON.
-      const data = recruitmentData.TC_RECRUITMENT_138;
+    const data = recruitmentData.TC_RECRUITMENT_138;
     // Navigate to Recruitment → Candidates.
-       await navigationPage.gotoRecruitment();
-       await recruitmentPage.navigateToCandidate();
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.navigateToCandidate();
     // Select the configured Candidate Status.
-             await recruitmentPage.selectDropdownOption(
+    await recruitmentPage.selectDropdownOption(
       recruitmentPage.candidateStatusDropdown,
       data.candidateStatus,
     );
     // Verify Candidate Status remains selected.
-         await expect(recruitmentPage.candidateStatusDropdown).toContainText(data.candidateStatus);
+    await expect(recruitmentPage.candidateStatusDropdown).toContainText(
+      data.candidateStatus,
+    );
     // Click Search.
-      await recruitmentPage.searchCandidates();
+    await recruitmentPage.searchCandidates();
 
     // Wait for the loading spinner to disappear.
-     await expect(recruitmentPage.loadingSpinner).toBeHidden({
+    await expect(recruitmentPage.loadingSpinner).toBeHidden({
       timeout: 20_000,
     });
 
-     await expect(
-      recruitmentPage.candidateRows
-        .first()
-        .or(recruitmentPage.noRecordsFound)
+    await expect(
+      recruitmentPage.candidateRows.first().or(recruitmentPage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
-     const candidateCount =
-      await recruitmentPage.candidateRows.count();
+    const candidateCount = await recruitmentPage.candidateRows.count();
 
     if (candidateCount > 0) {
-      for (
-        let index = 0;
-        index < candidateCount;
-        index++
-      ) {
-        const statusCell =
-          recruitmentPage.candidateRows
-            .nth(index)
-            .locator('.oxd-table-cell')
-            .nth(5);
+      for (let index = 0; index < candidateCount; index++) {
+        const statusCell = recruitmentPage.candidateRows
+          .nth(index)
+          .locator(".oxd-table-cell")
+          .nth(5);
 
-        await expect(statusCell).toContainText(
-          data.candidateStatus
-        );
+        await expect(statusCell).toContainText(data.candidateStatus);
       }
     } else {
-      await expect(
-        recruitmentPage.noRecordsFound
-      ).toBeVisible();
+      await expect(recruitmentPage.noRecordsFound).toBeVisible();
     }
     // Reset the filters.
-   await  recruitmentPage.restButton.click();
+    await recruitmentPage.restButton.click();
     // Verify Candidate Status returns to “-- Select --”.
 
-        await expect(recruitmentPage.candidateStatusDropdown).toContainText(
+    await expect(recruitmentPage.candidateStatusDropdown).toContainText(
       data.defaultDropdownValue,
     );
-  }
-);
+  });
 
-test( 'TC_RECRUITMENT_139 - Admin should filter Candidates by vacancy @positive @filter @regression',
-  async ({
+  test("TC_RECRUITMENT_139 - Admin should filter Candidates by vacancy @positive @filter @regression", async ({
     navigationPage,
     recruitmentPage,
   }) => {
-    const data =recruitmentData.TC_RECRUITMENT_139;
+    const data = recruitmentData.TC_RECRUITMENT_139;
     await navigationPage.gotoRecruitment();
     await recruitmentPage.navigateToCandidate();
-    const selectedVacancy =
-      await recruitmentPage
-        .selectFirstAvailableVacancy();
+    const selectedVacancy = await recruitmentPage.selectFirstAvailableVacancy();
 
-    await expect(
-      recruitmentPage.vacancyDropdown
-    ).toContainText(selectedVacancy);
+    await expect(recruitmentPage.vacancyDropdown).toContainText(
+      selectedVacancy,
+    );
 
     await recruitmentPage.searchCandidates();
 
-    await expect(
-      recruitmentPage.loadingSpinner
-    ).toBeHidden({
+    await expect(recruitmentPage.loadingSpinner).toBeHidden({
       timeout: 20_000,
     });
 
     await expect(
-      recruitmentPage.candidateRows
-        .first()
-        .or(recruitmentPage.noRecordsFound)
+      recruitmentPage.candidateRows.first().or(recruitmentPage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const candidateCount =
-      await recruitmentPage.candidateRows.count();
+    const candidateCount = await recruitmentPage.candidateRows.count();
 
     if (candidateCount > 0) {
-      for (
-        let index = 0;
-        index < candidateCount;
-        index++
-      ) {
-        const vacancyCell =
-          recruitmentPage.candidateRows
-            .nth(index)
-            .locator('.oxd-table-cell')
-            .nth(1);
+      for (let index = 0; index < candidateCount; index++) {
+        const vacancyCell = recruitmentPage.candidateRows
+          .nth(index)
+          .locator(".oxd-table-cell")
+          .nth(1);
 
-        await expect(
-          vacancyCell
-        ).toContainText(selectedVacancy);
+        await expect(vacancyCell).toContainText(selectedVacancy);
       }
     } else {
-      await expect(
-        recruitmentPage.noRecordsFound
-      ).toBeVisible();
+      await expect(recruitmentPage.noRecordsFound).toBeVisible();
     }
 
     await recruitmentPage.restButton.click();
 
-    await expect(
-      recruitmentPage.vacancyDropdown
-    ).toContainText(
-      data.defaultDropdownValue
+    await expect(recruitmentPage.vacancyDropdown).toContainText(
+      data.defaultDropdownValue,
     );
-  }
-);
-
-test( 'TC_RECRUITMENT_140 - Admin should filter Candidates by hiring manager @positive @filter @regression',
-  async ({
+  });
+  test("TC_RECRUITMENT_140 - Admin should filter Candidates by hiring manager @positive @filter @regression", async ({
     navigationPage,
     recruitmentPage,
   }) => {
-    const data =
-      recruitmentData.TC_RECRUITMENT_140;
+    const data = recruitmentData.TC_RECRUITMENT_140;
 
     await navigationPage.gotoRecruitment();
     await recruitmentPage.navigateToCandidate();
 
     const selectedManager =
-      await recruitmentPage
-        .selectFirstAvailableHiringManager();
+      await recruitmentPage.selectFirstAvailableHiringManager();
 
-    await expect(
-      recruitmentPage.hiringManagerDropdown
-    ).toContainText(selectedManager);
+    await expect(recruitmentPage.hiringManagerDropdown).toContainText(
+      selectedManager,
+    );
 
     await recruitmentPage.searchCandidates();
 
-    await expect(
-      recruitmentPage.loadingSpinner
-    ).toBeHidden({
+    await expect(recruitmentPage.loadingSpinner).toBeHidden({
       timeout: 20_000,
     });
 
     await expect(
-      recruitmentPage.candidateRows
-        .first()
-        .or(recruitmentPage.noRecordsFound)
+      recruitmentPage.candidateRows.first().or(recruitmentPage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const candidateCount =
-      await recruitmentPage.candidateRows.count();
+    const candidateCount = await recruitmentPage.candidateRows.count();
 
     if (candidateCount > 0) {
-      for (
-        let index = 0;
-        index < candidateCount;
-        index++
-      ) {
-        const hiringManagerCell =
-          recruitmentPage.candidateRows
-            .nth(index)
-            .locator('.oxd-table-cell')
-            .nth(3);
+      for (let index = 0; index < candidateCount; index++) {
+        const hiringManagerCell = recruitmentPage.candidateRows
+          .nth(index)
+          .locator(".oxd-table-cell")
+          .nth(3);
 
-        await expect(
-          hiringManagerCell
-        ).toContainText(selectedManager);
+        await expect(hiringManagerCell).toContainText(selectedManager);
       }
     } else {
-      await expect(
-        recruitmentPage.noRecordsFound
-      ).toBeVisible();
+      await expect(recruitmentPage.noRecordsFound).toBeVisible();
     }
 
     await recruitmentPage.restButton.click();
 
-    await expect(
-      recruitmentPage.hiringManagerDropdown
-    ).toContainText(
-      data.defaultDropdownValue
+    await expect(recruitmentPage.hiringManagerDropdown).toContainText(
+      data.defaultDropdownValue,
     );
-  }
-);
+  });
 });

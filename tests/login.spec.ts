@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/baseTest";
 import loginData from "../test-data/login.data.json";
 
+test.describe("loginpage",()=>{
 test("TC_LOGIN_001 - Admin should login with valid credentials @smoke @regression", async ({
   loginPage,
 }) => {
@@ -28,7 +29,7 @@ test("TC_LOGIN_003 - User should see an error for invalid password @negative @re
   const data = loginData.TC_LOGIN_003;
   await loginPage.visitPage();
   await loginPage.login(data.username, data.password);
-  await expect(loginPage.errorMessage).toHaveText(data.expectedError);
+  await expect(loginPage.errorMessage).toHaveText(data.expectedError); 
   await loginPage.verifyLoginUnsuccessful();
 });
 
@@ -124,4 +125,5 @@ test("TC_LOGOUT_001 - Admin should logout successfully @smoke @regression", asyn
   await loginPage.verifyLoginSuccessful();
   await dashboardPage.clickOnLogout();
   await loginPage.verifyLoginUnsuccessful();
+});
 });

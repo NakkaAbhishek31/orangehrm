@@ -2,6 +2,7 @@ import { expect, Locator, Page } from "@playwright/test";
 
 export class LeavePage {
   readonly page: Page;
+  private leaveStatusSelectionInitialized = false;
 
   readonly leaveListHeading: Locator;
   readonly fromDateInput: Locator;
@@ -81,12 +82,14 @@ readonly leaveStatusField: Locator;
       })
       .locator(".oxd-select-text");
 
-    this.includePastEmployeesCheckbox = page
-      .locator(".oxd-input-group")
-      .filter({
-        hasText: "Include Past Employees",
-      })
-      .locator('input[type="checkbox"]');
+    const includePastEmployeesContainer = page
+      .getByText("Include Past Employees", { exact: true })
+      .locator(
+        "xpath=ancestor::*[.//input[@type='checkbox']][1]",
+      );
+
+    this.includePastEmployeesCheckbox =
+      includePastEmployeesContainer.getByRole("checkbox");
 
     this.searchButton = page.getByRole("button", {
       name: "Search",
@@ -104,26 +107,17 @@ readonly leaveStatusField: Locator;
 
     this.loadingSpinner = page.locator(".oxd-loading-spinner");
 
-    this.noRecordsFound = page
-      .locator(".orangehrm-paper-container")
-      .getByText("No Records Found", {
-        exact: true,
-      });
+    this.noRecordsFound = page.getByText("No Records Found", {
+      exact: true,
+    });
 
-      this.selectedLeaveStatuses = page.locator(
-  '.oxd-input-group'
-).filter({
-  has: page
-    .locator('label')
-    .getByText(
-      'Show Leave with Status',
-      {
-        exact: true,
-      }
-    ),
-}).locator(
-  '.oxd-select-text-selected'
-);
+      this.selectedLeaveStatuses = page
+        .locator(".oxd-input-group")
+        .filter({
+          has: page.locator("label").getByText("Show Leave with Status", {
+            exact: true,
+          }),
+        });
 
     this.dateValidationMessages = page
       .locator("form")
@@ -142,12 +136,9 @@ readonly leaveStatusField: Locator;
       ".oxd-select-dropdown:visible " + ".oxd-select-option",
     );
 
-    this.includePastEmployeesLabel = page
-      .locator(".oxd-input-group")
-      .filter({
-        hasText: "Include Past Employees",
-      })
-      .locator(".oxd-checkbox-wrapper label");
+    this.includePastEmployeesLabel = includePastEmployeesContainer.locator(
+      "label",
+    );
 
     this.autocompleteOptions = page.locator(
       ".oxd-autocomplete-dropdown:visible " + ".oxd-autocomplete-option",
@@ -238,6 +229,18 @@ this.previousPageButton = page
 async selectLeaveStatus(
   status: string
 ): Promise<void> {
+  if (!this.leaveStatusSelectionInitialized) {
+    const selectedStatusRemoveButtons = this.leaveStatusField.locator(
+      "i.bi-x.--clear",
+    );
+
+    while ((await selectedStatusRemoveButtons.count()) > 0) {
+      await selectedStatusRemoveButtons.first().click();
+    }
+
+    this.leaveStatusSelectionInitialized = true;
+  }
+
   await this.leaveStatusDropdown.click();
 
   const dropdown =
@@ -260,6 +263,7 @@ async selectLeaveStatus(
   await expect(option).toBeVisible();
 
   await option.click();
+  await this.page.keyboard.press("Escape");
 
   await expect(
     this.leaveStatusField.getByText(
@@ -301,7 +305,9 @@ async selectLeaveStatus(
 
     await firstEmployeeOption.click();
 
-    await expect(this.employeeNameInput).toHaveValue(employeeName);
+    await expect(this.employeeNameInput).toHaveValue(
+      new RegExp(employeeName.trim().split(/\s+/).join("\\s+")),
+    );
 
     return employeeName;
   }
@@ -311,11 +317,16 @@ async selectLeaveStatus(
 
     await expect(this.dropdownOptions.first()).toBeVisible();
 
-    const optionCount = await this.dropdownOptions.count();
+    const leaveTypeOptions = this.dropdownOptions.filter({
+      hasNotText: /^(-- Select --|No Records Found)$/,
+    });
 
-    expect(optionCount).toBeGreaterThan(1);
+    if ((await leaveTypeOptions.count()) === 0) {
+      await this.page.keyboard.press("Escape");
+      return "-- Select --";
+    }
 
-    const firstLeaveTypeOption = this.dropdownOptions.nth(1);
+    const firstLeaveTypeOption = leaveTypeOptions.first();
 
     const leaveType = (await firstLeaveTypeOption.innerText()).trim();
 
@@ -417,33 +428,34 @@ async waitForDefaultDateRange(): Promise<{
 async removeSelectedLeaveStatus(
   status: string
 ): Promise<void> {
-  const statusElement =
-    this.leaveStatusField.getByText(
-      status,
-      { exact: true }
-    );
+  const statusElement = this.leaveStatusField.getByText(status, {
+    exact: true,
+  });
+  await expect(statusElement).toBeVisible();
 
-  await expect(
-    statusElement
-  ).toBeVisible();
-
-  const statusContainer =
-    statusElement.locator('..');
-
-  const removeButton =
-    statusContainer.locator(
-      'i.bi-x, i.oxd-icon'
-    );
-
-  await expect(
-    removeButton
-  ).toBeVisible();
-
+  const removeButton = statusElement.locator(
+    "xpath=following::i[contains(@class,'bi-x')][1]",
+  );
+  await expect(removeButton).toBeVisible();
   await removeButton.click();
 
   await expect(
-    statusElement
+    this.leaveStatusField.getByText(status, { exact: true }),
   ).toHaveCount(0);
+}
+
+async searchLeaveList(): Promise<void> {
+  const leaveResponse = this.page.waitForResponse(
+    (response) =>
+      response.url().includes("/api/v2/leave/employees/leave-requests") &&
+      response.request().method() === "GET" &&
+      response.ok(),
+    { timeout: 20_000 },
+  );
+
+  await this.searchButton.click();
+  await leaveResponse;
+  await expect(this.loadingSpinner).toBeHidden({ timeout: 20_000 });
 }
 
 

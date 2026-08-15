@@ -610,36 +610,28 @@ test.describe("Admin - System Users", () => {
     await pimPage.deleteEmployeeById(employeeId);
   });
 
-test('TC_ADMIN_063 - Admin should update an existing System User username @positive @edit @regression',
-  async ({
+  test("TC_ADMIN_063 - Admin should update an existing System User username @positive @edit @regression", async ({
     navigationPage,
     pimPage,
     adminPage,
   }) => {
     test.setTimeout(180_000);
 
-    const data =
-      adminData.TC_ADMIN_063;
+    const data = adminData.TC_ADMIN_063;
 
     const value = unique();
 
-    const employee = employeeFrom(
-      data.employee,
-      value
-    );
+    const employee = employeeFrom(data.employee, value);
 
-    const original =
-      `${data.systemUser.originalUsernamePrefix}${value}`;
+    const original = `${data.systemUser.originalUsernamePrefix}${value}`;
 
-    const updated =
-      `${data.systemUser.updatedUsernamePrefix}${value}`;
+    const updated = `${data.systemUser.updatedUsernamePrefix}${value}`;
 
     // Create employee.
     await navigationPage.gotoPIM();
     await pimPage.gotoAddEmployee();
 
-    const employeeId =
-      await pimPage.addEmployee(employee);
+    const employeeId = await pimPage.addEmployee(employee);
 
     // Create System User.
     await navigationPage.gotoAdmin();
@@ -647,12 +639,9 @@ test('TC_ADMIN_063 - Admin should update an existing System User username @posit
     await adminPage.gotoAddSystemUser();
 
     await adminPage.fillSystemUserForm({
-      userRole:
-        data.systemUser.userRole,
-      status:
-        data.systemUser.status,
-      password:
-        data.systemUser.password,
+      userRole: data.systemUser.userRole,
+      status: data.systemUser.status,
+      password: data.systemUser.password,
       username: original,
       employeeName:
         `${employee.firstName} ` +
@@ -667,22 +656,14 @@ test('TC_ADMIN_063 - Admin should update an existing System User username @posit
       username: original,
     });
 
-    await expect(
-      adminPage.userRows
-    ).toHaveCount(1);
+    await expect(adminPage.userRows).toHaveCount(1);
 
-    await adminPage.openSystemUserForEditing(
-      original
-    );
+    await adminPage.openSystemUserForEditing(original);
 
     // Update username.
-    await adminPage.updateSystemUsername(
-      updated
-    );
+    await adminPage.updateSystemUsername(updated);
 
-    await expect(
-      adminPage.systemUsersHeading
-    ).toBeVisible();
+    await expect(adminPage.systemUsersHeading).toBeVisible();
 
     // Remove the previous username filter.
     await adminPage.resetSystemUserFilters();
@@ -692,34 +673,23 @@ test('TC_ADMIN_063 - Admin should update an existing System User username @posit
       username: updated,
     });
 
-    await expect(
-      adminPage.usernameInput
-    ).toHaveValue(updated);
+    await expect(adminPage.usernameInput).toHaveValue(updated);
 
-    await expect(
-      adminPage.userRows.first()
-    ).toBeVisible({
+    await expect(adminPage.userRows.first()).toBeVisible({
       timeout: 20_000,
     });
 
-    await expect(
-      adminPage.userRows
-    ).toHaveCount(1);
+    await expect(adminPage.userRows).toHaveCount(1);
 
     await adminPage.verifySystemUserResult({
       username: updated,
-      userRole:
-        data.systemUser.userRole,
-      employeeName:
-        `${employee.firstName} ${employee.lastName}`,
-      status:
-        data.systemUser.status,
+      userRole: data.systemUser.userRole,
+      employeeName: `${employee.firstName} ${employee.lastName}`,
+      status: data.systemUser.status,
     });
 
     // Cleanup System User.
-    await adminPage.deleteSystemUserByUsername(
-      updated
-    );
+    await adminPage.deleteSystemUserByUsername(updated);
 
     // Cleanup employee.
     await navigationPage.gotoPIM();
@@ -731,11 +701,8 @@ test('TC_ADMIN_063 - Admin should update an existing System User username @posit
 
     await pimPage.clickOnFilterSearch();
 
-    await pimPage.deleteEmployeeById(
-      employeeId
-    );
-  }
-);
+    await pimPage.deleteEmployeeById(employeeId);
+  });
 
   test("TC_ADMIN_064 - Admin should cancel editing a System User @negative @cancel @edit @regression", async ({
     navigationPage,
@@ -1740,4 +1707,5 @@ test('TC_ADMIN_063 - Admin should update an existing System User username @posit
 
     await pimPage.deleteEmployeeById(employeeId);
   });
+  
 });
