@@ -408,4 +408,255 @@ test.describe("PIM Employee List", () => {
       data.defaultDropdownValue,
     );
   });
+
+  test("TC_RECRUITMENT_141 - Admin should search for a candidate by name @positive @search @autocomplete @regression", async ({
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    // Read the candidate-name search value from JSON.
+    const data = recruitmentData.TC_RECRUITMENT_141;
+    // Navigate to Recruitment → Candidates.
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.navigateToCandidate();
+    // Enter the candidate name into the Candidate Name field.
+    await recruitmentPage.candidateNameInput.fill(data.candidateSearchText);
+    // Wait for the autocomplete options.
+    const selectedCandidate =
+      await recruitmentPage.selectFirstAvailableCandidate(
+        data.candidateSearchText,
+      );
+
+    // Click Search.
+    await recruitmentPage.searchButton.click();
+    // Wait for the loading spinner to disappear.
+    await expect(recruitmentPage.loadingSpinner).toBeHidden();
+    // Verify either candidate rows or
+    // “No Records Found” appears.
+    await expect(
+      recruitmentPage.candidateRows.first().or(recruitmentPage.noRecordsFound),
+    ).toBeVisible({
+      timeout: 15_000,
+    });
+    const candidateCount = await recruitmentPage.candidateRows.count();
+
+    if (candidateCount > 0) {
+      for (let index = 0; index < candidateCount; index++) {
+        const candidateNameCell = recruitmentPage.candidateRows
+          .nth(index)
+          .locator(".oxd-table-cell")
+          .nth(2);
+
+        await expect(candidateNameCell).toContainText(selectedCandidate!);
+      }
+    } else {
+      await expect(recruitmentPage.noRecordsFound).toBeVisible();
+    }
+
+    await recruitmentPage.restButton.click();
+
+    await expect(recruitmentPage.candidateNameInput).toHaveValue("");
+  });
+
+test('TC_RECRUITMENT_142 - Invalid validation should appear for a nonexistent candidate name @negative @validation @autocomplete @regression',
+  async ({
+    page,
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_142;
+
+    const invalidCandidateName =
+      `${data.candidateNamePrefix}${Date.now()}`;
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.navigateToCandidate();
+
+    await recruitmentPage.candidateNameInput.fill(
+      invalidCandidateName
+    );
+
+    await expect(
+      recruitmentPage
+        .candidateAutocompleteDropdown
+    ).toBeVisible({
+      timeout: 15_000,
+    });
+
+    await expect(
+      recruitmentPage
+        .candidateAutocompleteNoRecords
+    ).toHaveText(data.autocompleteMessage);
+
+    // Close autocomplete without selecting a value.
+    await recruitmentPage.candidateNameInput.press(
+      'Escape'
+    );
+
+    await recruitmentPage.searchButton.click();
+
+    await expect(
+      recruitmentPage.candidateNameValidation
+    ).toBeVisible();
+
+    await expect(
+      recruitmentPage.candidateNameValidation
+    ).toHaveText(data.validationMessage);
+
+    await expect(
+      recruitmentPage.candidateNameInput
+    ).toHaveValue(invalidCandidateName);
+
+    await expect(page).toHaveURL(
+      /\/recruitment\/viewCandidates$/
+    );
+
+    await recruitmentPage.restButton.click();
+
+    await expect(
+      recruitmentPage.candidateNameInput
+    ).toHaveValue('');
+
+    await expect(
+      recruitmentPage.candidateNameValidation
+    ).toBeHidden();
+  }
+);
+
+test( 'TC_RECRUITMENT_143 - Admin should search Candidates using combined vacancy, status, and date filters @positive @filter @regression',
+  async ({
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_143;
+
+    const fromDate = dateFromOffset(
+      data.fromDaysOffset
+    );
+
+    const toDate = dateFromOffset(
+      data.toDaysOffset
+    );
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.navigateToCandidate();
+
+    const selectedVacancy =
+      await recruitmentPage
+        .selectFirstAvailableVacancy();
+
+    await recruitmentPage.selectDropdownOption(
+      recruitmentPage.candidateStatusDropdown,
+      data.candidateStatus
+    );
+
+    await recruitmentPage.fromDateInput.fill(
+      fromDate
+    );
+
+    await recruitmentPage.toDateInput.fill(
+      toDate
+    );
+
+    await expect(
+      recruitmentPage.vacancyDropdown
+    ).toContainText(selectedVacancy);
+
+    await expect(
+      recruitmentPage.candidateStatusDropdown
+    ).toContainText(data.candidateStatus);
+
+    await expect(
+      recruitmentPage.fromDateInput
+    ).toHaveValue(fromDate);
+
+    await expect(
+      recruitmentPage.toDateInput
+    ).toHaveValue(toDate);
+
+    await recruitmentPage.searchButton.click();
+
+    await expect(
+      recruitmentPage.loadingSpinner
+    ).toBeHidden({
+      timeout: 20_000,
+    });
+
+    // Verify that filters remain selected.
+    await expect(
+      recruitmentPage.vacancyDropdown
+    ).toContainText(selectedVacancy);
+
+    await expect(
+      recruitmentPage.candidateStatusDropdown
+    ).toContainText(data.candidateStatus);
+
+    await expect(
+      recruitmentPage.fromDateInput
+    ).toHaveValue(fromDate);
+
+    await expect(
+      recruitmentPage.toDateInput
+    ).toHaveValue(toDate);
+
+    await expect(
+      recruitmentPage.candidateRows
+        .first()
+        .or(recruitmentPage.noRecordsFound)
+    ).toBeVisible({
+      timeout: 15_000,
+    });
+
+    const candidateCount =
+      await recruitmentPage.candidateRows.count();
+
+    if (candidateCount > 0) {
+      for (
+        let index = 0;
+        index < candidateCount;
+        index++
+      ) {
+        const cells =
+          recruitmentPage.candidateRows
+            .nth(index)
+            .locator('.oxd-table-cell');
+
+        const vacancyCell = cells.nth(1);
+        const statusCell = cells.nth(5);
+
+        await expect(
+          vacancyCell
+        ).toContainText(selectedVacancy);
+
+        await expect(
+          statusCell
+        ).toContainText(
+          data.candidateStatus
+        );
+      }
+    } else {
+      await expect(
+        recruitmentPage.noRecordsFound
+      ).toBeVisible();
+    }
+
+    await recruitmentPage.restButton.click();
+
+    await expect(
+      recruitmentPage.vacancyDropdown
+    ).toContainText(
+      data.defaultDropdownValue
+    );
+
+    await expect(
+      recruitmentPage.candidateStatusDropdown
+    ).toContainText(
+      data.defaultDropdownValue
+    );
+  }
+);
+
+
 });

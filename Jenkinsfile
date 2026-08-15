@@ -20,7 +20,13 @@ pipeline {
         string(
             name: 'TEST_TARGET',
             defaultValue: 'tests',
-            description: 'Example: tests/Admin/admin-users.spec.ts or tests'
+            description: 'Spec file or directory, for example: tests/Admin/admin-users.spec.ts'
+        )
+
+        string(
+            name: 'TEST_NAME',
+            defaultValue: '',
+            description: 'Optional test-case ID, for example: TC_ADMIN_063'
         )
 
         choice(
@@ -107,25 +113,41 @@ pipeline {
 
         stage('Discover Tests') {
             steps {
-                bat '''
-                    echo ========================================
-                    echo Available Playwright test files
-                    echo ========================================
+                script {
+                    def testTarget = params.TEST_TARGET?.trim() ?: 'tests'
+                    def testName = params.TEST_NAME?.trim()
 
-                    if exist tests (
-                        dir /s /b tests\\*.spec.ts
-                        dir /s /b tests\\*.test.ts
-                    ) else (
-                        echo ERROR: The tests directory does not exist.
-                        exit /b 1
-                    )
+                    testTarget = testTarget.replace('\\', '/')
 
-                    echo ========================================
-                    echo Tests recognized by Playwright
-                    echo ========================================
+                    if (testTarget.contains('..')) {
+                        error("Parent-directory references are not allowed: ${testTarget}")
+                    }
 
-                    call npx.cmd playwright test --list
-                '''
+                    if (!(testTarget ==~ /[A-Za-z0-9_ .\/-]+/)) {
+                        error("TEST_TARGET contains unsupported characters: ${testTarget}")
+                    }
+
+                    if (!fileExists(testTarget)) {
+                        error("Test target does not exist: ${testTarget}")
+                    }
+
+                    if (testName && !(testName ==~ /[A-Za-z0-9_-]+/)) {
+                        error('TEST_NAME must use only letters, numbers, underscores, or hyphens')
+                    }
+
+                    def listCommand =
+                        'call npx.cmd playwright test ' +
+                        "\"${testTarget}\" " +
+                        "--project=${params.BROWSER} " +
+                        '--list --reporter=line'
+
+                    if (testName) {
+                        listCommand += " --grep \"${testName}\""
+                    }
+
+                    echo "Selected tests: ${listCommand}"
+                    bat listCommand
+                }
             }
         }
 
@@ -133,6 +155,7 @@ pipeline {
             steps {
                 script {
                     def testTarget = params.TEST_TARGET?.trim()
+                    def testName = params.TEST_NAME?.trim()
 
                     if (!testTarget) {
                         testTarget = 'tests'
@@ -157,6 +180,13 @@ pipeline {
                         )
                     }
 
+                    if (testName && !(testName ==~ /[A-Za-z0-9_-]+/)) {
+                        error(
+                            'TEST_NAME must use only letters, numbers, ' +
+                            'underscores, or hyphens'
+                        )
+                    }
+
                     // Verify that the requested file or directory exists.
                     if (!fileExists(testTarget)) {
                         error(
@@ -171,6 +201,10 @@ pipeline {
                         "--project=${params.BROWSER} " +
                         "--workers=${params.WORKERS} " +
                         '--retries=0'
+
+                    if (testName) {
+                        testCommand += " --grep \"${testName}\""
+                    }
 
                     echo "Running: ${testCommand}"
 

@@ -29,5 +29,19 @@
 },
 "TC_RECRUITMENT_140": {
   "defaultDropdownValue": "-- Select --"
+},
+"TC_RECRUITMENT_141": {
+  "candidateSearchText": "a"
+},
+"TC_RECRUITMENT_142": {
+  "candidateNamePrefix": "UnknownCandidate",
+  "validationMessage": "Invalid",
+  "autocompleteMessage": "No Records Found"
+},
+"TC_RECRUITMENT_143": {
+  "candidateStatus": "Application Initiated",
+  "fromDaysOffset": -90,
+  "toDaysOffset": 0,
+  "defaultDropdownValue": "-- Select --"
 }
 }
