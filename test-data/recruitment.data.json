@@ -43,5 +43,114 @@
   "fromDaysOffset": -90,
   "toDaysOffset": 0,
   "defaultDropdownValue": "-- Select --"
+},
+"TC_RECRUITMENT_144": {
+  "pageHeading": "Add Candidate",
+  "expectedUrlPath": "/web/index.php/recruitment/addCandidate"
+},
+"TC_RECRUITMENT_145": {
+  "requiredMessage": "Required",
+  "requiredValidationCount": 3,
+  "addCandidateUrlPath": "/recruitment/addCandidate",
+  "candidatesUrlPath": "/recruitment/viewCandidates"
+},
+"TC_RECRUITMENT_146": {
+  "firstNamePrefix": "Cancel",
+  "middleName": "Test",
+  "lastName": "Candidate",
+  "emailPrefix": "cancelcandidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "keywords": "Playwright, Automation",
+  "notes": "Candidate creation cancellation test",
+  "candidatesUrlPath": "/recruitment/viewCandidates"
+},
+"TC_RECRUITMENT_147": {
+  "firstNamePrefix": "AutoCandidate",
+  "middleName": "Test",
+  "lastName": "User",
+  "emailPrefix": "candidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "keywords": "Playwright, Automation",
+  "notes": "Candidate created using Playwright automation",
+  "successMessage": "Successfully Saved"
+},
+"TC_RECRUITMENT_148": {
+  "firstNamePrefix": "ResumeCandidate",
+  "middleName": "Test",
+  "lastName": "User",
+  "emailPrefix": "resumecandidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "keywords": "Playwright, Resume Upload",
+  "notes": "Candidate created with an uploaded resume",
+  "resumePath": "test-data/candidate-resume.pdf",
+  "resumeFileName": "candidate-resume.pdf",
+  "successMessage": "Successfully Saved"
+},
+"TC_RECRUITMENT_149": {
+  "firstNamePrefix": "InvalidEmail",
+  "middleName": "Test",
+  "lastName": "Candidate",
+  "invalidEmail": "invalid-email",
+  "validationMessage": "Expected format: admin@example.com",
+  "addCandidateUrlPath": "/recruitment/addCandidate",
+  "candidatesUrlPath": "/recruitment/viewCandidates"
+},
+"TC_RECRUITMENT_150": {
+  "firstNamePrefix": "MissingLastName",
+  "emailPrefix": "missinglastname",
+  "emailDomain": "@example.com",
+  "requiredMessage": "Required",
+  "addCandidateUrlPath": "/recruitment/addCandidate",
+  "candidatesUrlPath": "/recruitment/viewCandidates"
+},
+"TC_RECRUITMENT_151": {
+  "firstNamePrefix": "SearchCandidate",
+  "middleName": "Test",
+  "lastName": "User",
+  "emailPrefix": "searchcandidate",
+  "emailDomain": "@example.com",
+  "successMessage": "Successfully Saved"
+},
+"TC_RECRUITMENT_152": {
+  "firstNamePrefix": "ProfileCandidate",
+  "middleName": "Test",
+  "lastName": "User",
+  "emailPrefix": "profilecandidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "successMessage": "Successfully Saved"
+},
+"TC_RECRUITMENT_153": {
+  "firstNamePrefix": "DeleteCandidate",
+  "middleName": "Test",
+  "lastName": "User",
+  "emailPrefix": "deletecandidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "noRecordsMessage": "No Records Found",
+  "invalidMessage": "Invalid"
+},
+"TC_RECRUITMENT_154": {
+  "firstNamePrefix": "CancelDeleteCandidate",
+  "middleName": "Test",
+  "lastName": "User",
+  "emailPrefix": "canceldeletecandidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210"
+},
+"TC_RECRUITMENT_155": {
+  "firstNamePrefix": "EditCandidate",
+  "middleName": "Test",
+  "lastName": "User",
+  "emailPrefix": "editcandidate",
+  "updatedEmailPrefix": "updatedcandidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "updatedContactNumber": "9123456780",
+  "updatedKeywords": "Playwright, Updated",
+  "updatedNotes": "Candidate details updated through automation"
 }
 }

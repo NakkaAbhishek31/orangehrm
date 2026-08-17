@@ -1,0 +1,919 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Recruitment\recruitment.spec.ts >> PIM Employee List >> TC_RECRUITMENT_153 - Admin should delete an existing candidate @positive @delete @regression
+- Location: tests\Recruitment\recruitment.spec.ts:1536:6
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByText('No Records Found', { exact: true })
+Expected: visible
+Timeout: 20000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 20000ms
+  - waiting for getByText('No Records Found', { exact: true })
+
+```
+
+```yaml
+- complementary:
+  - navigation "Sidepanel":
+    - link "client brand banner":
+      - /url: https://www.orangehrm.com/
+      - img "client brand banner"
+    - textbox "Search"
+    - button ""
+    - separator
+    - list:
+      - listitem:
+        - link "Admin":
+          - /url: /web/index.php/admin/viewAdminModule
+      - listitem:
+        - link "PIM":
+          - /url: /web/index.php/pim/viewPimModule
+      - listitem:
+        - link "Leave":
+          - /url: /web/index.php/leave/viewLeaveModule
+      - listitem:
+        - link "Time":
+          - /url: /web/index.php/time/viewTimeModule
+      - listitem:
+        - link "Recruitment":
+          - /url: /web/index.php/recruitment/viewRecruitmentModule
+      - listitem:
+        - link "My Info":
+          - /url: /web/index.php/pim/viewMyDetails
+      - listitem:
+        - link "Performance":
+          - /url: /web/index.php/performance/viewPerformanceModule
+      - listitem:
+        - link "Dashboard":
+          - /url: /web/index.php/dashboard/index
+      - listitem:
+        - link "Directory":
+          - /url: /web/index.php/directory/viewDirectory
+      - listitem:
+        - link "Maintenance":
+          - /url: /web/index.php/maintenance/viewMaintenanceModule
+      - listitem:
+        - link "Claim":
+          - /url: /web/index.php/claim/viewClaimModule
+          - img
+          - text: Claim
+      - listitem:
+        - link "Buzz":
+          - /url: /web/index.php/buzz/viewBuzz
+- banner:
+  - heading "Recruitment" [level=6]
+  - link "Upgrade":
+    - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+    - button "Upgrade"
+  - list:
+    - listitem:
+      - img "profile picture"
+      - paragraph: Ashley King
+      - text: 
+  - navigation "Topbar Menu":
+    - list:
+      - listitem:
+        - link "Candidates":
+          - /url: "#"
+      - listitem:
+        - link "Vacancies":
+          - /url: "#"
+      - button ""
+- heading "Candidates" [level=5]
+- button ""
+- separator
+- text: Job Title -- Select --  Vacancy -- Select --  Hiring Manager -- Select --  Status -- Select --  Candidate Name
+- textbox "Type for hints...": DeleteCandidate1786951481189
+- text: Invalid Keywords
+- textbox "Enter comma seperated words..."
+- text: Date of Application
+- textbox "From"
+- text: 
+- textbox "To"
+- text:  Method of Application -- Select -- 
+- separator
+- button "Reset"
+- button "Search"
+- button " Add"
+- separator
+- text: (78) Records Found
+- table:
+  - rowgroup:
+    - row " Vacancy  Candidate  Hiring Manager  Date of Application  Status  Actions":
+      - columnheader "":
+        - checkbox ""
+        - text: 
+      - columnheader "Vacancy "
+      - columnheader "Candidate "
+      - columnheader "Hiring Manager "
+      - columnheader "Date of Application "
+      - columnheader "Status "
+      - columnheader "Actions"
+  - rowgroup:
+    - row " Testa7177387 Candidateb29afc5d (Deleted) 2026-17-08  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "Testa7177387 Candidateb29afc5d"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Dasia Emma Kassulke (Deleted) 2026-17-08  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "Dasia Emma Kassulke"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe M (Deleted) 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe M"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe M (Deleted) 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe M"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Payroll Administrator testing automation task Ashley Nancy King 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Payroll Administrator"
+      - cell "testing automation task"
+      - cell "Ashley Nancy King"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Payroll Administrator testing automation task Ashley Nancy King 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Payroll Administrator"
+      - cell "testing automation task"
+      - cell "Ashley Nancy King"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " AutoCandidate1786946765558 Test User (Deleted) 2026-17-08  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "AutoCandidate1786946765558 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " ResumeCandidate1786946807412 Test User (Deleted) 2026-17-08  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "ResumeCandidate1786946807412 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Junior Account Assistant AutoCandidate1786947153739 Test User (Deleted) 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Junior Account Assistant"
+      - cell "AutoCandidate1786947153739 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " ResumeCandidate1786947169505 Test User (Deleted) 2026-17-08  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "ResumeCandidate1786947169505 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Junior Account Assistant AutoCandidate1786948482628 Test User (Deleted) 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Junior Account Assistant"
+      - cell "AutoCandidate1786948482628 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " ResumeCandidate1786948503440 Test User (Deleted) 2026-17-08  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "ResumeCandidate1786948503440 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " SearchCandidate1786948537591 Test User (Deleted) 2026-17-08  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "SearchCandidate1786948537591 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " SearchCandidate1786948696919 Test User (Deleted) 2026-17-08  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "SearchCandidate1786948696919 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Junior Account Assistant SearchCandidate1786949061708 Test User (Deleted) 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Junior Account Assistant"
+      - cell "SearchCandidate1786949061708 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Junior Account Assistant SearchCandidate1786949210389 Test User (Deleted) 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Junior Account Assistant"
+      - cell "SearchCandidate1786949210389 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Junior Account Assistant ProfileCandidate1786949725106 Test User (Deleted) 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Junior Account Assistant"
+      - cell "ProfileCandidate1786949725106 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " DeleteCandidate1786950614368 Test User (Deleted) 2026-17-08  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "DeleteCandidate1786950614368 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Junior Account Assistant DeleteCandidate1786951239374 Test User (Deleted) 2026-17-08 Application Initiated  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Junior Account Assistant"
+      - cell "DeleteCandidate1786951239374 Test User"
+      - cell "(Deleted)"
+      - cell "2026-17-08"
+      - cell "Application Initiated"
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Tanmay Anderson O'Keefe (Deleted) 2024-29-03  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "Tanmay Anderson O'Keefe"
+      - cell "(Deleted)"
+      - cell "2024-29-03"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Tanmay sree Dachu (Deleted) 2024-06-02   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "Tanmay sree Dachu"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe (Deleted) 2024-06-02 Rejected   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Rejected"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead John Doe (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "John Doe"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Manu K M (Deleted) 2024-06-02  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "Manu K M"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Manu K M (Deleted) 2024-06-02  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "Manu K M"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Manu K M (Deleted) 2024-06-02  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "Manu K M"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " madhav m (Deleted) 2024-06-02  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "madhav m"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " madhav m (Deleted) 2024-06-02  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "madhav m"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " madhav m (Deleted) 2024-06-02  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "madhav m"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " madhav m (Deleted) 2024-06-02  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "madhav m"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " madhav m (Deleted) 2024-06-02  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "madhav m"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " madhav m (Deleted) 2024-06-02  ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell
+      - cell "madhav m"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell
+      - cell " ":
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Rejected   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Rejected"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Application Initiated   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Application Initiated"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Application Initiated   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Application Initiated"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Rejected   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Rejected"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+    - row " Senior QA Lead Gautham Raj R (Deleted) 2024-06-02 Shortlisted   ":
+      - cell "":
+        - checkbox ""
+        - text: 
+      - cell "Senior QA Lead"
+      - cell "Gautham Raj R"
+      - cell "(Deleted)"
+      - cell "2024-06-02"
+      - cell "Shortlisted"
+      - cell "  ":
+        - button ""
+        - button ""
+        - button ""
+- navigation "Pagination Navigation":
+  - list:
+    - listitem:
+      - button "1"
+    - listitem:
+      - button "2"
+    - listitem:
+      - button ""
+- paragraph: OrangeHRM OS 5.9
+- paragraph:
+  - text: © 2005 - 2026
+  - link "OrangeHRM, Inc":
+    - /url: http://www.orangehrm.com
+  - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  1537 |     page,
+  1538 |     navigationPage,
+  1539 |     recruitmentPage,
+  1540 |   }) => {
+  1541 |     const data =
+  1542 |       recruitmentData.TC_RECRUITMENT_153;
+  1543 | 
+  1544 |     const uniqueValue = Date.now();
+  1545 | 
+  1546 |     const firstName =
+  1547 |       `${data.firstNamePrefix}${uniqueValue}`;
+  1548 | 
+  1549 |     const email =
+  1550 |       `${data.emailPrefix}${uniqueValue}` +
+  1551 |       `${data.emailDomain}`;
+  1552 | 
+  1553 |     await navigationPage.gotoRecruitment();
+  1554 | 
+  1555 |     await recruitmentPage.navigateToCandidate();
+  1556 | 
+  1557 |     await recruitmentPage.addCandidateButton.click();
+  1558 |  
+  1559 | 
+  1560 |     const createdCandidate =
+  1561 |       await recruitmentPage.createCandidate({
+  1562 |         firstName,
+  1563 |         middleName: data.middleName,
+  1564 |         lastName: data.lastName,
+  1565 |         email,
+  1566 |         contactNumber: data.contactNumber,
+  1567 |       });
+  1568 | 
+  1569 |     const candidateId =
+  1570 |       createdCandidate.candidateId;
+  1571 | 
+  1572 |     expect(candidateId).not.toBe('');
+  1573 | 
+  1574 |     await expect(page).toHaveURL(
+  1575 |       new RegExp(
+  1576 |         `/recruitment/addCandidate/${candidateId}$`
+  1577 |       ),
+  1578 |       {
+  1579 |         timeout: 30_000,
+  1580 |       }
+  1581 |     );
+  1582 | 
+  1583 |     // Return to Candidates List.
+  1584 |     await navigationPage.gotoRecruitment();
+  1585 | 
+  1586 |     await expect(page).toHaveURL(
+  1587 |       /\/recruitment\/viewCandidates$/
+  1588 |     );
+  1589 | 
+  1590 |     // Search and delete the created candidate.
+  1591 |     await recruitmentPage.deleteCandidateByName(
+  1592 |       firstName
+  1593 |     );
+  1594 | 
+  1595 |     // Clear the previous candidate filter.
+  1596 |     await recruitmentPage.restButton.click();
+  1597 | 
+  1598 |     await expect(
+  1599 |       recruitmentPage.candidateNameInput
+  1600 |     ).toHaveValue('');
+  1601 | 
+  1602 |     // Search for the deleted candidate again.
+  1603 |     await recruitmentPage.candidateNameInput.fill(
+  1604 |       firstName
+  1605 |     );
+  1606 | 
+  1607 |     await expect(
+  1608 |       recruitmentPage
+  1609 |         .candidateAutocompleteDropdown
+  1610 |     ).toBeVisible({
+  1611 |       timeout: 15_000,
+  1612 |     });
+  1613 | 
+  1614 |     await expect(
+  1615 |       recruitmentPage
+  1616 |         .candidateAutocompleteNoRecords
+  1617 |     ).toHaveText(data.noRecordsMessage);
+  1618 | 
+  1619 |     await recruitmentPage.candidateNameInput.press(
+  1620 |       'Escape'
+  1621 |     );
+  1622 | 
+  1623 |     await recruitmentPage.searchButton.click();
+  1624 | 
+  1625 |     // Since no autocomplete option was selected,
+  1626 |     // OrangeHRM should display Invalid.
+  1627 |     await expect(
+  1628 |       recruitmentPage.candidateNameValidation
+  1629 |     ).toHaveText(data.invalidMessage);
+  1630 | 
+  1631 |     await expect(
+  1632 |       recruitmentPage.candidateRows
+  1633 |     ).toHaveCount(0);
+  1634 | 
+  1635 |     await expect(
+  1636 |       recruitmentPage.noRecordsFound
+> 1637 |     ).toBeVisible();
+       |       ^ Error: expect(locator).toBeVisible() failed
+  1638 | 
+  1639 |     // Clear the filter after verification.
+  1640 |     await recruitmentPage.candidateNameInput.clear();
+  1641 | 
+  1642 |     await expect(
+  1643 |       recruitmentPage.candidateNameValidation
+  1644 |     ).toBeHidden();
+  1645 |   }
+  1646 | );
+  1647 | 
+  1648 | 
+  1649 | test(
+  1650 |   'TC_RECRUITMENT_154 - Admin should cancel candidate deletion @negative @cancel @delete @regression',
+  1651 |   async ({ page, navigationPage, recruitmentPage }) => {
+  1652 |     // Read candidate details from JSON.
+  1653 | 
+  1654 |     // Generate a unique First Name and Email.
+  1655 | 
+  1656 |     // Navigate to Recruitment → Candidates.
+  1657 | 
+  1658 |     // Create a new candidate.
+  1659 | 
+  1660 |     // Store the Candidate ID.
+  1661 | 
+  1662 |     // Return to the Candidates List.
+  1663 | 
+  1664 |     // Search for the newly created candidate.
+  1665 | 
+  1666 |     // Verify exactly one candidate row appears.
+  1667 | 
+  1668 |     // Click the Delete action.
+  1669 | 
+  1670 |     // Verify the deletion confirmation dialog appears.
+  1671 | 
+  1672 |     // Click No, Cancel.
+  1673 | 
+  1674 |     // Verify the confirmation dialog closes.
+  1675 | 
+  1676 |     // Verify the candidate row remains visible.
+  1677 | 
+  1678 |     // Search for the same candidate again.
+  1679 | 
+  1680 |     // Verify the candidate is still available.
+  1681 | 
+  1682 |     // Delete the candidate during cleanup.
+  1683 |   }
+  1684 | );
+  1685 | 
+  1686 | 
+  1687 | });
+  1688 | 
+```

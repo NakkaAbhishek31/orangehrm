@@ -6,6 +6,30 @@ const API_TIMEOUT = 20_000;
 const escapeRegExp = (value: string): string =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+
+export interface CandidateDetails {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  email: string;
+  contactNumber?: string;
+  keywords?: string;
+  notes?: string;
+  consent?: boolean;
+}
+
+export interface CreatedCandidate {
+  candidateId: string;
+  vacancy: string;
+}
+
+export interface UpdateCandidateDetails {
+  email?: string;
+  contactNumber?: string;
+  keywords?: string;
+  notes?: string;
+}
+
 export class RecruitmentPage {
   readonly candidateLink: Locator;
   readonly candidatePageHeading: Locator;
@@ -30,6 +54,32 @@ export class RecruitmentPage {
   readonly candidateAutocompleteDropdown: Locator;
 readonly candidateAutocompleteNoRecords: Locator;
 readonly candidateNameValidation: Locator;
+readonly addCandidateButton: Locator;
+readonly addCandidateHeading: Locator;
+readonly firstNameInput: Locator;
+readonly middleNameInput: Locator;
+readonly lastNameInput: Locator;
+readonly addCandidateVacancyDropdown: Locator;
+readonly emailInput: Locator;
+readonly contactNumberInput: Locator;
+readonly resumeInput: Locator;
+ readonly addkeywordsInput: Locator;
+readonly applicationDateInput: Locator;
+readonly notesInput: Locator;
+readonly consentCheckbox: Locator;
+readonly consentCheckboxLabel: Locator;
+readonly saveButton: Locator;
+readonly cancelButton: Locator;
+readonly resumeUploadControl: Locator;
+readonly requiredValidationMessages: Locator;
+readonly successToast: Locator;
+readonly firstNameValidation: Locator;
+readonly lastNameValidation: Locator;
+readonly emailValidation: Locator;
+readonly candidateProfileHeading: Locator;
+readonly updatedcandidateProfileHeading: Locator;
+readonly editCandidateButton: Locator;
+readonly updateSuccessToast: Locator;
 
   constructor(readonly page: Page) {
     this.candidateLink = page.getByRole("link", {
@@ -111,6 +161,233 @@ this.candidateNameValidation =
     .locator(
       '.oxd-input-field-error-message'
     );
+
+    this.addCandidateButton = page.getByRole(
+  'button',
+  {
+    name: 'Add',
+    exact: true,
+  }
+);
+
+this.addCandidateButton = page
+  .locator('.orangehrm-header-container')
+  .getByRole('button', {
+    name: /Add/i,
+  });
+   this.addCandidateHeading = page.getByRole(
+    'heading',
+    {
+      name: 'Add Candidate',
+      exact: true,
+    }
+  );
+
+
+
+this.resumeUploadControl = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page
+      .locator('label')
+      .getByText('Resume', {
+        exact: true,
+      }),
+  })
+  .locator('.oxd-file-div');
+
+this.firstNameInput = page.getByPlaceholder(
+  'First Name',
+  {
+    exact: true,
+  }
+);
+
+this.middleNameInput = page.getByPlaceholder(
+  'Middle Name',
+  {
+    exact: true,
+  }
+);
+
+this.lastNameInput = page.getByPlaceholder(
+  'Last Name',
+  {
+    exact: true,
+  }
+);
+
+this.addCandidateVacancyDropdown = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page
+      .locator('label')
+      .getByText('Vacancy', {
+        exact: true,
+      }),
+  })
+  .locator('.oxd-select-text');
+
+this.emailInput = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page
+      .locator('label')
+      .getByText('Email', {
+        exact: true,
+      }),
+  })
+  .locator('input');
+
+this.contactNumberInput = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page
+      .locator('label')
+      .getByText('Contact Number', {
+        exact: true,
+      }),
+  })
+  .locator('input');
+
+this.resumeInput = page.locator(
+  'input[type="file"]'
+);
+
+this.addkeywordsInput = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page
+      .locator('label')
+      .getByText('Keywords', {
+        exact: true,
+      }),
+  })
+  .locator('input');
+
+this.applicationDateInput = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page
+      .locator('label')
+      .getByText('Date of Application', {
+        exact: true,
+      }),
+  })
+  .locator('input');
+
+this.notesInput = page
+  .locator('.oxd-input-group')
+  .filter({
+    has: page
+      .locator('label')
+      .getByText('Notes', {
+        exact: true,
+      }),
+  })
+  .locator('textarea');
+
+const consentInputGroup = page
+  .locator('.oxd-input-group')
+  .filter({ hasText: /Consent to keep data/i });
+
+this.consentCheckbox = consentInputGroup
+  .locator('input[type="checkbox"]');
+
+this.consentCheckboxLabel = consentInputGroup
+  .locator('label')
+  .filter({ has: page.locator('input[type="checkbox"]') });
+
+this.saveButton = page.getByRole(
+  'button',
+  {
+    name: 'Save',
+    exact: true,
+  }
+);
+
+this.cancelButton = page.getByRole(
+  'button',
+  {
+    name: 'Cancel',
+    exact: true,
+  }
+);
+
+this.requiredValidationMessages = page.locator(
+  'form .oxd-input-field-error-message'
+);
+
+this.successToast = page
+  .locator('.oxd-toast')
+  .filter({
+    hasText: /Successfully Saved/i,
+  });
+
+  this.requiredValidationMessages =
+  page.locator(
+    'form .oxd-input-field-error-message'
+  );
+
+this.firstNameValidation =
+  this.firstNameInput
+    .locator(
+      'xpath=ancestor::div[contains(@class,"oxd-input-group")]'
+    )
+    .locator(
+      '.oxd-input-field-error-message'
+    );
+
+this.lastNameValidation =
+  this.lastNameInput
+    .locator(
+      'xpath=ancestor::div[contains(@class,"oxd-input-group")]'
+    )
+    .locator(
+      '.oxd-input-field-error-message'
+    );
+
+this.emailValidation =
+  this.emailInput
+    .locator(
+      'xpath=ancestor::div[contains(@class,"oxd-input-group")]'
+    )
+    .locator(
+      '.oxd-input-field-error-message'
+    );
+
+this.successToast = page
+  .locator('.oxd-toast')
+  .filter({
+    hasText: /Successfully Saved/i,
+  });
+
+  this.candidateProfileHeading = page.getByRole(
+  'heading',
+  {
+    name: 'Candidate Profile',
+    exact: true,
+  }
+);
+
+this.updatedcandidateProfileHeading = page.getByRole(
+  'heading',
+  {
+    name: 'Candidate Profile',
+    exact: true,
+  }
+);
+
+this.editCandidateButton = page
+  .locator('.oxd-switch-wrapper')
+  .filter({ hasText: /Edit/i })
+  .locator('label');
+
+this.updateSuccessToast = page
+  .locator('.oxd-toast-content-text')
+  .filter({
+    hasText: /Successfully Updated/i,
+  });
   }
 
   async navigateToCandidate(): Promise<void> {
@@ -162,41 +439,46 @@ this.candidateNameValidation =
     );
   }
 
-  async selectFirstAvailableCandidate(
-    searchText: string,
-  ): Promise<string | null> {
-    await this.candidateNameInput.fill(searchText);
+async selectFirstAvailableCandidate(
+  searchText: string
+): Promise<string> {
+  await this.candidateNameInput.fill(
+    searchText
+  );
 
-    const autocompleteDropdown = this.page.locator(
-      ".oxd-autocomplete-dropdown:visible",
-    );
-    await expect(autocompleteDropdown).toBeVisible({
-      timeout: DEFAULT_TIMEOUT,
+  const dropdown = this.page.locator(
+    '.oxd-autocomplete-dropdown:visible'
+  );
+
+  await expect(dropdown).toBeVisible({
+    timeout: 15_000,
+  });
+
+  const options = dropdown
+    .locator('.oxd-autocomplete-option')
+    .filter({
+      hasNotText:
+        /Searching|No Records Found/i,
     });
 
-    const validOptions = autocompleteDropdown
-      .locator(".oxd-autocomplete-option")
-      .filter({ hasNotText: /Searching|No Records Found/i });
-    const noRecords = autocompleteDropdown.getByText("No Records Found", {
-      exact: true,
-    });
+  const option = options.first();
 
-    await expect(validOptions.first().or(noRecords)).toBeVisible({
-      timeout: DEFAULT_TIMEOUT,
-    });
+  await expect(option).toBeVisible({
+    timeout: 30_000,
+  });
 
-    if ((await validOptions.count()) === 0) {
-      return null;
-    }
+  const selectedCandidate = (
+    await option.innerText()
+  ).trim();
 
-    const firstOption = validOptions.first();
-    const selectedCandidate = (await firstOption.innerText()).trim();
+  await option.click();
 
-    await firstOption.click();
-    await expect(this.candidateNameInput).toHaveValue(selectedCandidate);
+  await expect(
+    this.candidateNameInput
+  ).toHaveValue(selectedCandidate);
 
-    return selectedCandidate;
-  }
+  return selectedCandidate;
+}
 
   private inputGroupByLabel(label: string): Locator {
     return this.page.locator(".oxd-input-group").filter({
@@ -231,4 +513,496 @@ this.candidateNameValidation =
 
     return selectedText;
   }
+
+  async selectFirstAvailableAddCandidateVacancy():
+Promise<string | null> {
+  await this.addCandidateVacancyDropdown.click();
+
+  const visibleDropdown = this.page.locator(
+    '.oxd-select-dropdown:visible'
+  );
+
+  await expect(
+    visibleDropdown
+  ).toBeVisible();
+
+  const validOptions = visibleDropdown
+    .locator('.oxd-select-option')
+    .filter({
+      hasNotText:
+        /-- Select --|No Records Found|Searching/i,
+    });
+
+  const noRecordsOption = visibleDropdown
+    .locator('.oxd-select-option')
+    .filter({ hasText: /No Records Found/i });
+
+  await validOptions
+    .first()
+    .or(noRecordsOption)
+    .waitFor({
+      state: 'visible',
+      timeout: DEFAULT_TIMEOUT,
+    })
+    .catch(() => undefined);
+
+  const optionCount =
+    await validOptions.count();
+
+  if (optionCount === 0) {
+    await this.page.keyboard.press('Escape');
+    return null;
+  }
+
+  const firstOption =
+    validOptions.first();
+
+  const vacancyName = (
+    await firstOption.innerText()
+  ).trim();
+
+  await firstOption.click();
+
+  await expect(
+    this.addCandidateVacancyDropdown
+  ).toContainText(vacancyName);
+
+  return vacancyName;
+}
+
+async createCandidate(
+  details: CandidateDetails
+): Promise<CreatedCandidate> {
+  await this.firstNameInput.fill(
+    details.firstName
+  );
+
+  if (details.middleName !== undefined) {
+    await this.middleNameInput.fill(
+      details.middleName
+    );
+  }
+
+  await this.lastNameInput.fill(
+    details.lastName
+  );
+
+  const vacancy =
+    await this
+      .selectFirstAvailableAddCandidateVacancy();
+
+  await this.emailInput.fill(
+    details.email
+  );
+
+  if (details.contactNumber !== undefined) {
+    await this.contactNumberInput.fill(
+      details.contactNumber
+    );
+  }
+
+  if (details.keywords !== undefined) {
+    await this.keywordsInput.fill(
+      details.keywords
+    );
+  }
+
+  if (details.notes !== undefined) {
+    await this.notesInput.fill(
+      details.notes
+    );
+  }
+
+  if (details.consent === true) {
+    const isChecked =
+      await this.consentCheckbox.isChecked();
+
+    if (!isChecked) {
+      await this.consentCheckboxLabel.click();
+    }
+
+    await expect(
+      this.consentCheckbox
+    ).toBeChecked();
+  }
+
+  const responsePromise =
+    this.page.waitForResponse(
+      response =>
+        response.url().includes(
+          '/api/v2/recruitment/candidates'
+        ) &&
+        response.request().method() === 'POST',
+      {
+        timeout: 30_000,
+      }
+    );
+
+  await this.saveButton.click();
+
+  const createResponse =
+    await responsePromise;
+
+  expect(createResponse.ok()).toBeTruthy();
+
+  const responseBody =
+    await createResponse.json();
+
+  const candidateId = String(
+    responseBody.data.id
+  );
+
+  if (!candidateId) {
+    throw new Error(
+      'Candidate ID was missing from the creation response'
+    );
+  }
+
+  await this.page.waitForURL(
+    new RegExp(
+      `/recruitment/addCandidate/${candidateId}$`
+    ),
+    {
+      timeout: 30_000,
+    }
+  );
+
+  return {
+    candidateId,
+    vacancy,
+  };
+}
+async deleteCandidateByName(
+  candidateName: string
+): Promise<void> {
+  const selectedCandidate =
+    await this.selectFirstAvailableCandidate(
+      candidateName
+    );
+
+  if (selectedCandidate === null) {
+    throw new Error(
+      `Candidate was not found: ${candidateName}`
+    );
+  }
+
+  await this.searchButton.click();
+
+  await expect(
+    this.loadingSpinner
+  ).toBeHidden({
+    timeout: 20_000,
+  });
+
+  const matchingRow = this.candidateRows
+    .filter({
+      has: this.page
+        .locator('.oxd-table-cell')
+        .nth(2)
+        .filter({
+          hasText: candidateName,
+        }),
+    })
+    .first();
+
+  await expect(matchingRow).toBeVisible({
+    timeout: 20_000,
+  });
+
+  const deleteButton =
+    matchingRow.getByRole('button').filter({
+      has: this.page.locator(
+        'i.bi-trash'
+      ),
+    });
+
+  await expect(deleteButton).toBeVisible();
+
+  await deleteButton.click();
+
+  const confirmationDialog =
+    this.page.getByRole('dialog');
+
+  await expect(
+    confirmationDialog
+  ).toBeVisible();
+
+  const deleteResponsePromise =
+    this.page.waitForResponse(
+      response =>
+        response.url().includes(
+          '/api/v2/recruitment/candidates'
+        ) &&
+        response.request().method() === 'DELETE',
+      {
+        timeout: 30_000,
+      }
+    );
+
+  const deleteToast = this.page
+    .locator('.oxd-toast')
+    .filter({
+      hasText: /Successfully Deleted/i,
+    });
+
+  const deleteToastPromise =
+    expect(deleteToast).toContainText('Successfully Deleted', {
+      timeout: 30_000,
+    });
+
+  const confirmDeleteButton = confirmationDialog
+    .getByRole('button', {
+      name: /Yes, Delete/i,
+    });
+
+  await expect(confirmDeleteButton).toBeVisible();
+  await confirmDeleteButton.click();
+
+  const [deleteResponse] = await Promise.all([
+    deleteResponsePromise,
+    deleteToastPromise,
+  ]);
+
+  expect(deleteResponse.ok()).toBeTruthy();
+
+  await expect(matchingRow).toBeHidden({
+    timeout: 20_000,
+  });
+}
+
+async cancelCandidateDeletion(
+  candidateName: string
+): Promise<void> {
+  const selectedCandidate =
+    await this.selectFirstAvailableCandidate(
+      candidateName
+    );
+
+  if (selectedCandidate === null) {
+    throw new Error(
+      `Candidate was not found: ${candidateName}`
+    );
+  }
+
+  await this.searchButton.click();
+
+  await expect(
+    this.loadingSpinner
+  ).toBeHidden({
+    timeout: 20_000,
+  });
+
+  const matchingRow = this.candidateRows
+    .filter({
+      has: this.page
+        .locator('.oxd-table-cell')
+        .nth(2)
+        .filter({
+          hasText: candidateName,
+        }),
+    })
+    .first();
+
+  await expect(matchingRow).toBeVisible({
+    timeout: 20_000,
+  });
+
+  const deleteButton =
+    matchingRow.getByRole('button').filter({
+      has: this.page.locator(
+        'i.bi-trash'
+      ),
+    });
+
+  await expect(deleteButton).toBeVisible();
+
+  await deleteButton.click();
+
+  const confirmationDialog =
+    this.page.getByRole('dialog');
+
+  await expect(
+    confirmationDialog
+  ).toBeVisible();
+
+  await confirmationDialog
+    .getByRole('button', {
+      name: 'No, Cancel',
+      exact: true,
+    })
+    .click();
+
+  await expect(
+    confirmationDialog
+  ).toBeHidden();
+
+  await expect(
+    matchingRow
+  ).toBeVisible();
+}
+
+async updateCandidateDetails(
+  details: UpdateCandidateDetails
+): Promise<void> {
+  // Some OrangeHRM versions open the profile
+  // in read-only mode and display an Edit button.
+  const emailAlreadyEditable = await this.emailInput
+    .isEditable()
+    .catch(() => false);
+
+  if (!emailAlreadyEditable) {
+    await expect(this.editCandidateButton).toBeVisible({
+      timeout: 20_000,
+    });
+    await this.editCandidateButton.click();
+  }
+
+  await expect(
+    this.emailInput
+  ).toBeEditable();
+
+  if (details.email !== undefined) {
+    await this.emailInput.fill(
+      details.email
+    );
+  }
+
+  if (details.contactNumber !== undefined) {
+    await this.contactNumberInput.fill(
+      details.contactNumber
+    );
+  }
+
+  if (details.keywords !== undefined) {
+    await this.keywordsInput.fill(
+      details.keywords
+    );
+  }
+
+  if (details.notes !== undefined) {
+    await this.notesInput.fill(
+      details.notes
+    );
+  }
+
+  if (details.email !== undefined) {
+    await expect(
+      this.emailInput
+    ).toHaveValue(details.email);
+  }
+
+  if (details.contactNumber !== undefined) {
+    await expect(
+      this.contactNumberInput
+    ).toHaveValue(details.contactNumber);
+  }
+
+  const updateResponsePromise =
+    this.page.waitForResponse(
+      response =>
+        response.url().includes(
+          '/api/v2/recruitment/candidates/'
+        ) &&
+        response.request().method() === 'PUT',
+      {
+        timeout: 30_000,
+      }
+    );
+
+  await this.saveButton.click();
+
+  const updateResponse =
+    await updateResponsePromise;
+
+  expect(updateResponse.ok()).toBeTruthy();
+
+  if (details.email !== undefined) {
+    await expect(
+      this.emailInput
+    ).toHaveValue(details.email);
+  }
+
+  if (details.contactNumber !== undefined) {
+    await expect(
+      this.contactNumberInput
+    ).toHaveValue(details.contactNumber);
+  }
+
+  if (details.keywords !== undefined) {
+    await expect(
+      this.keywordsInput
+    ).toHaveValue(details.keywords);
+  }
+
+  if (details.notes !== undefined) {
+    await expect(
+      this.notesInput
+    ).toHaveValue(details.notes);
+  }
+}
+
+async openCandidateProfile(
+  candidateName: string
+): Promise<void> {
+  const selectedCandidate =
+    await this.selectFirstAvailableCandidate(
+      candidateName
+    );
+
+  if (selectedCandidate === null) {
+    throw new Error(
+      `Candidate was not found: ${candidateName}`
+    );
+  }
+
+  await expect(
+    this.candidateNameInput
+  ).toHaveValue(selectedCandidate);
+
+  await this.searchButton.click();
+
+  await expect(
+    this.loadingSpinner
+  ).toBeHidden({
+    timeout: 20_000,
+  });
+
+  const matchingRow = this.candidateRows
+    .filter({
+      has: this.page
+        .locator('.oxd-table-cell')
+        .nth(2)
+        .filter({
+          hasText: candidateName,
+        }),
+    })
+    .first();
+
+  await expect(matchingRow).toBeVisible({
+    timeout: 20_000,
+  });
+
+  const viewButton =
+    matchingRow.getByRole('button').filter({
+      has: this.page.locator(
+        'i.bi-eye-fill'
+      ),
+    });
+
+  await expect(viewButton).toBeVisible();
+
+  await viewButton.click();
+
+  await this.page.waitForURL(
+    /\/recruitment\/addCandidate\/\d+$/,
+    {
+      timeout: 30_000,
+    }
+  );
+
+  await expect(
+    this.candidateProfileHeading
+  ).toBeVisible();
+}
+
 }
