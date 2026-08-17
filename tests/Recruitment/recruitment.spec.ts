@@ -1533,7 +1533,7 @@ test('TC_RECRUITMENT_152 - Admin should open a candidate profile from the Candid
 );
 
 
-test.only('TC_RECRUITMENT_153 - Admin should delete an existing candidate @positive @delete @regression', async ({
+test('TC_RECRUITMENT_153 - Admin should delete an existing candidate @positive @delete @regression', async ({
     page,
     navigationPage,
     recruitmentPage,
@@ -1634,7 +1634,7 @@ test.only('TC_RECRUITMENT_153 - Admin should delete an existing candidate @posit
 );
 
 
-test.only( 'TC_RECRUITMENT_154 - Admin should cancel candidate deletion @negative @cancel @delete @regression',
+test( 'TC_RECRUITMENT_154 - Admin should cancel candidate deletion @negative @cancel @delete @regression',
   async ({
     page,
     navigationPage,
@@ -1744,7 +1744,7 @@ test.only( 'TC_RECRUITMENT_154 - Admin should cancel candidate deletion @negativ
 );
 
 
-test.only( 'TC_RECRUITMENT_155 - Admin should edit an existing candidate contact details @positive @edit @regression',
+test( 'TC_RECRUITMENT_155 - Admin should edit an existing candidate contact details @positive @edit @regression',
   async ({
     page,
     navigationPage,
