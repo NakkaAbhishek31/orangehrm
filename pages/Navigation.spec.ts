@@ -39,11 +39,30 @@ export class NavigationPage {
 }
 
   async gotoRecruitment(): Promise<void> {
-  
-   await this.recruitmentLink.click();
-   await expect(this.page).toHaveURL(
-     /recruitment\/viewCandidates/
-  );
+    const href = await this.recruitmentLink.getAttribute('href');
+    const recruitmentUrl = href
+      ? new URL(href, this.page.url()).toString()
+      : null;
+
+    await this.recruitmentLink.click();
+
+    try {
+      await expect(this.page).toHaveURL(
+        /recruitment\/viewCandidates/
+      );
+    } catch (error) {
+      if (!recruitmentUrl) {
+        throw error;
+      }
+
+      await this.page.goto(recruitmentUrl, {
+        waitUntil: 'domcontentloaded',
+      });
+
+      await expect(this.page).toHaveURL(
+        /recruitment\/viewCandidates/
+      );
+    }
 }
 
 

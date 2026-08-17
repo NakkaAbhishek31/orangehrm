@@ -131,9 +131,10 @@ readonly updateSuccessToast: Locator;
     this.candidateRows = this.candidatesTable.locator(
       ".oxd-table-body .oxd-table-card",
     );
-    this.noRecordsFound = page.getByText("No Records Found", {
-      exact: true,
-    });
+    this.noRecordsFound = this.candidatesTable.getByText(
+      "No Records Found",
+      { exact: true },
+    );
     this.loadingSpinner = page.locator(".oxd-loading-spinner");
     this.dateValidationMessages = page.locator(
       "form .oxd-input-field-error-message",

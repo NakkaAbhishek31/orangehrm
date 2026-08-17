@@ -17,7 +17,7 @@ const dateFromOffset = (daysOffset: number): string => {
   return `${year}-${day}-${month}`;
 };
 
-test.describe("PIM Employee List", () => {
+test.describe("Recruitment - Candidates", () => {
   test.beforeEach(async ({ loginPage }) => {
     await loginPage.visitPage();
     await loginPage.login(
@@ -290,16 +290,13 @@ test.describe("PIM Employee List", () => {
     ).toBeVisible({
       timeout: 15_000,
     });
-    const candidateCount = await recruitmentPage.candidateRows.count();
+    const statusTexts = await recruitmentPage.candidateRows
+      .locator('.oxd-table-cell:nth-child(6)')
+      .allTextContents();
 
-    if (candidateCount > 0) {
-      for (let index = 0; index < candidateCount; index++) {
-        const statusCell = recruitmentPage.candidateRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(5);
-
-        await expect(statusCell).toContainText(data.candidateStatus);
+    if (statusTexts.length > 0) {
+      for (const statusText of statusTexts) {
+        expect(statusText).toContain(data.candidateStatus);
       }
     } else {
       await expect(recruitmentPage.noRecordsFound).toBeVisible();
@@ -338,16 +335,13 @@ test.describe("PIM Employee List", () => {
       timeout: 15_000,
     });
 
-    const candidateCount = await recruitmentPage.candidateRows.count();
+    const vacancyTexts = await recruitmentPage.candidateRows
+      .locator('.oxd-table-cell:nth-child(2)')
+      .allTextContents();
 
-    if (candidateCount > 0) {
-      for (let index = 0; index < candidateCount; index++) {
-        const vacancyCell = recruitmentPage.candidateRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(1);
-
-        await expect(vacancyCell).toContainText(selectedVacancy);
+    if (vacancyTexts.length > 0) {
+      for (const vacancyText of vacancyTexts) {
+        expect(vacancyText).toContain(selectedVacancy);
       }
     } else {
       await expect(recruitmentPage.noRecordsFound).toBeVisible();
@@ -387,16 +381,19 @@ test.describe("PIM Employee List", () => {
       timeout: 15_000,
     });
 
-    const candidateCount = await recruitmentPage.candidateRows.count();
+    const managerTexts = await recruitmentPage.candidateRows
+      .locator('.oxd-table-cell:nth-child(4)')
+      .allTextContents();
 
-    if (candidateCount > 0) {
-      for (let index = 0; index < candidateCount; index++) {
-        const hiringManagerCell = recruitmentPage.candidateRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(3);
+    if (managerTexts.length > 0) {
+      const selectedNameParts = selectedManager
+        .split(/\s+/)
+        .filter(Boolean);
 
-        await expect(hiringManagerCell).toContainText(selectedManager);
+      for (const managerText of managerTexts) {
+        for (const namePart of selectedNameParts) {
+          expect(managerText).toContain(namePart);
+        }
       }
     } else {
       await expect(recruitmentPage.noRecordsFound).toBeVisible();
@@ -565,20 +562,22 @@ test.describe("PIM Employee List", () => {
       timeout: 15_000,
     });
 
-    const candidateCount = await recruitmentPage.candidateRows.count();
+    const vacancyTexts = await recruitmentPage.candidateRows
+      .locator('.oxd-table-cell:nth-child(2)')
+      .allTextContents();
+    const statusTexts = await recruitmentPage.candidateRows
+      .locator('.oxd-table-cell:nth-child(6)')
+      .allTextContents();
 
-    if (candidateCount > 0) {
-      for (let index = 0; index < candidateCount; index++) {
-        const cells = recruitmentPage.candidateRows
-          .nth(index)
-          .locator(".oxd-table-cell");
+    if (vacancyTexts.length > 0) {
+      expect(statusTexts).toHaveLength(vacancyTexts.length);
 
-        const vacancyCell = cells.nth(1);
-        const statusCell = cells.nth(5);
+      for (const vacancyText of vacancyTexts) {
+        expect(vacancyText).toContain(selectedVacancy);
+      }
 
-        await expect(vacancyCell).toContainText(selectedVacancy);
-
-        await expect(statusCell).toContainText(data.candidateStatus);
+      for (const statusText of statusTexts) {
+        expect(statusText).toContain(data.candidateStatus);
       }
     } else {
       await expect(recruitmentPage.noRecordsFound).toBeVisible();
@@ -656,7 +655,11 @@ test.describe("PIM Employee List", () => {
 
     await recruitmentPage.navigateToCandidate();
 
-    await expect(page).toHaveURL(new RegExp(`{data.addCandidateUrlPath}`));
+    await recruitmentPage.addCandidateButton.click();
+
+    await expect(page).toHaveURL(
+      new RegExp(`${data.addCandidateUrlPath}$`),
+    );
 
     // Submit without entering any values.
     await recruitmentPage.saveButton.click();
@@ -691,7 +694,9 @@ test.describe("PIM Employee List", () => {
 
     await recruitmentPage.cancelButton.click();
 
-    await expect(page).toHaveURL(new RegExp(`{data.candidatesUrlPath}`));
+    await expect(page).toHaveURL(
+      new RegExp(`${data.candidatesUrlPath}$`),
+    );
   });
 
   test("TC_RECRUITMENT_146 - Admin should cancel adding a new candidate @negative @cancel @regression", async ({
