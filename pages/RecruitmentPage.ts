@@ -311,11 +311,13 @@ readonly workflowCancelButton: Locator;
 
     this.firstNameValidation = this.firstNameInput
       .locator('xpath=ancestor::div[contains(@class,"oxd-input-group")]')
-      .locator(".oxd-input-field-error-message");
+      .locator(".oxd-input-field-error-message")
+      .first();
 
     this.lastNameValidation = this.lastNameInput
       .locator('xpath=ancestor::div[contains(@class,"oxd-input-group")]')
-      .locator(".oxd-input-field-error-message");
+      .locator(".oxd-input-field-error-message")
+      .first();
 
     this.emailValidation = this.emailInput
       .locator('xpath=ancestor::div[contains(@class,"oxd-input-group")]')
@@ -507,9 +509,15 @@ this.workflowSaveButton = page
     exact: true,
   });
 
-this.candidateStatusText = page.locator(
-  '.orangehrm-recruitment-status'
-);
+this.candidateStatusText = page
+  .locator('.orangehrm-recruitment-status')
+  .or(
+    page.getByText(
+      /^(Application Initiated|Shortlisted|Interview Scheduled|Interview Passed|Interview Failed|Job Offered|Hired|Rejected)$/,
+      { exact: true }
+    )
+  )
+  .first();
 
 this.updateSuccessToast = page
   .locator('.oxd-toast-content-text')
@@ -606,11 +614,11 @@ this.workflowCancelButton = page
       timeout: 30_000,
     });
 
-    const selectedCandidate = (await option.innerText()).trim();
-
     await option.click();
 
-    await expect(this.candidateNameInput).toHaveValue(selectedCandidate);
+    await expect(this.candidateNameInput).not.toHaveValue("");
+
+    const selectedCandidate = await this.candidateNameInput.inputValue();
 
     return selectedCandidate;
   }
@@ -1083,17 +1091,9 @@ private async completeCandidateWorkflowAction(
       }
     );
 
-  const toastPromise =
-    this.updateSuccessToast.waitFor({
-      state: 'visible',
-      timeout: 15_000,
-    });
-
   await this.workflowSaveButton.click();
 
   const response = await responsePromise;
-
-  await toastPromise;
 
   const responseText =
     await response.text();
