@@ -152,5 +152,138 @@
   "updatedContactNumber": "9123456780",
   "updatedKeywords": "Playwright, Updated",
   "updatedNotes": "Candidate details updated through automation"
+},
+"TC_RECRUITMENT_156": {
+  "firstNamePrefix": "Shortlist",
+  "middleName": "Test",
+  "lastName": "User",
+  "emailPrefix": "shortlistcandidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "shortlistNotes": "Candidate shortlisted through Playwright automation",
+  "expectedStatus": "Shortlisted",
+  "successMessage": "Successfully Updated"
+},
+"TC_RECRUITMENT_157": {
+  "firstNamePrefix": "Interview",
+  "middleName": "Test",
+  "lastName": "User",
+  "emailPrefix": "interviewcandidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "shortlistNotes": "Candidate shortlisted before interview scheduling",
+  "interviewTitlePrefix": "Automation Interview",
+  "interviewerSearchText": "a",
+  "interviewDaysOffset": 7,
+  "interviewTime": "10:30 AM",
+  "shortlistedStatus": "Shortlisted",
+  "scheduledStatus": "Interview Scheduled",
+  "successMessage": "Successfully Updated"
+},
+  "TC_RECRUITMENT_158": {
+    "firstNamePrefix": "EmptyInterview",
+    "middleName": "Test",
+    "lastName": "Candidate",
+    "emailPrefix": "emptyinterview",
+    "emailDomain": "@example.com",
+    "shortlistNotes": "Candidate shortlisted before empty interview validation",
+    "requiredMessage": "Required",
+    "requiredCount": 4
+  },
+
+  "TC_RECRUITMENT_159": {
+    "firstNamePrefix": "CancelInterview",
+    "middleName": "Test",
+    "lastName": "Candidate",
+    "emailPrefix": "cancelinterview",
+    "emailDomain": "@example.com",
+    "shortlistNotes": "Candidate shortlisted before cancelling interview",
+    "interviewTitle": "Cancelled Automation Interview",
+    "expectedStatus": "Shortlisted"
+  },
+
+  "TC_RECRUITMENT_160": {
+    "firstNamePrefix": "PassedInterview",
+    "middleName": "Test",
+    "lastName": "Candidate",
+    "emailPrefix": "passedinterview",
+    "emailDomain": "@example.com",
+    "shortlistNotes": "Candidate shortlisted for interview",
+    "interviewTitlePrefix": "Passed Automation Interview ",
+    "interviewerSearchText": "a",
+    "interviewDaysOffset": 7,
+    "interviewTime": "10:30 AM",
+    "passedNotes": "Candidate successfully passed the interview",
+    "expectedStatus": "Interview Passed"
+  },
+
+  "TC_RECRUITMENT_161": {
+    "firstNamePrefix": "FailedInterview",
+    "middleName": "Test",
+    "lastName": "Candidate",
+    "emailPrefix": "failedinterview",
+    "emailDomain": "@example.com",
+    "shortlistNotes": "Candidate shortlisted for interview",
+    "interviewTitlePrefix": "Failed Automation Interview ",
+    "interviewerSearchText": "a",
+    "interviewDaysOffset": 7,
+    "interviewTime": "11:30 AM",
+    "failedNotes": "Candidate did not pass the interview",
+    "expectedStatus": "Interview Failed"
+  },
+
+  "TC_RECRUITMENT_162": {
+    "firstNamePrefix": "OfferJob",
+    "middleName": "Test",
+    "lastName": "Candidate",
+    "emailPrefix": "offerjob",
+    "emailDomain": "@example.com",
+    "shortlistNotes": "Candidate shortlisted for job-offer workflow",
+    "interviewTitlePrefix": "Job Offer Interview ",
+    "interviewerSearchText": "a",
+    "interviewDaysOffset": 7,
+    "interviewTime": "02:30 PM",
+    "passedNotes": "Candidate passed the interview",
+    "offerNotes": "Candidate has been offered the position",
+    "expectedStatus": "Job Offered"
+  },
+
+  "TC_RECRUITMENT_163": {
+    "firstNamePrefix": "HireCandidate",
+    "middleName": "Test",
+    "lastName": "Candidate",
+    "emailPrefix": "hirecandidate",
+    "emailDomain": "@example.com",
+    "shortlistNotes": "Candidate shortlisted for hiring workflow",
+    "interviewTitlePrefix": "Hiring Interview ",
+    "interviewerSearchText": "a",
+    "interviewDaysOffset": 7,
+    "interviewTime": "03:30 PM",
+    "passedNotes": "Candidate passed the interview",
+    "offerNotes": "Candidate has been offered the position",
+    "hireNotes": "Candidate has accepted the offer and is hired",
+    "expectedStatus": "Hired"
+  },
+  "TC_RECRUITMENT_164": {
+  "firstNamePrefix": "RejectCandidate",
+  "middleName": "Test",
+  "lastName": "Candidate",
+  "emailPrefix": "rejectcandidate",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "rejectionNotes": "Candidate rejected through Playwright automation",
+  "expectedStatus": "Rejected",
+  "successMessage": "Successfully Updated"
+},
+"TC_RECRUITMENT_165": {
+  "firstNamePrefix": "CancelReject",
+  "middleName": "Test",
+  "lastName": "Candidate",
+  "emailPrefix": "cancelreject",
+  "emailDomain": "@example.com",
+  "contactNumber": "9876543210",
+  "rejectionNotes": "Candidate rejection must be cancelled",
+  "expectedStatus": "Application Initiated"
 }
+
 }

@@ -291,7 +291,7 @@ test.describe("Recruitment - Candidates", () => {
       timeout: 15_000,
     });
     const statusTexts = await recruitmentPage.candidateRows
-      .locator('.oxd-table-cell:nth-child(6)')
+      .locator(".oxd-table-cell:nth-child(6)")
       .allTextContents();
 
     if (statusTexts.length > 0) {
@@ -336,7 +336,7 @@ test.describe("Recruitment - Candidates", () => {
     });
 
     const vacancyTexts = await recruitmentPage.candidateRows
-      .locator('.oxd-table-cell:nth-child(2)')
+      .locator(".oxd-table-cell:nth-child(2)")
       .allTextContents();
 
     if (vacancyTexts.length > 0) {
@@ -382,13 +382,11 @@ test.describe("Recruitment - Candidates", () => {
     });
 
     const managerTexts = await recruitmentPage.candidateRows
-      .locator('.oxd-table-cell:nth-child(4)')
+      .locator(".oxd-table-cell:nth-child(4)")
       .allTextContents();
 
     if (managerTexts.length > 0) {
-      const selectedNameParts = selectedManager
-        .split(/\s+/)
-        .filter(Boolean);
+      const selectedNameParts = selectedManager.split(/\s+/).filter(Boolean);
 
       for (const managerText of managerTexts) {
         for (const namePart of selectedNameParts) {
@@ -563,10 +561,10 @@ test.describe("Recruitment - Candidates", () => {
     });
 
     const vacancyTexts = await recruitmentPage.candidateRows
-      .locator('.oxd-table-cell:nth-child(2)')
+      .locator(".oxd-table-cell:nth-child(2)")
       .allTextContents();
     const statusTexts = await recruitmentPage.candidateRows
-      .locator('.oxd-table-cell:nth-child(6)')
+      .locator(".oxd-table-cell:nth-child(6)")
       .allTextContents();
 
     if (vacancyTexts.length > 0) {
@@ -657,9 +655,7 @@ test.describe("Recruitment - Candidates", () => {
 
     await recruitmentPage.addCandidateButton.click();
 
-    await expect(page).toHaveURL(
-      new RegExp(`${data.addCandidateUrlPath}$`),
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.addCandidateUrlPath}$`));
 
     // Submit without entering any values.
     await recruitmentPage.saveButton.click();
@@ -694,9 +690,7 @@ test.describe("Recruitment - Candidates", () => {
 
     await recruitmentPage.cancelButton.click();
 
-    await expect(page).toHaveURL(
-      new RegExp(`${data.candidatesUrlPath}$`),
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.candidatesUrlPath}$`));
   });
 
   test("TC_RECRUITMENT_146 - Admin should cancel adding a new candidate @negative @cancel @regression", async ({
@@ -1121,8 +1115,11 @@ test.describe("Recruitment - Candidates", () => {
     await expect(page).toHaveURL(new RegExp(`${data.candidatesUrlPath}$`));
   });
 
-  test('TC_RECRUITMENT_150 - Required validation should appear when candidate last name is empty @negative @validation @regression',
-  async ({ page, navigationPage, recruitmentPage }) => {
+  test("TC_RECRUITMENT_150 - Required validation should appear when candidate last name is empty @negative @validation @regression", async ({
+    page,
+    navigationPage,
+    recruitmentPage,
+  }) => {
     // Read candidate details and invalid email from JSON.
     const data = recruitmentData.TC_RECRUITMENT_150;
 
@@ -1131,8 +1128,7 @@ test.describe("Recruitment - Candidates", () => {
 
     const firstName = `${data.firstNamePrefix}${uniqueValue}`;
 
-     const email = `${data.emailPrefix}${uniqueValue}` + `${data.emailDomain}`;
-
+    const email = `${data.emailPrefix}${uniqueValue}` + `${data.emailDomain}`;
 
     // Navigate to Recruitment → Candidates.
 
@@ -1146,7 +1142,7 @@ test.describe("Recruitment - Candidates", () => {
     await recruitmentPage.firstNameInput.fill(firstName);
 
     // Leave Last Name empty.
-    await recruitmentPage.lastNameInput.fill('');
+    await recruitmentPage.lastNameInput.fill("");
     // Select the first available Vacancy dynamically.
     await recruitmentPage.selectFirstAvailableAddCandidateVacancy();
     // Fill a valid Email.
@@ -1156,91 +1152,66 @@ test.describe("Recruitment - Candidates", () => {
     // Verify Required validation appears
     // under the Last Name field.
 
-    await expect(
-      recruitmentPage.lastNameValidation
-    ).toHaveText(data.requiredMessage);
+    await expect(recruitmentPage.lastNameValidation).toHaveText(
+      data.requiredMessage,
+    );
 
-    await expect(
-      recruitmentPage.lastNameInput
-    ).toHaveValue('');
+    await expect(recruitmentPage.lastNameInput).toHaveValue("");
     // Verify First Name and Email keep their values.
-      await expect (recruitmentPage.firstNameInput).toHaveValue(firstName);
-            await expect (recruitmentPage.emailInput).toHaveValue(email);
-    // Verify the user remains on the Add Candidate page. 
-     await expect(page).toHaveURL(
-       new RegExp(`${data.addCandidateUrlPath}$`)
-     );
+    await expect(recruitmentPage.firstNameInput).toHaveValue(firstName);
+    await expect(recruitmentPage.emailInput).toHaveValue(email);
+    // Verify the user remains on the Add Candidate page.
+    await expect(page).toHaveURL(new RegExp(`${data.addCandidateUrlPath}$`));
     // Verify no success notification appears.
-      await expect(recruitmentPage.successToast).not.toBeVisible();
+    await expect(recruitmentPage.successToast).not.toBeVisible();
     // Click Cancel and return to Candidates.
-   await recruitmentPage.cancelButton.click();
-         await expect(page).toHaveURL(
-           new RegExp(`${data.candidatesUrlPath}$`)
-         );
-  }
-);
+    await recruitmentPage.cancelButton.click();
+    await expect(page).toHaveURL(new RegExp(`${data.candidatesUrlPath}$`));
+  });
 
-test( 'TC_RECRUITMENT_151 - Admin should search for a newly created candidate by name @positive @search @regression',
-  async ({
+  test("TC_RECRUITMENT_151 - Admin should search for a newly created candidate by name @positive @search @regression", async ({
     page,
     navigationPage,
     recruitmentPage,
   }) => {
-    const data =
-      recruitmentData.TC_RECRUITMENT_151;
+    const data = recruitmentData.TC_RECRUITMENT_151;
 
     const uniqueValue = Date.now();
 
-    const firstName =
-      `${data.firstNamePrefix}${uniqueValue}`;
+    const firstName = `${data.firstNamePrefix}${uniqueValue}`;
 
-    const email =
-      `${data.emailPrefix}${uniqueValue}` +
-      `${data.emailDomain}`;
+    const email = `${data.emailPrefix}${uniqueValue}` + `${data.emailDomain}`;
 
     const expectedFullName =
-      `${firstName} ${data.middleName} ` +
-      `${data.lastName}`;
+      `${firstName} ${data.middleName} ` + `${data.lastName}`;
 
     await navigationPage.gotoRecruitment();
 
     await recruitmentPage.navigateToCandidate();
-     await recruitmentPage.addCandidateButton.click();
+    await recruitmentPage.addCandidateButton.click();
 
-    await recruitmentPage.firstNameInput.fill(
-      firstName
-    );
+    await recruitmentPage.firstNameInput.fill(firstName);
 
-    await recruitmentPage.middleNameInput.fill(
-      data.middleName
-    );
+    await recruitmentPage.middleNameInput.fill(data.middleName);
 
-    await recruitmentPage.lastNameInput.fill(
-      data.lastName
-    );
+    await recruitmentPage.lastNameInput.fill(data.lastName);
 
     const selectedVacancy =
-      await recruitmentPage
-        .selectFirstAvailableAddCandidateVacancy();
+      await recruitmentPage.selectFirstAvailableAddCandidateVacancy();
 
-    await recruitmentPage.emailInput.fill(
-      email
+    await recruitmentPage.emailInput.fill(email);
+
+    const responsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/recruitment/candidates") &&
+        response.request().method() === "POST",
+      {
+        timeout: 30_000,
+      },
     );
 
-    const responsePromise =
-      page.waitForResponse(
-        response =>
-          response.url().includes(
-            '/api/v2/recruitment/candidates'
-          ) &&
-          response.request().method() === 'POST',
-        {
-          timeout: 30_000,
-        }
-      );
-
     const successToastPromise = expect(
-      recruitmentPage.successToast
+      recruitmentPage.successToast,
     ).toContainText(data.successMessage, {
       timeout: 30_000,
     });
@@ -1254,509 +1225,617 @@ test( 'TC_RECRUITMENT_151 - Admin should search for a newly created candidate by
 
     expect(createResponse.ok()).toBeTruthy();
 
-    const responseBody =
-      await createResponse.json();
+    const responseBody = await createResponse.json();
 
-    const candidateId = String(
-      responseBody.data.id
-    );
+    const candidateId = String(responseBody.data.id);
 
-    expect(candidateId).not.toBe('');
+    expect(candidateId).not.toBe("");
 
     await expect(page).toHaveURL(
-      new RegExp(
-        `/recruitment/addCandidate/${candidateId}$`
-      ),
+      new RegExp(`/recruitment/addCandidate/${candidateId}$`),
       {
         timeout: 30_000,
-      }
+      },
     );
 
     // Return to Candidate List.
     await navigationPage.gotoRecruitment();
 
-    await expect(page).toHaveURL(
-      /\/recruitment\/viewCandidates$/
-    );
+    await expect(page).toHaveURL(/\/recruitment\/viewCandidates$/);
 
     // Select the created candidate from autocomplete.
     const selectedCandidate =
-      await recruitmentPage
-        .selectFirstAvailableCandidate(
-          firstName
-        );
+      await recruitmentPage.selectFirstAvailableCandidate(firstName);
 
     if (!selectedCandidate) {
       throw new Error(
-        `Created candidate was not available in autocomplete: ${firstName}`
+        `Created candidate was not available in autocomplete: ${firstName}`,
       );
     }
 
-    await expect(
-      recruitmentPage.candidateNameInput
-    ).toHaveValue(selectedCandidate);
+    await expect(recruitmentPage.candidateNameInput).toHaveValue(
+      selectedCandidate,
+    );
 
     await recruitmentPage.searchButton.click();
 
-    await expect(
-      recruitmentPage.loadingSpinner
-    ).toBeHidden({
+    await expect(recruitmentPage.loadingSpinner).toBeHidden({
       timeout: 20_000,
     });
 
-    await expect(
-      recruitmentPage.candidateRows
-    ).toHaveCount(1, {
+    await expect(recruitmentPage.candidateRows).toHaveCount(1, {
       timeout: 20_000,
     });
 
-    const matchingRow =
-      recruitmentPage.candidateRows.first();
+    const matchingRow = recruitmentPage.candidateRows.first();
 
-    const cells = matchingRow.locator(
-      '.oxd-table-cell'
-    );
+    const cells = matchingRow.locator(".oxd-table-cell");
 
     // Vacancy is optional in the public demo environment.
     if (selectedVacancy) {
-      await expect(
-        cells.nth(1)
-      ).toContainText(selectedVacancy);
+      await expect(cells.nth(1)).toContainText(selectedVacancy);
     }
 
     // Candidate column.
     // OrangeHRM may omit the middle name in the table.
-    await expect(
-      cells.nth(2)
-    ).toContainText(firstName);
+    await expect(cells.nth(2)).toContainText(firstName);
 
-    await expect(
-      cells.nth(2)
-    ).toContainText(data.lastName);
+    await expect(cells.nth(2)).toContainText(data.lastName);
 
-    console.log(
-      `Created candidate: ${expectedFullName}`
-    );
+    console.log(`Created candidate: ${expectedFullName}`);
 
-    console.log(
-      `Candidate ID for cleanup: ${candidateId}`
-    );
-  }
-);
+    console.log(`Candidate ID for cleanup: ${candidateId}`);
+  });
 
-test('TC_RECRUITMENT_152 - Admin should open a candidate profile from the Candidates List @positive @navigation @regression',
-  async ({
+  test("TC_RECRUITMENT_152 - Admin should open a candidate profile from the Candidates List @positive @navigation @regression", async ({
     page,
     navigationPage,
     recruitmentPage,
   }) => {
-    const data =
-      recruitmentData.TC_RECRUITMENT_152;
+    const data = recruitmentData.TC_RECRUITMENT_152;
 
     const uniqueValue = Date.now();
 
-    const firstName =
-      `${data.firstNamePrefix}${uniqueValue}`;
+    const firstName = `${data.firstNamePrefix}${uniqueValue}`;
 
-    const email =
-      `${data.emailPrefix}${uniqueValue}` +
-      `${data.emailDomain}`;
+    const email = `${data.emailPrefix}${uniqueValue}` + `${data.emailDomain}`;
 
     await navigationPage.gotoRecruitment();
 
     await recruitmentPage.navigateToCandidate();
-     await recruitmentPage.addCandidateButton.click();
+    await recruitmentPage.addCandidateButton.click();
 
-    await recruitmentPage.firstNameInput.fill(
-      firstName
-    );
+    await recruitmentPage.firstNameInput.fill(firstName);
 
-    await recruitmentPage.middleNameInput.fill(
-      data.middleName
-    );
+    await recruitmentPage.middleNameInput.fill(data.middleName);
 
-    await recruitmentPage.lastNameInput.fill(
-      data.lastName
-    );
+    await recruitmentPage.lastNameInput.fill(data.lastName);
 
     const selectedVacancy =
-      await recruitmentPage
-        .selectFirstAvailableAddCandidateVacancy();
+      await recruitmentPage.selectFirstAvailableAddCandidateVacancy();
 
-    await recruitmentPage.emailInput.fill(
-      email
+    await recruitmentPage.emailInput.fill(email);
+
+    await recruitmentPage.contactNumberInput.fill(data.contactNumber);
+
+    const responsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/recruitment/candidates") &&
+        response.request().method() === "POST",
+      {
+        timeout: 30_000,
+      },
     );
 
-    await recruitmentPage.contactNumberInput.fill(
-      data.contactNumber
-    );
-
-    const responsePromise =
-      page.waitForResponse(
-        response =>
-          response.url().includes(
-            '/api/v2/recruitment/candidates'
-          ) &&
-          response.request().method() === 'POST',
-        {
-          timeout: 30_000,
-        }
-      );
-
-    const successToastPromise =
-      recruitmentPage.successToast.waitFor({
-        state: 'visible',
-        timeout: 15_000,
-      });
+    const successToastPromise = recruitmentPage.successToast.waitFor({
+      state: "visible",
+      timeout: 15_000,
+    });
 
     await recruitmentPage.saveButton.click();
 
-    const createResponse =
-      await responsePromise;
+    const createResponse = await responsePromise;
 
     await successToastPromise;
 
     expect(createResponse.ok()).toBeTruthy();
 
-    const responseBody =
-      await createResponse.json();
+    const responseBody = await createResponse.json();
 
-    const candidateId = String(
-      responseBody.data.id
-    );
+    const candidateId = String(responseBody.data.id);
 
-    expect(candidateId).not.toBe('');
+    expect(candidateId).not.toBe("");
 
     await expect(page).toHaveURL(
-      new RegExp(
-        `/recruitment/addCandidate/${candidateId}$`
-      ),
+      new RegExp(`/recruitment/addCandidate/${candidateId}$`),
       {
         timeout: 30_000,
-      }
+      },
     );
 
     // Return to Candidates List.
     await navigationPage.gotoRecruitment();
 
-    await expect(page).toHaveURL(
-      /\/recruitment\/viewCandidates$/
-    );
+    await expect(page).toHaveURL(/\/recruitment\/viewCandidates$/);
 
     const selectedCandidate =
-      await recruitmentPage
-        .selectFirstAvailableCandidate(firstName);
+      await recruitmentPage.selectFirstAvailableCandidate(firstName);
 
     if (selectedCandidate === null) {
-      throw new Error(
-        `Created candidate was not found: ${firstName}`
-      );
+      throw new Error(`Created candidate was not found: ${firstName}`);
     }
 
-    await expect(
-      recruitmentPage.candidateNameInput
-    ).toHaveValue(selectedCandidate);
+    await expect(recruitmentPage.candidateNameInput).toHaveValue(
+      selectedCandidate,
+    );
 
     await recruitmentPage.searchButton.click();
 
-    await expect(
-      recruitmentPage.loadingSpinner
-    ).toBeHidden({
+    await expect(recruitmentPage.loadingSpinner).toBeHidden({
       timeout: 20_000,
     });
 
-    await expect(
-      recruitmentPage.candidateRows
-    ).toHaveCount(1, {
+    await expect(recruitmentPage.candidateRows).toHaveCount(1, {
       timeout: 20_000,
     });
 
-    const matchingRow =
-      recruitmentPage.candidateRows.first();
+    const matchingRow = recruitmentPage.candidateRows.first();
 
-    const cells = matchingRow.locator(
-      '.oxd-table-cell'
-    );
+    const cells = matchingRow.locator(".oxd-table-cell");
 
-    await expect(
-      cells.nth(1)
-    ).toContainText(selectedVacancy);
+    await expect(cells.nth(1)).toContainText(selectedVacancy);
 
-    await expect(
-      cells.nth(2)
-    ).toContainText(firstName);
+    await expect(cells.nth(2)).toContainText(firstName);
 
-    await expect(
-      cells.nth(2)
-    ).toContainText(data.lastName);
+    await expect(cells.nth(2)).toContainText(data.lastName);
 
     // Open Candidate Profile using the View action.
-    const viewCandidateButton =
-      matchingRow.getByRole('button').filter({
-        has: page.locator('i.bi-eye-fill'),
-      });
+    const viewCandidateButton = matchingRow.getByRole("button").filter({
+      has: page.locator("i.bi-eye-fill"),
+    });
 
-    await expect(
-      viewCandidateButton
-    ).toBeVisible();
+    await expect(viewCandidateButton).toBeVisible();
 
     await viewCandidateButton.click();
 
     await expect(page).toHaveURL(
-      new RegExp(
-        `/recruitment/addCandidate/${candidateId}$`
-      ),
+      new RegExp(`/recruitment/addCandidate/${candidateId}$`),
       {
         timeout: 30_000,
-      }
+      },
     );
 
-    await expect(
-      recruitmentPage.candidateProfileHeading
-    ).toBeVisible();
+    await expect(recruitmentPage.candidateProfileHeading).toBeVisible();
 
-    await expect(
-      recruitmentPage.firstNameInput
-    ).toHaveValue(firstName);
+    await expect(recruitmentPage.firstNameInput).toHaveValue(firstName);
 
-    await expect(
-      recruitmentPage.middleNameInput
-    ).toHaveValue(data.middleName);
+    await expect(recruitmentPage.middleNameInput).toHaveValue(data.middleName);
 
-    await expect(
-      recruitmentPage.lastNameInput
-    ).toHaveValue(data.lastName);
+    await expect(recruitmentPage.lastNameInput).toHaveValue(data.lastName);
 
-    await expect(
-      recruitmentPage.emailInput
-    ).toHaveValue(email);
+    await expect(recruitmentPage.emailInput).toHaveValue(email);
 
-    await expect(
-      recruitmentPage.contactNumberInput
-    ).toHaveValue(data.contactNumber);
-  }
-);
+    await expect(recruitmentPage.contactNumberInput).toHaveValue(
+      data.contactNumber,
+    );
+  });
 
-
-test('TC_RECRUITMENT_153 - Admin should delete an existing candidate @positive @delete @regression', async ({
+  test("TC_RECRUITMENT_153 - Admin should delete an existing candidate @positive @delete @regression", async ({
     page,
     navigationPage,
     recruitmentPage,
   }) => {
-    const data =
-      recruitmentData.TC_RECRUITMENT_153;
+    const data = recruitmentData.TC_RECRUITMENT_153;
 
     const uniqueValue = Date.now();
 
-    const firstName =
-      `${data.firstNamePrefix}${uniqueValue}`;
+    const firstName = `${data.firstNamePrefix}${uniqueValue}`;
 
-    const email =
-      `${data.emailPrefix}${uniqueValue}` +
-      `${data.emailDomain}`;
+    const email = `${data.emailPrefix}${uniqueValue}` + `${data.emailDomain}`;
 
     await navigationPage.gotoRecruitment();
 
     await recruitmentPage.navigateToCandidate();
 
     await recruitmentPage.addCandidateButton.click();
- 
 
-    const createdCandidate =
-      await recruitmentPage.createCandidate({
-        firstName,
-        middleName: data.middleName,
-        lastName: data.lastName,
-        email,
-        contactNumber: data.contactNumber,
-      });
+    const createdCandidate = await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+      contactNumber: data.contactNumber,
+    });
 
-    const candidateId =
-      createdCandidate.candidateId;
+    const candidateId = createdCandidate.candidateId;
 
-    expect(candidateId).not.toBe('');
+    expect(candidateId).not.toBe("");
 
     await expect(page).toHaveURL(
-      new RegExp(
-        `/recruitment/addCandidate/${candidateId}$`
-      ),
+      new RegExp(`/recruitment/addCandidate/${candidateId}$`),
       {
         timeout: 30_000,
-      }
+      },
     );
 
     // Return to Candidates List.
     await navigationPage.gotoRecruitment();
 
-    await expect(page).toHaveURL(
-      /\/recruitment\/viewCandidates$/
-    );
+    await expect(page).toHaveURL(/\/recruitment\/viewCandidates$/);
 
     // Search and delete the created candidate.
-    await recruitmentPage.deleteCandidateByName(
-      firstName
-    );
+    await recruitmentPage.deleteCandidateByName(firstName);
 
     // Clear the previous candidate filter.
     await recruitmentPage.restButton.click();
 
-    await expect(
-      recruitmentPage.candidateNameInput
-    ).toHaveValue('');
+    await expect(recruitmentPage.candidateNameInput).toHaveValue("");
 
     // Search for the deleted candidate again.
-    await recruitmentPage.candidateNameInput.fill(
-      firstName
-    );
+    await recruitmentPage.candidateNameInput.fill(firstName);
 
-    await expect(
-      recruitmentPage
-        .candidateAutocompleteDropdown
-    ).toBeVisible({
+    await expect(recruitmentPage.candidateAutocompleteDropdown).toBeVisible({
       timeout: 15_000,
     });
 
-    await expect(
-      recruitmentPage
-        .candidateAutocompleteNoRecords
-    ).toHaveText(data.noRecordsMessage);
-
-    await recruitmentPage.candidateNameInput.press(
-      'Escape'
+    await expect(recruitmentPage.candidateAutocompleteNoRecords).toHaveText(
+      data.noRecordsMessage,
     );
+
+    await recruitmentPage.candidateNameInput.press("Escape");
 
     await recruitmentPage.searchButton.click();
 
     // Since no autocomplete option was selected,
     // OrangeHRM should display Invalid.
-    await expect(
-      recruitmentPage.candidateNameValidation
-    ).toHaveText(data.invalidMessage);
+    await expect(recruitmentPage.candidateNameValidation).toHaveText(
+      data.invalidMessage,
+    );
 
     // Clear the filter after verification.
     await recruitmentPage.candidateNameInput.clear();
-  }
-);
+  });
 
-
-test( 'TC_RECRUITMENT_154 - Admin should cancel candidate deletion @negative @cancel @delete @regression',
-  async ({
+  test("TC_RECRUITMENT_154 - Admin should cancel candidate deletion @negative @cancel @delete @regression", async ({
     page,
     navigationPage,
     recruitmentPage,
   }) => {
-    const data =
-      recruitmentData.TC_RECRUITMENT_154;
+    const data = recruitmentData.TC_RECRUITMENT_154;
 
-    const uniqueValue = Date.now()
-      .toString()
-      .slice(-8);
+    const uniqueValue = Date.now().toString().slice(-8);
 
-    const firstName =
-      `${data.firstNamePrefix}${uniqueValue}`;
+    const firstName = `${data.firstNamePrefix}${uniqueValue}`;
 
-    const email =
-      `${data.emailPrefix}${uniqueValue}` +
-      `${data.emailDomain}`;
+    const email = `${data.emailPrefix}${uniqueValue}` + `${data.emailDomain}`;
 
     await navigationPage.gotoRecruitment();
 
     await recruitmentPage.navigateToCandidate();
     await recruitmentPage.addCandidateButton.click();
 
-    const createdCandidate =
-      await recruitmentPage.createCandidate({
-        firstName,
-        middleName: data.middleName,
-        lastName: data.lastName,
-        email,
-        contactNumber: data.contactNumber,
-      });
+    const createdCandidate = await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+      contactNumber: data.contactNumber,
+    });
 
-    const candidateId =
-      createdCandidate.candidateId;
+    const candidateId = createdCandidate.candidateId;
 
-    expect(candidateId).not.toBe('');
+    expect(candidateId).not.toBe("");
 
     await expect(page).toHaveURL(
-      new RegExp(
-        `/recruitment/addCandidate/${candidateId}$`
-      ),
+      new RegExp(`/recruitment/addCandidate/${candidateId}$`),
       {
         timeout: 30_000,
-      }
+      },
     );
 
     await navigationPage.gotoRecruitment();
 
-    await expect(page).toHaveURL(
-      /\/recruitment\/viewCandidates$/
-    );
+    await expect(page).toHaveURL(/\/recruitment\/viewCandidates$/);
 
     // Open deletion dialog and cancel.
-    await recruitmentPage
-      .cancelCandidateDeletion(firstName);
+    await recruitmentPage.cancelCandidateDeletion(firstName);
 
     // Reset and search again to prove
     // the candidate was not deleted.
     await recruitmentPage.restButton.click();
 
     const selectedCandidate =
-      await recruitmentPage
-        .selectFirstAvailableCandidate(firstName);
+      await recruitmentPage.selectFirstAvailableCandidate(firstName);
 
     if (selectedCandidate === null) {
       throw new Error(
-        `Candidate disappeared after cancelling deletion: ${firstName}`
+        `Candidate disappeared after cancelling deletion: ${firstName}`,
       );
     }
 
     await recruitmentPage.searchButton.click();
 
-    await expect(
-      recruitmentPage.loadingSpinner
-    ).toBeHidden({
+    await expect(recruitmentPage.loadingSpinner).toBeHidden({
       timeout: 20_000,
     });
 
-    await expect(
-      recruitmentPage.candidateRows
-    ).toHaveCount(1, {
+    await expect(recruitmentPage.candidateRows).toHaveCount(1, {
       timeout: 20_000,
     });
 
-    const candidateCell =
-      recruitmentPage.candidateRows
-        .first()
-        .locator('.oxd-table-cell')
-        .nth(2);
+    const candidateCell = recruitmentPage.candidateRows
+      .first()
+      .locator(".oxd-table-cell")
+      .nth(2);
 
-    await expect(
-      candidateCell
-    ).toContainText(firstName);
+    await expect(candidateCell).toContainText(firstName);
 
-    await expect(
-      candidateCell
-    ).toContainText(data.lastName);
+    await expect(candidateCell).toContainText(data.lastName);
 
     // Cleanup.
     await recruitmentPage.restButton.click();
 
-    await recruitmentPage.deleteCandidateByName(
-      firstName
+    await recruitmentPage.deleteCandidateByName(firstName);
+  });
+
+  test("TC_RECRUITMENT_155 - Admin should edit an existing candidate contact details @positive @edit @regression", async ({
+    page,
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data = recruitmentData.TC_RECRUITMENT_155;
+
+    const uniqueValue = Date.now();
+
+    const firstName = `${data.firstNamePrefix}${uniqueValue}`;
+
+    const email = `${data.emailPrefix}${uniqueValue}` + `${data.emailDomain}`;
+
+    const updatedEmail =
+      `${data.updatedEmailPrefix}${uniqueValue}` + `${data.emailDomain}`;
+
+    await navigationPage.gotoRecruitment();
+
+    await recruitmentPage.navigateToCandidate();
+
+    await recruitmentPage.addCandidateButton.click();
+
+    const createdCandidate = await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+      contactNumber: data.contactNumber,
+    });
+
+    const candidateId = createdCandidate.candidateId;
+
+    expect(candidateId).not.toBe("");
+
+    await expect(page).toHaveURL(
+      new RegExp(`/recruitment/addCandidate/${candidateId}$`),
+      {
+        timeout: 30_000,
+      },
     );
-  }
-);
 
+    // Return to Candidates List.
+    await navigationPage.gotoRecruitment();
 
-test( 'TC_RECRUITMENT_155 - Admin should edit an existing candidate contact details @positive @edit @regression',
+    await expect(page).toHaveURL(/\/recruitment\/viewCandidates$/);
+
+    // This method searches and opens the profile.
+    await recruitmentPage.openCandidateProfile(firstName);
+
+    await expect(page).toHaveURL(
+      new RegExp(`/recruitment/addCandidate/${candidateId}$`),
+    );
+
+    await recruitmentPage.updateCandidateDetails({
+      email: updatedEmail,
+      contactNumber: data.updatedContactNumber,
+      keywords: data.updatedKeywords,
+      notes: data.updatedNotes,
+    });
+
+    await expect(recruitmentPage.emailInput).toHaveValue(updatedEmail);
+
+    await expect(recruitmentPage.contactNumberInput).toHaveValue(
+      data.updatedContactNumber,
+    );
+
+    await expect(recruitmentPage.keywordsInput).toHaveValue(
+      data.updatedKeywords,
+    );
+
+    await expect(recruitmentPage.notesInput).toHaveValue(data.updatedNotes);
+
+    // Refresh and verify persistence.
+    await page.reload({
+      waitUntil: "domcontentloaded",
+    });
+
+    await expect(recruitmentPage.loadingSpinner).toBeHidden();
+
+    await expect(recruitmentPage.emailInput).toHaveValue(updatedEmail);
+
+    await expect(recruitmentPage.contactNumberInput).toHaveValue(
+      data.updatedContactNumber,
+    );
+
+    await expect(recruitmentPage.keywordsInput).toHaveValue(
+      data.updatedKeywords,
+    );
+
+    await expect(recruitmentPage.notesInput).toHaveValue(data.updatedNotes);
+
+    // Cleanup.
+    await navigationPage.gotoRecruitment();
+
+    await recruitmentPage.deleteCandidateByName(firstName);
+  });
+
+  test("TC_RECRUITMENT_156 - Admin should shortlist an existing candidate successfully @positive @workflow @regression", async ({
+    page,
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data = recruitmentData.TC_RECRUITMENT_156;
+
+    const uniqueValue = Date.now();
+
+    const firstName = `${data.firstNamePrefix}${uniqueValue}`;
+
+    const email = `${data.emailPrefix}${uniqueValue}` + `${data.emailDomain}`;
+
+    await navigationPage.gotoRecruitment();
+
+    await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.addCandidateButton.click();
+
+    const createdCandidate = await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+      contactNumber: data.contactNumber,
+    });
+
+    const candidateId = createdCandidate.candidateId;
+
+    expect(candidateId).not.toBe("");
+
+    await expect(page).toHaveURL(
+      new RegExp(`/recruitment/addCandidate/${candidateId}$`),
+      {
+        timeout: 30_000,
+      },
+    );
+
+    // Return to Candidates List.
+    await navigationPage.gotoRecruitment();
+
+    await expect(page).toHaveURL(/\/recruitment\/viewCandidates$/);
+
+    await recruitmentPage.openCandidateProfile(firstName);
+
+    await expect(page).toHaveURL(
+      new RegExp(`/recruitment/addCandidate/${candidateId}$`),
+    );
+
+    await expect(recruitmentPage.shortlistButton).toBeVisible();
+
+    await recruitmentPage.shortlistButton.click();
+
+    await expect(recruitmentPage.shortlistHeading).toBeVisible();
+
+    await recruitmentPage.shortlistNotesInput.fill(data.shortlistNotes);
+
+    await expect(recruitmentPage.shortlistNotesInput).toHaveValue(
+      data.shortlistNotes,
+    );
+
+   const submitShortlist = async () => {
+  const responsePromise = page.waitForResponse(
+    response =>
+      response.url().includes(
+        "/api/v2/recruitment/candidates"
+      ) &&
+      response.url().includes("shortlist") &&
+      ["POST", "PUT"].includes(
+        response.request().method()
+      ),
+    {
+      timeout: 30_000,
+    }
+  );
+
+  await recruitmentPage.shortlistSaveButton.click();
+
+  return responsePromise;
+};
+
+let shortlistResponse = await submitShortlist();
+
+if (
+  !shortlistResponse.ok() &&
+  shortlistResponse.status() >= 500
+) {
+  await expect(
+    recruitmentPage.loadingSpinner
+  ).toBeHidden({
+    timeout: 30_000,
+  });
+
+  await page.waitForTimeout(1_500);
+
+  shortlistResponse = await submitShortlist();
+}
+
+const responseBody =
+  await shortlistResponse.text();
+
+expect(
+  shortlistResponse.ok(),
+  `Shortlist API failed with ${shortlistResponse.status()}: ${responseBody}`
+).toBeTruthy();
+
+await expect(
+  recruitmentPage.loadingSpinner
+).toBeHidden({
+  timeout: 30_000,
+});
+
+await expect(
+  recruitmentPage.candidateStatusText
+).toContainText(data.expectedStatus, {
+  timeout: 30_000,
+});
+    // Verify status from Candidates List.
+    await navigationPage.gotoRecruitment();
+
+    const selectedCandidate =
+      await recruitmentPage.selectFirstAvailableCandidate(firstName);
+
+    if (selectedCandidate === null) {
+      throw new Error(`Shortlisted candidate was not found: ${firstName}`);
+    }
+
+    await recruitmentPage.searchButton.click();
+
+    await expect(recruitmentPage.loadingSpinner).toBeHidden({
+      timeout: 20_000,
+    });
+
+    await expect(recruitmentPage.candidateRows).toHaveCount(1, {
+      timeout: 20_000,
+    });
+
+    const matchingRow = recruitmentPage.candidateRows.first();
+
+    const cells = matchingRow.locator(".oxd-table-cell");
+
+    await expect(cells.nth(2)).toContainText(firstName);
+
+    // Status column.
+    await expect(cells.nth(5)).toContainText(data.expectedStatus);
+
+    // Cleanup.
+    await recruitmentPage.restButton.click();
+
+    await recruitmentPage.deleteCandidateByName(firstName);
+  });
+
+test( 'TC_RECRUITMENT_157 - Admin should schedule an interview for a shortlisted candidate @positive @workflow @regression',
   async ({
     page,
     navigationPage,
     recruitmentPage,
   }) => {
+    test.setTimeout(180_000);
+
     const data =
-      recruitmentData.TC_RECRUITMENT_155;
+      recruitmentData.TC_RECRUITMENT_157;
 
     const uniqueValue = Date.now();
 
@@ -1767,16 +1846,17 @@ test( 'TC_RECRUITMENT_155 - Admin should edit an existing candidate contact deta
       `${data.emailPrefix}${uniqueValue}` +
       `${data.emailDomain}`;
 
-    const updatedEmail =
-      `${data.updatedEmailPrefix}${uniqueValue}` +
-      `${data.emailDomain}`;
+    const interviewTitle =
+      `${data.interviewTitlePrefix} ${uniqueValue}`;
+
+    const interviewDate =
+      dateFromOffset(
+        data.interviewDaysOffset
+      );
 
     await navigationPage.gotoRecruitment();
-
-    await recruitmentPage.navigateToCandidate();
-
+await recruitmentPage.navigateToCandidate();
     await recruitmentPage.addCandidateButton.click();
-
     const createdCandidate =
       await recruitmentPage.createCandidate({
         firstName,
@@ -1800,14 +1880,9 @@ test( 'TC_RECRUITMENT_155 - Admin should edit an existing candidate contact deta
       }
     );
 
-    // Return to Candidates List.
+    // Return to Candidate List and open profile.
     await navigationPage.gotoRecruitment();
 
-    await expect(page).toHaveURL(
-      /\/recruitment\/viewCandidates$/
-    );
-
-    // This method searches and opens the profile.
     await recruitmentPage.openCandidateProfile(
       firstName
     );
@@ -1818,69 +1893,228 @@ test( 'TC_RECRUITMENT_155 - Admin should edit an existing candidate contact deta
       )
     );
 
-    await recruitmentPage.updateCandidateDetails({
-      email: updatedEmail,
-      contactNumber:
-        data.updatedContactNumber,
-      keywords: data.updatedKeywords,
-      notes: data.updatedNotes,
-    });
+    // Shortlist candidate.
+    await expect(
+      recruitmentPage.shortlistButton
+    ).toBeVisible();
+
+    await recruitmentPage.shortlistButton.click();
 
     await expect(
-      recruitmentPage.emailInput
-    ).toHaveValue(updatedEmail);
+      recruitmentPage.shortlistHeading
+    ).toBeVisible();
 
-    await expect(
-      recruitmentPage.contactNumberInput
-    ).toHaveValue(
-      data.updatedContactNumber
-    );
+    await recruitmentPage
+      .shortlistNotesInput
+      .fill(data.shortlistNotes);
 
-    await expect(
-      recruitmentPage.keywordsInput
-    ).toHaveValue(
-      data.updatedKeywords
-    );
+    const shortlistResponsePromise =
+      page.waitForResponse(
+        response =>
+          response.url().includes(
+            '/api/v2/recruitment/candidates'
+          ) &&
+          response.url().includes(
+            'shortlist'
+          ) &&
+          ['POST', 'PUT'].includes(
+            response.request().method()
+          ),
+        {
+          timeout: 30_000,
+        }
+      );
 
-    await expect(
-      recruitmentPage.notesInput
-    ).toHaveValue(
-      data.updatedNotes
-    );
+    await recruitmentPage
+      .shortlistSaveButton
+      .click();
 
-    // Refresh and verify persistence.
-    await page.reload({
-      waitUntil: 'domcontentloaded',
-    });
+    const shortlistResponse =
+      await shortlistResponsePromise;
+
+    const shortlistResponseBody =
+      await shortlistResponse.text();
+
+    expect(
+      shortlistResponse.ok(),
+      `Shortlist failed with ${shortlistResponse.status()}: ${shortlistResponseBody}`
+    ).toBeTruthy();
 
     await expect(
       recruitmentPage.loadingSpinner
-    ).toBeHidden();
+    ).toBeHidden({
+      timeout: 30_000,
+    });
 
     await expect(
-      recruitmentPage.emailInput
-    ).toHaveValue(updatedEmail);
-
-    await expect(
-      recruitmentPage.contactNumberInput
-    ).toHaveValue(
-      data.updatedContactNumber
+      recruitmentPage.candidateStatusText
+    ).toContainText(
+      data.shortlistedStatus,
+      {
+        timeout: 30_000,
+      }
     );
 
+    // Open Schedule Interview.
     await expect(
-      recruitmentPage.keywordsInput
-    ).toHaveValue(
-      data.updatedKeywords
-    );
+      recruitmentPage.scheduleInterviewButton
+    ).toBeVisible();
+
+    await recruitmentPage
+      .scheduleInterviewButton
+      .click();
 
     await expect(
-      recruitmentPage.notesInput
-    ).toHaveValue(
-      data.updatedNotes
+      recruitmentPage.scheduleInterviewHeading
+    ).toBeVisible();
+
+    await recruitmentPage
+      .interviewTitleInput
+      .fill(interviewTitle);
+
+    const selectedInterviewer =
+      await recruitmentPage
+        .selectFirstAvailableInterviewer(
+          data.interviewerSearchText
+        );
+
+    await recruitmentPage
+      .interviewDateInput
+      .fill(interviewDate);
+
+    await recruitmentPage
+      .interviewTimeInput
+      .fill(data.interviewTime);
+
+    await expect(
+      recruitmentPage.interviewTitleInput
+    ).toHaveValue(interviewTitle);
+
+    await expect(
+      recruitmentPage.interviewerInput
+    ).toHaveValue(selectedInterviewer);
+
+    await expect(
+      recruitmentPage.interviewDateInput
+    ).toHaveValue(interviewDate);
+
+    await expect(
+      recruitmentPage.interviewTimeInput
+    ).toHaveValue(data.interviewTime);
+
+    // Start waiters before clicking Save.
+    const interviewResponsePromise =
+      page.waitForResponse(
+        response =>
+          response.url().includes(
+            '/api/v2/recruitment'
+          ) &&
+          response.url().includes(
+            'interview'
+          ) &&
+          ['POST', 'PUT'].includes(
+            response.request().method()
+          ),
+        {
+          timeout: 30_000,
+        }
+      );
+
+    const updateToastPromise =
+      recruitmentPage.updateSuccessToast
+        .waitFor({
+          state: 'visible',
+          timeout: 15_000,
+        });
+
+    await recruitmentPage
+      .interviewSaveButton
+      .click();
+
+    const interviewResponse =
+      await interviewResponsePromise;
+
+    await updateToastPromise;
+
+    const interviewResponseBody =
+      await interviewResponse.text();
+
+    expect(
+      interviewResponse.ok(),
+      `Schedule Interview failed with ${interviewResponse.status()}: ${interviewResponseBody}`
+    ).toBeTruthy();
+
+    await expect(
+      recruitmentPage.loadingSpinner
+    ).toBeHidden({
+      timeout: 30_000,
+    });
+
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(
+      data.scheduledStatus,
+      {
+        timeout: 30_000,
+      }
+    );
+
+    // Verify scheduled interview information.
+    await expect(
+      page.getByText(
+        interviewTitle,
+        { exact: true }
+      )
+    ).toBeVisible();
+
+    await expect(
+      page.getByText(
+        selectedInterviewer,
+        { exact: true }
+      ).first()
+    ).toBeVisible();
+
+    // Verify status from Candidate List.
+    await navigationPage.gotoRecruitment();
+
+    const selectedCandidate =
+      await recruitmentPage
+        .selectFirstAvailableCandidate(firstName);
+
+    if (selectedCandidate === null) {
+      throw new Error(
+        `Scheduled candidate was not found: ${firstName}`
+      );
+    }
+
+    await recruitmentPage.searchButton.click();
+
+    await expect(
+      recruitmentPage.loadingSpinner
+    ).toBeHidden({
+      timeout: 20_000,
+    });
+
+    await expect(
+      recruitmentPage.candidateRows
+    ).toHaveCount(1, {
+      timeout: 20_000,
+    });
+
+    const statusCell =
+      recruitmentPage.candidateRows
+        .first()
+        .locator('.oxd-table-cell')
+        .nth(5);
+
+    await expect(
+      statusCell
+    ).toContainText(
+      data.scheduledStatus
     );
 
     // Cleanup.
-    await navigationPage.gotoRecruitment();
+    await recruitmentPage.restButton.click();
 
     await recruitmentPage.deleteCandidateByName(
       firstName
@@ -1888,4 +2122,650 @@ test( 'TC_RECRUITMENT_155 - Admin should edit an existing candidate contact deta
   }
 );
 
+test(
+  'TC_RECRUITMENT_158 - Required validation should appear when scheduling an empty interview @negative @validation @workflow @regression',
+  async ({
+    page,
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_158;
+
+    const uniqueValue = Date.now();
+    const firstName =
+      `${data.firstNamePrefix}${uniqueValue}`;
+    const email =
+      `${data.emailPrefix}${uniqueValue}` +
+      data.emailDomain;
+
+    await navigationPage.gotoRecruitment();
+  await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.addCandidateButton.click();
+    await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+    });
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.openCandidateProfile(
+      firstName
+    );
+
+    await recruitmentPage.shortlistCurrentCandidate(
+      data.shortlistNotes
+    );
+
+    await recruitmentPage
+      .scheduleInterviewButton
+      .click();
+
+    await expect(
+      recruitmentPage.scheduleInterviewHeading
+    ).toBeVisible();
+
+    await recruitmentPage
+      .interviewSaveButton
+      .click();
+
+    await expect(
+      recruitmentPage.interviewValidationMessages
+    ).toHaveCount(data.requiredCount);
+
+    await expect(
+      recruitmentPage.interviewValidationMessages
+    ).toHaveText(
+      Array(data.requiredCount).fill(
+        data.requiredMessage
+      )
+    );
+
+    await expect(page).toHaveURL(
+      /\/recruitment\/changeCandidateVacancyStatus/
+    );
+
+    await recruitmentPage
+      .interviewCancelButton
+      .click();
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.deleteCandidateByName(
+      firstName
+    );
+  }
+);
+
+
+test(
+  'TC_RECRUITMENT_159 - Admin should cancel scheduling an interview @negative @cancel @workflow @regression',
+  async ({
+    page,
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_159;
+
+    const uniqueValue = Date.now();
+    const firstName =
+      `${data.firstNamePrefix}${uniqueValue}`;
+    const email =
+      `${data.emailPrefix}${uniqueValue}` +
+      data.emailDomain;
+
+    await navigationPage.gotoRecruitment();
+   await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.addCandidateButton.click();
+    const created =
+      await recruitmentPage.createCandidate({
+        firstName,
+        middleName: data.middleName,
+        lastName: data.lastName,
+        email,
+      });
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.openCandidateProfile(
+      firstName
+    );
+
+    await recruitmentPage.shortlistCurrentCandidate(
+      data.shortlistNotes
+    );
+
+    await recruitmentPage
+      .scheduleInterviewButton
+      .click();
+
+    await recruitmentPage
+      .interviewTitleInput
+      .fill(data.interviewTitle);
+
+    await recruitmentPage
+      .interviewCancelButton
+      .click();
+
+    await expect(page).toHaveURL(
+      new RegExp(
+        `/recruitment/addCandidate/${created.candidateId}$`
+      )
+    );
+
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(data.expectedStatus);
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.deleteCandidateByName(
+      firstName
+    );
+  }
+);
+
+
+test(
+  'TC_RECRUITMENT_160 - Admin should mark a candidate interview as passed @positive @workflow @regression',
+  async ({
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_160;
+
+    const uniqueValue = Date.now();
+    const firstName =
+      `${data.firstNamePrefix}${uniqueValue}`;
+    const email =
+      `${data.emailPrefix}${uniqueValue}` +
+      data.emailDomain;
+
+    await navigationPage.gotoRecruitment();
+   await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.addCandidateButton.click();
+    await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+    });
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.openCandidateProfile(
+      firstName
+    );
+
+    await recruitmentPage.shortlistCurrentCandidate(
+      data.shortlistNotes
+    );
+
+    await recruitmentPage.scheduleCurrentCandidateInterview({
+      title:
+        `${data.interviewTitlePrefix}${uniqueValue}`,
+      interviewerSearchText:
+        data.interviewerSearchText,
+      date: dateFromOffset(
+        data.interviewDaysOffset
+      ),
+      time: data.interviewTime,
+    });
+
+    await recruitmentPage
+      .markInterviewPassed(
+        data.passedNotes
+      );
+
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(data.expectedStatus);
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.deleteCandidateByName(
+      firstName
+    );
+  }
+);
+
+
+test(
+  'TC_RECRUITMENT_161 - Admin should mark a candidate interview as failed @negative @workflow @regression',
+  async ({
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_161;
+
+    const uniqueValue = Date.now();
+    const firstName =
+      `${data.firstNamePrefix}${uniqueValue}`;
+    const email =
+      `${data.emailPrefix}${uniqueValue}` +
+      data.emailDomain;
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.addCandidateButton.click();
+
+    await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+    });
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.openCandidateProfile(
+      firstName
+    );
+
+    await recruitmentPage.shortlistCurrentCandidate(
+      data.shortlistNotes
+    );
+
+    await recruitmentPage.scheduleCurrentCandidateInterview({
+      title:
+        `${data.interviewTitlePrefix}${uniqueValue}`,
+      interviewerSearchText:
+        data.interviewerSearchText,
+      date: dateFromOffset(
+        data.interviewDaysOffset
+      ),
+      time: data.interviewTime,
+    });
+
+    await recruitmentPage
+      .markInterviewFailed(
+        data.failedNotes
+      );
+
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(data.expectedStatus);
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.deleteCandidateByName(
+      firstName
+    );
+  }
+);
+
+test(
+  'TC_RECRUITMENT_162 - Admin should offer a job to a candidate who passed the interview @positive @workflow @regression',
+  async ({
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_162;
+
+    const uniqueValue = Date.now();
+    const firstName =
+      `${data.firstNamePrefix}${uniqueValue}`;
+    const email =
+      `${data.emailPrefix}${uniqueValue}` +
+      data.emailDomain;
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.addCandidateButton.click();
+
+    await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+    });
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.openCandidateProfile(
+      firstName
+    );
+
+    await recruitmentPage.shortlistCurrentCandidate(
+      data.shortlistNotes
+    );
+
+    await recruitmentPage.scheduleCurrentCandidateInterview({
+      title:
+        `${data.interviewTitlePrefix}${uniqueValue}`,
+      interviewerSearchText:
+        data.interviewerSearchText,
+      date: dateFromOffset(
+        data.interviewDaysOffset
+      ),
+      time: data.interviewTime,
+    });
+
+    await recruitmentPage.markInterviewPassed(
+      data.passedNotes
+    );
+
+    await recruitmentPage.offerJob(
+      data.offerNotes
+    );
+
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(data.expectedStatus);
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.deleteCandidateByName(
+      firstName
+    );
+  }
+);
+
+test(
+  'TC_RECRUITMENT_163 - Admin should hire a candidate after offering the job @positive @workflow @regression',
+  async ({
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_163;
+
+    const uniqueValue = Date.now();
+    const firstName =
+      `${data.firstNamePrefix}${uniqueValue}`;
+    const email =
+      `${data.emailPrefix}${uniqueValue}` +
+      data.emailDomain;
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.addCandidateButton.click();
+
+    await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+    });
+
+    await navigationPage.gotoRecruitment();
+    await recruitmentPage.openCandidateProfile(
+      firstName
+    );
+
+    await recruitmentPage.shortlistCurrentCandidate(
+      data.shortlistNotes
+    );
+
+    await recruitmentPage.scheduleCurrentCandidateInterview({
+      title:
+        `${data.interviewTitlePrefix}${uniqueValue}`,
+      interviewerSearchText:
+        data.interviewerSearchText,
+      date: dateFromOffset(
+        data.interviewDaysOffset
+      ),
+      time: data.interviewTime,
+    });
+
+    await recruitmentPage.markInterviewPassed(
+      data.passedNotes
+    );
+
+    await recruitmentPage.offerJob(
+      data.offerNotes
+    );
+
+    await recruitmentPage.hireCandidate(
+      data.hireNotes
+    );
+
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(data.expectedStatus);
+
+    await navigationPage.gotoRecruitment();
+
+    const selectedCandidate =
+      await recruitmentPage
+        .selectFirstAvailableCandidate(firstName);
+
+    if (selectedCandidate === null) {
+      throw new Error(
+        `Hired candidate was not found: ${firstName}`
+      );
+    }
+
+    await recruitmentPage.searchButton.click();
+
+    const statusCell =
+      recruitmentPage.candidateRows
+        .first()
+        .locator('.oxd-table-cell')
+        .nth(5);
+
+    await expect(statusCell).toContainText(
+      data.expectedStatus
+    );
+
+    await recruitmentPage.restButton.click();
+
+    await recruitmentPage.deleteCandidateByName(
+      firstName
+    );
+  }
+);
+
+test(
+  'TC_RECRUITMENT_164 - Admin should reject an existing candidate successfully @negative @workflow @regression',
+  async ({
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_164;
+
+    const uniqueValue = Date.now();
+
+    const firstName =
+      `${data.firstNamePrefix}${uniqueValue}`;
+
+    const email =
+      `${data.emailPrefix}${uniqueValue}` +
+      data.emailDomain;
+
+    await navigationPage.gotoRecruitment();
+
+    await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.addCandidateButton.click();
+
+    await recruitmentPage.createCandidate({
+      firstName,
+      middleName: data.middleName,
+      lastName: data.lastName,
+      email,
+      contactNumber: data.contactNumber,
+    });
+
+    await navigationPage.gotoRecruitment();
+
+    await recruitmentPage.openCandidateProfile(
+      firstName
+    );
+
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(
+      'Application Initiated'
+    );
+
+    await recruitmentPage.rejectCandidate(
+      data.rejectionNotes
+    );
+
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(
+      data.expectedStatus
+    );
+
+    // Verify status from Candidates List.
+    await navigationPage.gotoRecruitment();
+
+    const selectedCandidate =
+      await recruitmentPage
+        .selectFirstAvailableCandidate(firstName);
+
+    if (selectedCandidate === null) {
+      throw new Error(
+        `Rejected candidate was not found: ${firstName}`
+      );
+    }
+
+    await recruitmentPage.searchButton.click();
+
+    await expect(
+      recruitmentPage.loadingSpinner
+    ).toBeHidden({
+      timeout: 20_000,
+    });
+
+    await expect(
+      recruitmentPage.candidateRows
+    ).toHaveCount(1, {
+      timeout: 20_000,
+    });
+
+    const candidateRow =
+      recruitmentPage.candidateRows.first();
+
+    const statusCell =
+      candidateRow
+        .locator('.oxd-table-cell')
+        .nth(5);
+
+    await expect(
+      statusCell
+    ).toContainText(
+      data.expectedStatus
+    );
+
+    // Cleanup.
+    await recruitmentPage.restButton.click();
+
+    await recruitmentPage.deleteCandidateByName(
+      firstName
+    );
+  }
+);
+
+test(
+  'TC_RECRUITMENT_165 - Admin should cancel rejecting a candidate @negative @cancel @workflow @regression',
+  async ({
+    page,
+    navigationPage,
+    recruitmentPage,
+  }) => {
+    const data =
+      recruitmentData.TC_RECRUITMENT_165;
+
+    const uniqueValue = Date.now();
+
+    const firstName =
+      `${data.firstNamePrefix}${uniqueValue}`;
+
+    const email =
+      `${data.emailPrefix}${uniqueValue}` +
+      data.emailDomain;
+
+    await navigationPage.gotoRecruitment();
+
+    await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.addCandidateButton.click();
+
+    const createdCandidate =
+      await recruitmentPage.createCandidate({
+        firstName,
+        middleName: data.middleName,
+        lastName: data.lastName,
+        email,
+        contactNumber: data.contactNumber,
+      });
+
+    const candidateId =
+      createdCandidate.candidateId;
+
+    await navigationPage.gotoRecruitment();
+
+    await recruitmentPage.openCandidateProfile(
+      firstName
+    );
+
+    await expect(page).toHaveURL(
+      new RegExp(
+        `/recruitment/addCandidate/${candidateId}$`
+      )
+    );
+
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(
+      data.expectedStatus
+    );
+
+    await recruitmentPage
+      .cancelCandidateRejection(
+        data.rejectionNotes
+      );
+
+    // Status must remain unchanged.
+    await expect(
+      recruitmentPage.candidateStatusText
+    ).toContainText(
+      data.expectedStatus
+    );
+
+    // Verify candidate still exists.
+    await navigationPage.gotoRecruitment();
+
+    const selectedCandidate =
+      await recruitmentPage
+        .selectFirstAvailableCandidate(firstName);
+
+    if (selectedCandidate === null) {
+      throw new Error(
+        `Candidate disappeared after cancelling rejection: ${firstName}`
+      );
+    }
+
+    await recruitmentPage.searchButton.click();
+
+    await expect(
+      recruitmentPage.loadingSpinner
+    ).toBeHidden({
+      timeout: 20_000,
+    });
+
+    await expect(
+      recruitmentPage.candidateRows
+    ).toHaveCount(1, {
+      timeout: 20_000,
+    });
+
+    const statusCell =
+      recruitmentPage.candidateRows
+        .first()
+        .locator('.oxd-table-cell')
+        .nth(5);
+
+    await expect(
+      statusCell
+    ).toContainText(
+      data.expectedStatus
+    );
+
+    // Cleanup.
+    await recruitmentPage.restButton.click();
+
+    await recruitmentPage.deleteCandidateByName(
+      firstName
+    );
+  }
+);
 });
