@@ -8,6 +8,7 @@ import {  EmployeeAttachmentsPage } from '../pages/EmployeeAttachmentsPage';
 import { AdminPage } from '../pages/Admin';
 import { LeavePage } from '../pages/LeavesPage';
 import { RecruitmentPage } from '../pages/RecruitmentPage';
+import { TimePage } from '../pages/TimePage';
 
 type AppFixtures={
     loginPage:LoginPage;
@@ -19,7 +20,10 @@ type AppFixtures={
     adminPage:AdminPage;
     leavepage:LeavePage;
     recruitmentPage:RecruitmentPage;
+    timePage: TimePage;
 }
+
+
 
 
 export const test =base.extend<AppFixtures>({
@@ -53,5 +57,8 @@ export const test =base.extend<AppFixtures>({
     },
     recruitmentPage:async({page},use)=>{
         await use(new RecruitmentPage(page));
-    }
+    },
+    timePage: async ({ page }, use) => {
+  await use(new TimePage(page));
+},
 })

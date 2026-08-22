@@ -1,0 +1,217 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Time\time.spec.ts >> Time - Timesheets, Attendance and Reports >> TC_TIME_188 - Admin should add a new customer successfully @positive @create @project-info @regression
+- Location: tests\Time\time.spec.ts:1059:6
+
+# Error details
+
+```
+TimeoutError: locator.click: Timeout 70000ms exceeded.
+Call log:
+  - waiting for getByRole('link', { name: 'Time', exact: true })
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=f1e3]:
+  - generic:
+    - complementary [ref=f1e4]:
+      - navigation "Sidepanel" [ref=f1e5]:
+        - generic [ref=f1e6]:
+          - link [ref=f1e7] [cursor=pointer]:
+            - /url: https://www.orangehrm.com/
+            - img "client brand banner" [ref=f1e9]
+          - text: 
+        - generic [ref=f1e10]:
+          - generic [ref=f1e11]:
+            - generic [ref=f1e12]:
+              - textbox "Search" [ref=f1e15]
+              - button "" [ref=f1e16] [cursor=pointer]
+            - separator [ref=f1e18]
+          - list [ref=f1e19]:
+            - listitem [ref=f1e20]:
+              - link "Admin" [ref=f1e21] [cursor=pointer]:
+                - /url: /web/index.php/admin/viewAdminModule
+            - listitem [ref=f1e25]:
+              - link "PIM" [ref=f1e26] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewPimModule
+            - listitem [ref=f1e41]:
+              - link "My Info" [ref=f1e42] [cursor=pointer]:
+                - /url: /web/index.php/pim/viewMyDetails
+            - listitem [ref=f1e49]:
+              - link "Dashboard" [ref=f1e50] [cursor=pointer]:
+                - /url: /web/index.php/dashboard/index
+    - banner [ref=f1e54]:
+      - generic [ref=f1e55]:
+        - generic [ref=f1e56]:
+          - text: 
+          - heading "Dashboard" [level=6] [ref=f1e58]
+        - link [ref=f1e60]:
+          - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+          - button "Upgrade" [ref=f1e61] [cursor=pointer]
+        - list [ref=f1e67]:
+          - listitem [ref=f1e68]:
+            - generic [ref=f1e69] [cursor=pointer]:
+              - img "profile picture" [ref=f1e70]
+              - paragraph [ref=f1e71]: Surya king
+              - generic [ref=f1e72]: 
+      - navigation "Topbar Menu" [ref=f1e74]:
+        - list [ref=f1e75]:
+          - button "" [ref=f1e77] [cursor=pointer]
+  - generic [ref=f1e79]:
+    - generic [ref=f1e81]:
+      - generic [ref=f1e83]:
+        - generic [ref=f1e85]:
+          - generic [ref=f1e86]: 
+          - paragraph [ref=f1e87]: My Actions
+        - separator [ref=f1e88]
+        - generic [ref=f1e90]:
+          - img "No Content" [ref=f1e91]
+          - paragraph [ref=f1e92]: No Pending Actions to Perform
+      - generic [ref=f1e94]:
+        - generic [ref=f1e96]:
+          - generic [ref=f1e97]: 
+          - paragraph [ref=f1e98]: Quick Launch
+        - separator [ref=f1e99]
+        - generic [ref=f1e101]:
+          - img "No Content" [ref=f1e102]
+          - paragraph [ref=f1e103]: Not Available
+      - generic [ref=f1e105]:
+        - generic [ref=f1e107]:
+          - generic [ref=f1e108]: 
+          - paragraph [ref=f1e109]: Employee Distribution by Sub Unit
+        - separator [ref=f1e110]
+        - list [ref=f1e115]:
+          - listitem [ref=f1e116] [cursor=pointer]:
+            - generic "Engineering" [ref=f1e118]
+          - listitem [ref=f1e119] [cursor=pointer]:
+            - generic "Human Resources" [ref=f1e121]
+          - listitem [ref=f1e122] [cursor=pointer]:
+            - generic "Administration" [ref=f1e124]
+          - listitem [ref=f1e125] [cursor=pointer]:
+            - generic "Client Services" [ref=f1e127]
+          - listitem [ref=f1e128] [cursor=pointer]:
+            - generic "Unassigned" [ref=f1e130]
+      - generic [ref=f1e132]:
+        - generic [ref=f1e134]:
+          - generic [ref=f1e135]: 
+          - paragraph [ref=f1e136]: Employee Distribution by Location
+        - separator [ref=f1e137]
+        - list [ref=f1e142]:
+          - listitem [ref=f1e143] [cursor=pointer]:
+            - generic "Texas R&D" [ref=f1e145]
+          - listitem [ref=f1e146] [cursor=pointer]:
+            - generic "New York Sales Office" [ref=f1e148]
+          - listitem [ref=f1e149] [cursor=pointer]:
+            - generic "Unassigned" [ref=f1e151]
+    - generic [ref=f1e152]:
+      - paragraph [ref=f1e153]: OrangeHRM OS 5.9
+      - paragraph [ref=f1e154]:
+        - text: © 2005 - 2026
+        - link "OrangeHRM, Inc" [ref=f1e155] [cursor=pointer]:
+          - /url: http://www.orangehrm.com
+        - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  1  | import { Locator, Page, expect } from "@playwright/test";
+  2  | 
+  3  | export class NavigationPage {
+  4  |   readonly page: Page;
+  5  |   readonly PIMLink: Locator;
+  6  |   readonly adminLink: Locator;
+  7  |   readonly recruitmentLink:Locator;
+  8  |   readonly timeMenu: Locator;
+  9  | 
+  10 |   constructor(page: Page) {
+  11 |     this.page = page;
+  12 |     this.PIMLink = page.getByRole("link", { name: "PIM", exact: true });
+  13 |     this.adminLink = page.getByRole("link", { name: "Admin", exact: true });
+  14 |     this.recruitmentLink=page.getByRole('link', { name: 'Recruitment' });
+  15 |     this.timeMenu = page.getByRole(
+  16 |   'link',
+  17 |   {
+  18 |     name: 'Time',
+  19 |     exact: true,
+  20 |   }
+  21 | );
+  22 |   }
+  23 | 
+  24 |   async gotoPIM(): Promise<void> {
+  25 |     await this.PIMLink.click();
+  26 |     await this.page.waitForURL(/pim\/viewEmployeeList/, {
+  27 |       timeout: 20_000,
+  28 |     });
+  29 |   }
+  30 | 
+  31 |   async gotoAdmin(): Promise<void> {
+  32 |     await this.adminLink.click();
+  33 |     await this.page.waitForURL(/admin\/viewSystemUsers/, {
+  34 |       timeout: 20_000,
+  35 |     });
+  36 |   }
+  37 | 
+  38 |   async gotoLeave(): Promise<void> {
+  39 |   await this.page.getByRole('link', {
+  40 |     name: 'Leave',
+  41 |     exact: true,
+  42 |   }).click();
+  43 | 
+  44 |   await expect(this.page).toHaveURL(
+  45 |     /leave\/viewLeaveList/
+  46 |   );
+  47 | }
+  48 | 
+  49 |   async gotoRecruitment(): Promise<void> {
+  50 |     const href = await this.recruitmentLink.getAttribute('href');
+  51 |     const recruitmentUrl = href
+  52 |       ? new URL(href, this.page.url()).toString()
+  53 |       : null;
+  54 | 
+  55 |     await this.recruitmentLink.click();
+  56 | 
+  57 |     try {
+  58 |       await expect(this.page).toHaveURL(
+  59 |         /recruitment\/viewCandidates/
+  60 |       );
+  61 |     } catch (error) {
+  62 |       if (!recruitmentUrl) {
+  63 |         throw error;
+  64 |       }
+  65 | 
+  66 |       await this.page.goto(recruitmentUrl, {
+  67 |         waitUntil: 'domcontentloaded',
+  68 |       });
+  69 | 
+  70 |       await expect(this.page).toHaveURL(
+  71 |         /recruitment\/viewCandidates/
+  72 |       );
+  73 |     }
+  74 | }
+  75 | 
+  76 | async gotoTime(): Promise<void> {
+> 77 |   await this.timeMenu.click();
+     |                       ^ TimeoutError: locator.click: Timeout 70000ms exceeded.
+  78 | 
+  79 |   await this.page.waitForURL(
+  80 |     /\/time\//,
+  81 |     {
+  82 |       timeout: 30_000,
+  83 |     }
+  84 |   );
+  85 | }
+  86 | 
+  87 | 
+  88 | }
+  89 | 
+```

@@ -1,0 +1,586 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Time\time.spec.ts >> Time - Timesheets, Attendance and Reports >> TC_TIME_173 - Required validation should appear when viewing attendance without selecting an employee @negative @validation @attendance @regression
+- Location: tests\Time\time.spec.ts:339:7
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: locator('.oxd-input-group').filter({ has: locator('label').getByText('Employee Name', { exact: true }) }).locator('input').locator('xpath=ancestor::div[contains(@class,"oxd-input-group")]').locator('.oxd-input-field-error-message')
+Expected: visible
+Timeout: 20000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 20000ms
+  - waiting for locator('.oxd-input-group').filter({ has: locator('label').getByText('Employee Name', { exact: true }) }).locator('input').locator('xpath=ancestor::div[contains(@class,"oxd-input-group")]').locator('.oxd-input-field-error-message')
+
+```
+
+```yaml
+- complementary:
+  - navigation "Sidepanel":
+    - link "client brand banner":
+      - /url: https://www.orangehrm.com/
+      - img "client brand banner"
+    - textbox "Search"
+    - button ""
+    - separator
+    - list:
+      - listitem:
+        - link "Admin":
+          - /url: /web/index.php/admin/viewAdminModule
+      - listitem:
+        - link "PIM":
+          - /url: /web/index.php/pim/viewPimModule
+      - listitem:
+        - link "Leave":
+          - /url: /web/index.php/leave/viewLeaveModule
+      - listitem:
+        - link "Time":
+          - /url: /web/index.php/time/viewTimeModule
+      - listitem:
+        - link "Recruitment":
+          - /url: /web/index.php/recruitment/viewRecruitmentModule
+      - listitem:
+        - link "My Info":
+          - /url: /web/index.php/pim/viewMyDetails
+      - listitem:
+        - link "Performance":
+          - /url: /web/index.php/performance/viewPerformanceModule
+      - listitem:
+        - link "Dashboard":
+          - /url: /web/index.php/dashboard/index
+      - listitem:
+        - link "Directory":
+          - /url: /web/index.php/directory/viewDirectory
+      - listitem:
+        - link "Maintenance":
+          - /url: /web/index.php/maintenance/viewMaintenanceModule
+      - listitem:
+        - link "Claim":
+          - /url: /web/index.php/claim/viewClaimModule
+          - img
+          - text: Claim
+      - listitem:
+        - link "Buzz":
+          - /url: /web/index.php/buzz/viewBuzz
+- banner:
+  - heading "Attendance" [level=6]
+  - heading "/ Attendance" [level=6]
+  - link "Upgrade":
+    - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+    - button "Upgrade"
+  - list:
+    - listitem:
+      - img "profile picture"
+      - paragraph: alexa siri
+      - text: 
+  - navigation "Topbar Menu":
+    - list:
+      - listitem: Timesheets 
+      - listitem: Attendance 
+      - listitem: Reports 
+      - listitem: Project Info 
+      - button ""
+- heading "Employee Attendance Records" [level=5]
+- button ""
+- separator
+- text: Employee Name
+- textbox "Type for hints..."
+- text: Date*
+- textbox "yyyy-dd-mm": 2026-20-08
+- text: 
+- separator
+- paragraph: "* Required"
+- button "View"
+- text: (146) Records Found
+- table:
+  - rowgroup:
+    - row "Employee Name Total Duration (Hours) Actions":
+      - columnheader "Employee Name"
+      - columnheader "Total Duration (Hours)"
+      - columnheader "Actions"
+  - rowgroup:
+    - row "A8DCo 010Z 0.00 View":
+      - cell "A8DCo 010Z"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "123445 444444 0.00 View":
+      - cell "123445 444444"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "99N75 5TlV 0.00 View":
+      - cell "99N75 5TlV"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "yedghjb1 90jsnd 0.00 View":
+      - cell "yedghjb1 90jsnd"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Ranga Akunuri 0.00 View":
+      - cell "Ranga Akunuri"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Timothy Amiano 0.00 View":
+      - cell "Timothy Amiano"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Peter Anderson 0.00 View":
+      - cell "Peter Anderson"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Ravi B 0.00 View":
+      - cell "Ravi B"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Thomas Benny 0.00 View":
+      - cell "Thomas Benny"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Amelia Brown 0.00 View":
+      - cell "Amelia Brown"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "James Butler 0.00 View":
+      - cell "James Butler"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Charles Carter 0.00 View":
+      - cell "Charles Carter"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Rahul Das 0.00 View":
+      - cell "Rahul Das"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Rahul Das 0.00 View":
+      - cell "Rahul Das"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Rahul Das 0.00 View":
+      - cell "Rahul Das"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Rahul Das 0.00 View":
+      - cell "Rahul Das"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Rahul Das 0.00 View":
+      - cell "Rahul Das"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "John Doe 0.00 View":
+      - cell "John Doe"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "John doe 0.00 View":
+      - cell "John doe"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "John Doe 0.00 View":
+      - cell "John Doe"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "John Doe 0.00 View":
+      - cell "John Doe"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "John Doe 0.00 View":
+      - cell "John Doe"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "savina dulvin 0.00 View":
+      - cell "savina dulvin"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "savina dulvin 0.00 View":
+      - cell "savina dulvin"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "savina dulvin 0.00 View":
+      - cell "savina dulvin"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test Employee 0.00 View":
+      - cell "Test Employee"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test Employee 0.00 View":
+      - cell "Test Employee"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test1787199028327 Employee1787199028327 0.00 View":
+      - cell "Test1787199028327 Employee1787199028327"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test1787199421031 Employee1787199421031 0.00 View":
+      - cell "Test1787199421031 Employee1787199421031"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test1787199563686 Employee1787199563686 0.00 View":
+      - cell "Test1787199563686 Employee1787199563686"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test1787199595594 Employee1787199595594 0.00 View":
+      - cell "Test1787199595594 Employee1787199595594"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test1787199710914 Employee1787199710914 0.00 View":
+      - cell "Test1787199710914 Employee1787199710914"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test1787199767568 Employee1787199767568 0.00 View":
+      - cell "Test1787199767568 Employee1787199767568"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test20260820 Employee20260820 0.00 View":
+      - cell "Test20260820 Employee20260820"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Test Employee437503 0.00 View":
+      - cell "Test Employee437503"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Joseph Evans 0.00 View":
+      - cell "Joseph Evans"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "savi g 0.00 View":
+      - cell "savi g"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Radha Gupta 0.00 View":
+      - cell "Radha Gupta"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Russel Hamilton 0.00 View":
+      - cell "Russel Hamilton"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Rebecca Harmony 0.00 View":
+      - cell "Rebecca Harmony"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "bmrtahvwhibmrtahvwhi hbfqkhjfqbhbfqkhjfqb 0.00 View":
+      - cell "bmrtahvwhibmrtahvwhi hbfqkhjfqbhbfqkhjfqb"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Sagar hgfkag 0.00 View":
+      - cell "Sagar hgfkag"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "hh hh 0.00 View":
+      - cell "hh hh"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "uehwadquzwuehwadquzw hzzdyzwxmwhzzdyzwxmw 0.00 View":
+      - cell "uehwadquzwuehwadquzw hzzdyzwxmwhzzdyzwxmw"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "dhbrukkuzldhbrukkuzl ibuvlwtfsfibuvlwtfsf 0.00 View":
+      - cell "dhbrukkuzldhbrukkuzl ibuvlwtfsfibuvlwtfsf"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Emily Jones 0.00 View":
+      - cell "Emily Jones"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Virat Kohli 0.00 View":
+      - cell "Virat Kohli"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Tristan L 0.00 View":
+      - cell "Tristan L"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "sree latha 0.00 View":
+      - cell "sree latha"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+    - row "Qwerty LName 0.00 View":
+      - cell "Qwerty LName"
+      - cell "0.00"
+      - cell "View":
+        - button "View"
+- navigation "Pagination Navigation":
+  - list:
+    - listitem:
+      - button "1"
+    - listitem:
+      - button "2"
+    - listitem:
+      - button "3"
+    - listitem:
+      - button ""
+- paragraph: OrangeHRM OS 5.9
+- paragraph:
+  - text: © 2005 - 2026
+  - link "OrangeHRM, Inc":
+    - /url: http://www.orangehrm.com
+  - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  270 | 
+  271 |         await timePage
+  272 |           .gotoEmployeeAttendanceRecords();
+  273 | 
+  274 |         await expect(page).toHaveURL(
+  275 |           new RegExp(
+  276 |             `${data.expectedUrlPath}$`
+  277 |           )
+  278 |         );
+  279 | 
+  280 |         await expect(
+  281 |           timePage.attendanceHeading
+  282 |         ).toHaveText(data.pageHeading);
+  283 | 
+  284 |         await expect(
+  285 |           timePage.attendanceEmployeeInput
+  286 |         ).toBeVisible();
+  287 | 
+  288 |         await expect(
+  289 |           timePage.attendanceDateInput
+  290 |         ).toBeVisible();
+  291 | 
+  292 |         await expect(
+  293 |           timePage.attendanceViewButton
+  294 |         ).toBeVisible();
+  295 |       }
+  296 |     );
+  297 | 
+  298 |     test('TC_TIME_172 - Admin should navigate to the Project Reports page @smoke @navigation @report @regression',
+  299 |       async ({
+  300 |         page,
+  301 |         navigationPage,
+  302 |         timePage,
+  303 |       }) => {
+  304 |         const data =
+  305 |           timeData.TC_TIME_172;
+  306 | 
+  307 |         await navigationPage.gotoTime();
+  308 | 
+  309 |         await timePage.gotoProjectReports();
+  310 | 
+  311 |         await expect(page).toHaveURL(
+  312 |           new RegExp(
+  313 |             `${data.expectedUrlPath}$`
+  314 |           )
+  315 |         );
+  316 | 
+  317 |         await expect(
+  318 |           timePage.projectReportHeading
+  319 |         ).toHaveText(data.pageHeading);
+  320 | 
+  321 |         await expect(
+  322 |           timePage.projectNameInput
+  323 |         ).toBeVisible();
+  324 | 
+  325 |         await expect(
+  326 |           timePage.projectFromDateInput
+  327 |         ).toBeVisible();
+  328 | 
+  329 |         await expect(
+  330 |           timePage.projectToDateInput
+  331 |         ).toBeVisible();
+  332 | 
+  333 |         await expect(
+  334 |           timePage.projectReportViewButton
+  335 |         ).toBeVisible();
+  336 |       }
+  337 |     );
+  338 | 
+  339 |  test.only('TC_TIME_173 - Required validation should appear when viewing attendance without selecting an employee @negative @validation @attendance @regression',
+  340 |   async ({ page, navigationPage, timePage }) => {
+  341 |     // Read validation data from JSON.
+  342 |       const data =timeData.TC_TIME_173;
+  343 |         await navigationPage.gotoTime();
+  344 |          // Navigate to Time → Attendance → Employee Records.
+  345 |         await timePage.gotoEmployeeAttendanceRecords();
+  346 |     // Verify Employee Attendance Records page is displayed.
+  347 |     // await expect(timePage.attendanceHeading).toBeVisible();
+  348 | 
+  349 |     await expect(
+  350 |       timePage.attendanceEmployeeInput
+  351 |     ).toBeVisible();
+  352 |     // Leave Employee Name empty.
+  353 |       await timePage.attendanceEmployeeInput.fill('');
+  354 |     // Keep the default attendance date.
+  355 |      const defaultDate =
+  356 |       await timePage
+  357 |         .attendanceDateInput
+  358 |         .inputValue();
+  359 | 
+  360 |     expect(defaultDate).not.toBe('');
+  361 | 
+  362 |     const initialRowCount =
+  363 |       await timePage.attendanceRows.count();
+  364 | 
+  365 |     // Click View.
+  366 |      await timePage.attendanceViewButton.click();
+  367 |     // Verify Required validation appears
+  368 |      await expect(
+  369 |       timePage.attendanceEmployeeValidation
+> 370 |     ).toBeVisible();
+      |       ^ Error: expect(locator).toBeVisible() failed
+  371 | 
+  372 |     // below Employee Name.
+  373 |     await expect(timePage.attendanceEmployeeValidation).toHaveText(data.requiredMessage);
+  374 |     // Verify Employee Name remains empty.
+  375 |      await expect(timePage.attendanceEmployeeInput).toHaveValue('');
+  376 |     // Verify the user remains on the
+  377 |     await expect(page).toHaveURL(
+  378 |       new RegExp(
+  379 |         `${data.expectedUrlPath}$`
+  380 |       )
+  381 |     );
+  382 | 
+  383 |     // Invalid submission must not replace the records already displayed.
+  384 |     await expect(
+  385 |       timePage.attendanceRows
+  386 |     ).toHaveCount(initialRowCount);
+  387 |   }
+  388 | );
+  389 | 
+  390 | test.only(
+  391 |   'TC_TIME_174 - Invalid validation should appear for a nonexistent employee in Attendance Records @negative @validation @autocomplete @attendance @regression',
+  392 |   async ({
+  393 |     page,
+  394 |     navigationPage,
+  395 |     timePage,
+  396 |   }) => {
+  397 |     const data =
+  398 |       timeData.TC_TIME_174;
+  399 | 
+  400 |     const invalidEmployeeName =
+  401 |       `${data.employeeNamePrefix}${Date.now()}`;
+  402 | 
+  403 |     await navigationPage.gotoTime();
+  404 | 
+  405 |     await timePage
+  406 |       .gotoEmployeeAttendanceRecords();
+  407 | 
+  408 |     // Store the default date before changing
+  409 |     // the Employee Name.
+  410 |     const defaultDate =
+  411 |       await timePage
+  412 |         .attendanceDateInput
+  413 |         .inputValue();
+  414 | 
+  415 |     expect(defaultDate).not.toBe('');
+  416 | 
+  417 |     const initialRowCount =
+  418 |       await timePage.attendanceRows.count();
+  419 | 
+  420 |     await timePage
+  421 |       .attendanceEmployeeInput
+  422 |       .fill(invalidEmployeeName);
+  423 | 
+  424 |     await expect(
+  425 |       timePage.attendanceAutocompleteDropdown
+  426 |     ).toBeVisible({
+  427 |       timeout: 15_000,
+  428 |     });
+  429 | 
+  430 |     await expect(
+  431 |       timePage
+  432 |         .attendanceAutocompleteNoRecords
+  433 |     ).toHaveText(
+  434 |       data.noRecordsMessage
+  435 |     );
+  436 | 
+  437 |     // Close autocomplete without selecting.
+  438 |     await timePage
+  439 |       .attendanceEmployeeInput
+  440 |       .press('Escape');
+  441 | 
+  442 |     await expect(
+  443 |       timePage.attendanceAutocompleteDropdown
+  444 |     ).toBeHidden();
+  445 | 
+  446 |     // Click only the form-level View button.
+  447 |     await timePage
+  448 |       .attendanceViewButton
+  449 |       .click();
+  450 | 
+  451 |     await expect(
+  452 |       timePage.attendanceEmployeeValidation
+  453 |     ).toBeVisible();
+  454 | 
+  455 |     await expect(
+  456 |       timePage.attendanceEmployeeValidation
+  457 |     ).toHaveText(
+  458 |       data.invalidMessage
+  459 |     );
+  460 | 
+  461 |     await expect(
+  462 |       timePage.attendanceEmployeeInput
+  463 |     ).toHaveValue(
+  464 |       invalidEmployeeName
+  465 |     );
+  466 | 
+  467 |     await expect(
+  468 |       timePage.attendanceDateInput
+  469 |     ).toHaveValue(defaultDate);
+  470 | 
+```

@@ -5,12 +5,20 @@ export class NavigationPage {
   readonly PIMLink: Locator;
   readonly adminLink: Locator;
   readonly recruitmentLink:Locator;
+  readonly timeMenu: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.PIMLink = page.getByRole("link", { name: "PIM", exact: true });
     this.adminLink = page.getByRole("link", { name: "Admin", exact: true });
     this.recruitmentLink=page.getByRole('link', { name: 'Recruitment' });
+    this.timeMenu = page.getByRole(
+  'link',
+  {
+    name: 'Time',
+    exact: true,
+  }
+);
   }
 
   async gotoPIM(): Promise<void> {
@@ -63,6 +71,17 @@ export class NavigationPage {
         /recruitment\/viewCandidates/
       );
     }
+}
+
+async gotoTime(): Promise<void> {
+  await this.timeMenu.click();
+
+  await this.page.waitForURL(
+    /\/time\//,
+    {
+      timeout: 30_000,
+    }
+  );
 }
 
 

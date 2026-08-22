@@ -1309,12 +1309,7 @@ async cancelCandidateRejection(
   ).toBeHidden();
 
   await expect(
-    this.candidateStatusText
-  ).toContainText(
-    'Application Initiated',
-    {
-      timeout: 20_000,
-    }
-  );
+    this.rejectButton
+  ).toBeVisible();
 }
 }

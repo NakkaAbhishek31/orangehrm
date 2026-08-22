@@ -1,0 +1,161 @@
+{
+  "TC_TIME_166": {
+    "pageHeading": "Select Employee",
+    "expectedUrlPath": "/time/viewEmployeeTimesheet"
+  },
+  "TC_TIME_167": {
+    "requiredMessage": "Required",
+    "expectedUrlPath": "/time/viewEmployeeTimesheet"
+  },
+  "TC_TIME_168": {
+    "employeeNamePrefix": "UnknownEmployee",
+    "noRecordsMessage": "No Records Found",
+    "invalidMessage": "Invalid",
+    "expectedUrlPath": "/time/viewEmployeeTimesheet"
+  },
+  "TC_TIME_169": {
+    "firstNamePrefix": "TimesheetEmployee",
+    "middleName": "Test",
+    "lastName": "User"
+  },
+  "TC_TIME_170": {
+    "expectedUrlPath": "/time/viewMyTimesheet"
+  },
+  "TC_TIME_171": {
+    "pageHeading": "Employee Attendance Records",
+    "expectedUrlPath": "/attendance/viewAttendanceRecord"
+  },
+  "TC_TIME_172": {
+    "pageHeading": "Project Report",
+    "expectedUrlPath": "/time/displayProjectReportCriteria"
+  },
+  "TC_TIME_173": {
+  "requiredMessage": "Required",
+  "expectedUrlPath": "/attendance/viewAttendanceRecord"
+},
+"TC_TIME_174": {
+  "employeeNamePrefix": "UnknownAttendanceEmployee",
+  "noRecordsMessage": "No Records Found",
+  "invalidMessage": "Invalid",
+  "expectedUrlPath": "/attendance/viewAttendanceRecord"
+},
+"TC_TIME_175": {
+  "firstNamePrefix": "Attendance",
+  "middleName": "Test",
+  "lastName": "User",
+  "expectedUrlPath": "/attendance/viewAttendanceRecord"
+},
+"TC_TIME_176": {
+  "firstNamePrefix": "AttendanceDate",
+  "middleName": "Test",
+  "lastName": "User",
+  "attendanceDaysOffset": -7,
+  "expectedUrlPath": "/attendance/viewAttendanceRecord"
+},
+"TC_TIME_177": {
+  "expectedUrlPath": "/attendance/viewMyAttendanceRecord"
+},
+"TC_TIME_178": {
+  "attendanceDaysOffset": -7,
+  "expectedUrlPath": "/attendance/viewMyAttendanceRecord"
+},
+"TC_TIME_179": {
+  "pageHeading": "Punch In",
+  "expectedUrlPath": "/attendance/punchIn"
+},
+"TC_TIME_180": {
+  "punchInNote": "Playwright automated Punch In",
+  "punchOutNote": "Playwright automated Punch Out",
+  "cleanupPunchOutNote": "Restoring attendance state before test",
+  "successMessage": "Successfully Saved",
+  "expectedUrlPath": "/attendance/punchIn"
+},
+"TC_TIME_181": {
+  "pageHeading": "Attendance Summary",
+  "expectedUrlPath": "/time/displayAttendanceSummaryReportCriteria"
+},
+"TC_TIME_182": {
+  "employeeNamePrefix": "UnknownSummaryEmployee",
+  "noRecordsMessage": "No Records Found",
+  "invalidMessage": "Invalid"
+},
+"TC_TIME_183": {
+  "pageHeading": "Employee Report",
+  "expectedUrlPath": "/time/displayEmployeeReportCriteria"
+},
+"TC_TIME_184": {
+  "employeeNamePrefix": "UnknownReportEmployee",
+  "noRecordsMessage": "No Records Found",
+  "invalidMessage": "Invalid"
+},
+"TC_TIME_185": {
+  "pageHeading": "Customers",
+  "expectedUrlPath": "/time/viewCustomers"
+},
+"TC_TIME_186": {
+  "requiredMessage": "Required",
+  "addCustomerUrlPath": "/time/addCustomer",
+  "customersUrlPath": "/time/viewCustomers"
+},
+"TC_TIME_187": {
+  "customerNamePrefix": "CancelCustomer",
+  "description": "Customer creation cancellation test",
+  "customersUrlPath": "/time/viewCustomers"
+},
+"TC_TIME_188": {
+  "customerNamePrefix": "AutoCustomer",
+  "description": "Customer created through Playwright automation",
+  "successMessage": "Successfully Saved"
+},
+"TC_TIME_189": {
+  "pageHeading": "Projects",
+  "expectedUrlPath": "/time/viewProjects"
+},
+"TC_TIME_190": {
+  "requiredMessage": "Required",
+  "requiredCount": 2,
+  "addProjectUrlPath": "/time/saveProject",
+  "projectsUrlPath": "/time/viewProjects"
+},
+"TC_TIME_191": {
+  "projectNamePrefix": "CancelProject",
+  "projectsUrlPath": "/time/viewProjects"
+},
+"TC_TIME_192": {
+  "customerNamePrefix": "ProjectCustomer",
+  "projectNamePrefix": "AutoProject",
+  "customerDescription": "Customer created for a project test",
+  "projectDescription": "Project created using Playwright",
+  "projectAdminSearchText": "a"
+},
+"TC_TIME_193": {
+  "customerNamePrefix": "SearchCustomer",
+  "projectNamePrefix": "SearchProject",
+  "customerDescription": "Customer for project search",
+  "projectAdminSearchText": "a"
+},
+"TC_TIME_194": {
+  "customerNamePrefix": "FilterCustomer",
+  "projectNamePrefix": "FilterProject",
+  "customerDescription": "Customer filter test",
+  "projectAdminSearchText": "a"
+},
+"TC_TIME_195": {
+  "customerNamePrefix": "ResetCustomer",
+  "projectNamePrefix": "ResetProject",
+  "projectsUrlPath": "/time/viewProjects"
+},
+"TC_TIME_196": {
+  "customerNamePrefix": "UnknownCustomer",
+  "noRecordsMessage": "No Records Found",
+  "invalidMessage": "Invalid",
+  "projectsUrlPath": "/time/viewProjects"
+},
+"TC_TIME_197": {
+  "customerNamePrefix": "DeleteCustomer",
+  "projectNamePrefix": "DeleteProject",
+  "customerDescription": "Customer for deleting project",
+  "projectAdminSearchText": "a"
+}
+
+}
