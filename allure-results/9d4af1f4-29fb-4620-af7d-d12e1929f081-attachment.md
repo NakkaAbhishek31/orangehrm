@@ -1,0 +1,85 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Time\time.spec.ts >> Time - Timesheets, Attendance and Reports >> TC_TIME_200 - Duplicate validation should appear for an existing project name under the same customer @negative @validation @project-info @regression
+- Location: tests\Time\time.spec.ts:1756:6
+
+# Error details
+
+```
+TimeoutError: page.goto: Timeout 60000ms exceeded.
+Call log:
+  - navigating to "https://opensource-demo.orangehrmlive.com/", waiting until "domcontentloaded"
+
+```
+
+# Test source
+
+```ts
+  1  | import { Locator, Page, expect } from "@playwright/test";
+  2  | 
+  3  | export class LoginPage {
+  4  |   readonly page: Page;
+  5  |   readonly usernameInput: Locator;
+  6  |   readonly passwordInput: Locator;
+  7  |   readonly loginButton: Locator;
+  8  |   readonly profileMenu: Locator;
+  9  |   readonly errorMessage: Locator;
+  10 |   readonly validationMessages: Locator;
+  11 |   readonly forgotPasswordButton: Locator;
+  12 | 
+  13 |   constructor(page: Page) {
+  14 |     this.page = page;
+  15 |     this.usernameInput = page.getByRole("textbox", { name: "Username" });
+  16 |     this.passwordInput = page.getByRole("textbox", { name: "Password" });
+  17 |     this.loginButton = page.getByRole("button", { name: "Login" });
+  18 |     this.profileMenu = page.locator("li.oxd-userdropdown");
+  19 |     this.errorMessage = page.getByText(
+  20 |       /^(Invalid credentials|Account disabled)$/,
+  21 |     );
+  22 |     this.validationMessages = page.locator(".oxd-input-field-error-message");
+  23 |     this.forgotPasswordButton = page.getByText("Forgot your password?", {
+  24 |       exact: true,
+  25 |     });
+  26 |   }
+  27 | 
+  28 |   async visitPage(): Promise<void> {
+> 29 |     await this.page.goto("/", {
+     |                     ^ TimeoutError: page.goto: Timeout 60000ms exceeded.
+  30 |       waitUntil: "domcontentloaded",
+  31 |       timeout: 60_000,
+  32 |     });
+  33 |   }
+  34 | 
+  35 |   async login(Username: string, Password: string) {
+  36 |     await this.usernameInput.fill(Username);
+  37 |     await this.passwordInput.fill(Password);
+  38 |     await this.loginButton.click();
+  39 |   }
+  40 | 
+  41 |   async verifyLoginSuccessful(): Promise<void> {
+  42 |     await expect(this.page).toHaveURL(
+  43 |       /\/(dashboard\/index|pim\/viewPersonalDetails\/empNumber\/\d+)/,
+  44 |       { timeout: 20_000 },
+  45 |     );
+  46 |     await expect(this.profileMenu).toBeVisible({ timeout: 20_000 });
+  47 |   }
+  48 | 
+  49 |   async verifyLoginUnsuccessful(): Promise<void> {
+  50 |     await expect(this.page).toHaveURL(/auth\/login/);
+  51 |     await expect(this.profileMenu).not.toBeVisible();
+  52 |     await expect(this.usernameInput).toBeVisible();
+  53 |     await expect(this.passwordInput).toBeVisible();
+  54 |     await expect(this.loginButton).toBeVisible();
+  55 |   }
+  56 |   async clickOnForgotPassword(): Promise<void> {
+  57 |     await this.forgotPasswordButton.click();
+  58 |   }
+  59 | }
+  60 | 
+```

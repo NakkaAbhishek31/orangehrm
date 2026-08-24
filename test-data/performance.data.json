@@ -1,0 +1,38 @@
+{
+  "TC_PERFORMANCE_201": {
+    "expectedUrlPath": "/performance/searchEvaluatePerformanceReview",
+    "pageHeading": "Employee Reviews"
+  },
+  
+  "TC_PERFORMANCE_202": {
+    "requiredMessage": "Required",
+    "expectedUrlPath": "/performance/searchEvaluatePerformanceReview"
+  },
+  "TC_PERFORMANCE_203": {
+    "employeeNamePrefix": "UnknownEmployee",
+    "noRecordsMessage": "No Records Found",
+    "invalidMessage": "Invalid",
+    "expectedUrlPath": "/performance/searchEvaluatePerformanceReview"
+  },
+  "TC_PERFORMANCE_204": {
+    "firstNamePrefix": "ReviewEmployee",
+    "middleName": "Test",
+    "lastName": "User"
+  },
+  "TC_PERFORMANCE_205": {
+    "employeeNamePrefix": "ResetEmployee",
+    "jobTitle": "Account Assistant",
+    "reviewStatus": "Activated",
+    "fromDate": "2026-01-01",
+    "toDate": "2026-12-31",
+    "defaultDropdownValue": "-- Select --"
+  },
+  "TC_PERFORMANCE_206": {
+    "jobTitle": "Account Assistant",
+    "defaultDropdownValue": "-- Select --"
+  },
+  "TC_PERFORMANCE_207": {
+    "reviewStatus": "Activated",
+    "defaultDropdownValue": "-- Select --"
+  }
+}

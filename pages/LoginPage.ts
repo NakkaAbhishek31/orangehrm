@@ -26,10 +26,19 @@ export class LoginPage {
   }
 
   async visitPage(): Promise<void> {
-    await this.page.goto("/", {
-      waitUntil: "domcontentloaded",
-      timeout: 60_000,
-    });
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        await this.page.goto("/", {
+          waitUntil: "domcontentloaded",
+          timeout: 60_000,
+        });
+        return;
+      } catch (error) {
+        if (attempt === 2) {
+          throw error;
+        }
+      }
+    }
   }
 
   async login(Username: string, Password: string) {

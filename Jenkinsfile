@@ -32,11 +32,9 @@ pipeline {
         choice(
             name: 'WORKERS',
             choices: [
-                '1',
-                '2',
-                '4'
+                '1'
             ],
-            description: 'Number of Playwright workers'
+            description: 'Serialized for the shared OrangeHRM demo'
         )
     }
 
@@ -199,8 +197,8 @@ pipeline {
                         'call npx.cmd playwright test ' +
                         "\"${testTarget}\" " +
                         "--project=${params.BROWSER} " +
-                        "--workers=${params.WORKERS} " +
-                        '--retries=0'
+                        '--workers=1 ' +
+                        '--retries=1'
 
                     if (testName) {
                         testCommand += " --grep \"${testName}\""

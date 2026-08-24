@@ -142,7 +142,7 @@ readonly projectCancelButton: Locator;
 readonly projectRows: Locator;
 readonly projectNoRecords: Locator;
 readonly timeSuccessToast: Locator;
-
+readonly cancelDeleteButton: Locator;
 
   readonly visibleAutocompleteDropdown: Locator;
   readonly autocompleteOptions: Locator;
@@ -531,12 +531,10 @@ this.punchActionButton =
     exact: true,
   });
 
-this.customersHeading = page
-  .locator('.oxd-text--h6')
-  .filter({
-    hasText: /^Customers$/,
-  })
-  .first();
+this.customersHeading = page.getByRole('heading', {
+  name: 'Customers',
+  exact: true,
+}).first();
 
 this.addCustomerButton = page
   .getByRole('button', {
@@ -763,6 +761,15 @@ this.projectsHeading = page.getByRole('heading', {
         }
       );
 
+    this.cancelDeleteButton =
+      this.confirmationDialog.getByRole(
+        'button',
+        {
+          name: 'No, Cancel',
+          exact: true,
+        }
+      );
+
     this.timeSuccessToast = page
       .locator('.oxd-toast-content-text')
       .filter({
@@ -915,8 +922,12 @@ this.projectsHeading = page.getByRole('heading', {
     }
   );
 
+  await expect(this.loadingSpinner).toBeHidden({
+    timeout: 30_000,
+  });
+
   await expect(
-    this.customersHeading
+    this.addCustomerButton
   ).toBeVisible();
 }
 async gotoProjects(): Promise<void> {
@@ -1320,6 +1331,10 @@ async createProject(
 async searchProject(
   filters: SearchProjectFilters
 ): Promise<void> {
+  await expect(this.loadingSpinner).toBeHidden({
+    timeout: 30_000,
+  });
+
   if (filters.customerName !== undefined) {
     await this.selectAutocompleteOption(
       this.projectCustomerFilterInput,
@@ -1329,18 +1344,25 @@ async searchProject(
   }
 
   if (filters.projectName !== undefined) {
-    await this.projectNameFilterInput.fill(
+    await this.selectAutocompleteOption(
+      this.projectNameFilterInput,
+      filters.projectName,
       filters.projectName
     );
   }
 
   const responsePromise =
     this.page.waitForResponse(
-      response =>
-        response.url().includes(
-          '/api/v2/time/projects'
-        ) &&
-        response.request().method() === 'GET',
+      response => {
+        if (
+          !response.url().includes('/api/v2/time/projects') ||
+          response.request().method() !== 'GET'
+        ) {
+          return false;
+        }
+
+        return true;
+      },
       {
         timeout: 30_000,
       }
@@ -1348,9 +1370,16 @@ async searchProject(
 
   await this.projectSearchButton.click();
 
-  await responsePromise;
+  const response = await responsePromise;
 
-  await expect(this.loadingSpinner).toBeHidden();
+  expect(
+    response.ok(),
+    `Project search failed: ${response.status()}`
+  ).toBeTruthy();
+
+  await expect(this.loadingSpinner).toBeHidden({
+    timeout: 30_000,
+  });
 }
 
 async verifyProjectRow(
@@ -1384,8 +1413,16 @@ async verifyProjectRow(
   }
 
   if (details.projectAdmin !== undefined) {
+    const adminNameParts = details.projectAdmin
+      .trim()
+      .split(/\s+/);
+    const expectedAdminPattern = new RegExp(
+      `${adminNameParts[0]}.*${adminNameParts[adminNameParts.length - 1]}`,
+      'i'
+    );
+
     await expect(cells.nth(3)).toContainText(
-      details.projectAdmin
+      expectedAdminPattern
     );
   }
 

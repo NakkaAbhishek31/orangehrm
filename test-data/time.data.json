@@ -156,6 +156,32 @@
   "projectNamePrefix": "DeleteProject",
   "customerDescription": "Customer for deleting project",
   "projectAdminSearchText": "a"
-}
+},
 
+  "TC_TIME_198": {
+    "customerNamePrefix": "CancelDeleteCustomer",
+    "projectNamePrefix": "CancelDeleteProject",
+    "customerDescription": "Customer for cancel project deletion",
+    "projectDescription": "Project deletion should be cancelled",
+    "projectAdminSearchText": "a"
+  },
+  "TC_TIME_199": {
+    "customerNamePrefix": "EditCustomer",
+    "projectNamePrefix": "EditProject",
+    "updatedProjectNamePrefix": "UpdatedProject",
+    "customerDescription": "Customer for editing project",
+    "projectDescription": "Original project description",
+    "updatedDescription": "Updated project description",
+    "projectAdminSearchText": "a",
+    "successMessage": "Successfully Updated"
+  },
+  "TC_TIME_200": {
+    "customerNamePrefix": "DuplicateCustomer",
+    "projectNamePrefix": "DuplicateProject",
+    "customerDescription": "Customer for duplicate project validation",
+    "projectDescription": "Original project",
+    "projectAdminSearchText": "a",
+    "duplicateMessage": "Already exists",
+    "addProjectUrlPath": "/time/saveProject"
+  }
 }

@@ -1,10 +1,7 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
-
 import loginData from "../../test-data/login.data.json";
 import timeData from "../../test-data/time.data.json";
-import { LeavePage } from "../../pages/LeavesPage";
-import { TimePage } from "../../pages/TimePage";
 const unique = () => `${Date.now()}${Math.floor(Math.random() * 1000)}`;
 const employeeFrom = (
   d: { firstNamePrefix: string; middleName: string; lastName: string },
@@ -791,27 +788,32 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
       data.noRecordsMessage,
     );
     // Close autocomplete.
-     
-  await timePage.employeeAutocompleteNoRecords.press('Escape');
+
+    await timePage.employeeAutocompleteNoRecords.press("Escape");
 
     // Click View.
-     await timePage.summaryViewButton.click();
+    await timePage.summaryViewButton.click();
     // Verify Invalid validation.
-    await expect(timePage.summaryEmployeeValidation).toHaveText(data.invalidMessage)
+    await expect(timePage.summaryEmployeeValidation).toHaveText(
+      data.invalidMessage,
+    );
     // Verify entered name remains displayed.
     await expect(timePage.summaryEmployeeInput).toHaveValue(employeeName);
   });
 
-  test('TC_TIME_183 - Admin should navigate to the Employee Report page @smoke @navigation @report @regression',
-  async ({ page, navigationPage, timePage }) => {
-        const data = timeData.TC_TIME_183;
+  test("TC_TIME_183 - Admin should navigate to the Employee Report page @smoke @navigation @report @regression", async ({
+    page,
+    navigationPage,
+    timePage,
+  }) => {
+    const data = timeData.TC_TIME_183;
     // Navigate to Time.
     // Open Reports.
     // Click Employee Reports.
-      await navigationPage.gotoTime();
+    await navigationPage.gotoTime();
     await timePage.gotoEmployeeReport();
     // Verify URL and heading.
-     await expect(page).toHaveURL(new RegExp(data.expectedUrlPath));
+    await expect(page).toHaveURL(new RegExp(data.expectedUrlPath));
     await expect(timePage.employeeReportHeading).toBeVisible();
     // Verify Employee Name input.
     await expect(timePage.reportEmployeeInput).toBeVisible();
@@ -820,10 +822,12 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
     await expect(timePage.reportToDateInput).toBeVisible();
     // Verify View button.
     await expect(timePage.employeeReportViewButton).toBeVisible();
-  }
-);
-test('TC_TIME_184 - Invalid validation should appear for a nonexistent employee in Employee Report @negative @validation @autocomplete @report @regression',
-  async ({ page, navigationPage, timePage }) => {
+  });
+  test("TC_TIME_184 - Invalid validation should appear for a nonexistent employee in Employee Report @negative @validation @autocomplete @report @regression", async ({
+    page,
+    navigationPage,
+    timePage,
+  }) => {
     const data = timeData.TC_TIME_184;
     // Generate a unique nonexistent employee name.
     const employeeName = `${data.employeeNamePrefix}${Date.now()}$`;
@@ -850,11 +854,11 @@ test('TC_TIME_184 - Invalid validation should appear for a nonexistent employee 
       data.noRecordsMessage,
     );
     // Close autocomplete.
-     
-    await timePage.reportEmployeeInput.press('Escape');
+
+    await timePage.reportEmployeeInput.press("Escape");
 
     // Click View.
-     await timePage.employeeReportViewButton.click();
+    await timePage.employeeReportViewButton.click();
     // Verify Invalid validation.
     await expect(timePage.reportEmployeeValidation).toHaveText(
       data.invalidMessage,
@@ -862,69 +866,46 @@ test('TC_TIME_184 - Invalid validation should appear for a nonexistent employee 
     // Verify entered name remains displayed.
     await expect(timePage.reportEmployeeInput).toHaveValue(employeeName);
   });
-test(
-  'TC_TIME_185 - Admin should navigate to the Customers page @smoke @navigation @project-info @regression',
-  async ({
+  test("TC_TIME_185 - Admin should navigate to the Customers page @smoke @navigation @project-info @regression", async ({
     page,
     navigationPage,
     timePage,
   }) => {
-    const data =
-      timeData.TC_TIME_185;
+    const data = timeData.TC_TIME_185;
 
     await navigationPage.gotoTime();
 
     await timePage.gotoCustomers();
 
-    await expect(page).toHaveURL(
-      new RegExp(
-        `${data.expectedUrlPath}$`
-      )
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.expectedUrlPath}$`));
+
+    await expect(timePage.customersHeading).toHaveText(data.pageHeading);
+
+    await expect(timePage.addCustomerButton).toBeVisible();
+
+    await expect(timePage.customersTable).toBeVisible();
 
     await expect(
-      timePage.customersHeading
-    ).toHaveText(data.pageHeading);
-
-    await expect(
-      timePage.addCustomerButton
-    ).toBeVisible();
-
-    await expect(
-      timePage.customersTable
-    ).toBeVisible();
-
-    await expect(
-      timePage.customerRows
-        .first()
-        .or(timePage.customerNoRecords)
+      timePage.customerRows.first().or(timePage.customerNoRecords),
     ).toBeVisible({
       timeout: 20_000,
     });
 
-    const customerCount =
-      await timePage.customerRows.count();
+    const customerCount = await timePage.customerRows.count();
 
     if (customerCount > 0) {
-      await expect(
-        timePage.customerRows.first()
-      ).toBeVisible();
+      await expect(timePage.customerRows.first()).toBeVisible();
     } else {
-      await expect(
-        timePage.customerNoRecords
-      ).toBeVisible();
+      await expect(timePage.customerNoRecords).toBeVisible();
     }
-  }
-);
+  });
 
-test( 'TC_TIME_186 - Required validation should appear when adding an empty customer @negative @validation @project-info @regression',
-  async ({
+  test("TC_TIME_186 - Required validation should appear when adding an empty customer @negative @validation @project-info @regression", async ({
     page,
     navigationPage,
     timePage,
   }) => {
-    const data =
-      timeData.TC_TIME_186;
+    const data = timeData.TC_TIME_186;
 
     await navigationPage.gotoTime();
 
@@ -932,69 +913,41 @@ test( 'TC_TIME_186 - Required validation should appear when adding an empty cust
 
     await timePage.addCustomerButton.click();
 
-    await expect(page).toHaveURL(
-      new RegExp(
-        `${data.addCustomerUrlPath}$`
-      )
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.addCustomerUrlPath}$`));
 
-    await expect(
-      timePage.addCustomerHeading
-    ).toBeVisible();
+    await expect(timePage.addCustomerHeading).toBeVisible();
 
     // Leave Customer Name empty.
-    await expect(
-      timePage.customerNameInput
-    ).toHaveValue('');
+    await expect(timePage.customerNameInput).toHaveValue("");
 
     await timePage.customerSaveButton.click();
 
-    await expect(
-      timePage.customerNameValidation
-    ).toBeVisible();
+    await expect(timePage.customerNameValidation).toBeVisible();
 
-    await expect(
-      timePage.customerNameValidation
-    ).toHaveText(
-      data.requiredMessage
+    await expect(timePage.customerNameValidation).toHaveText(
+      data.requiredMessage,
     );
 
-    await expect(
-      timePage.customerNameInput
-    ).toHaveValue('');
+    await expect(timePage.customerNameInput).toHaveValue("");
 
     // Invalid submission remains on Add Customer.
-    await expect(page).toHaveURL(
-      new RegExp(
-        `${data.addCustomerUrlPath}$`
-      )
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.addCustomerUrlPath}$`));
 
     await timePage.customerCancelButton.click();
 
-    await expect(page).toHaveURL(
-      new RegExp(
-        `${data.customersUrlPath}$`
-      )
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.customersUrlPath}$`));
 
-    await expect(
-      timePage.customersHeading
-    ).toBeVisible();
-  }
-);
+    await expect(timePage.customersHeading).toBeVisible();
+  });
 
-test('TC_TIME_187 - Admin should cancel adding a new customer @negative @cancel @project-info @regression',
-  async ({
+  test("TC_TIME_187 - Admin should cancel adding a new customer @negative @cancel @project-info @regression", async ({
     page,
     navigationPage,
     timePage,
   }) => {
-    const data =
-      timeData.TC_TIME_187;
+    const data = timeData.TC_TIME_187;
 
-    const customerName =
-      `${data.customerNamePrefix}${Date.now()}`;
+    const customerName = `${data.customerNamePrefix}${Date.now()}`;
 
     await navigationPage.gotoTime();
 
@@ -1002,72 +955,45 @@ test('TC_TIME_187 - Admin should cancel adding a new customer @negative @cancel 
 
     await timePage.addCustomerButton.click();
 
-    await expect(
-      timePage.addCustomerHeading
-    ).toBeVisible();
+    await expect(timePage.addCustomerHeading).toBeVisible();
 
-    await timePage.customerNameInput.fill(
-      customerName
+    await timePage.customerNameInput.fill(customerName);
+
+    await timePage.customerDescriptionInput.fill(data.description);
+
+    await expect(timePage.customerNameInput).toHaveValue(customerName);
+
+    await expect(timePage.customerDescriptionInput).toHaveValue(
+      data.description,
     );
-
-    await timePage
-      .customerDescriptionInput
-      .fill(data.description);
-
-    await expect(
-      timePage.customerNameInput
-    ).toHaveValue(customerName);
-
-    await expect(
-      timePage.customerDescriptionInput
-    ).toHaveValue(data.description);
 
     // Cancel without saving.
     await timePage.customerCancelButton.click();
 
-    await expect(page).toHaveURL(
-      new RegExp(
-        `${data.customersUrlPath}$`
-      )
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.customersUrlPath}$`));
 
-    await expect(
-      timePage.customersHeading
-    ).toBeVisible();
+    await expect(timePage.customersHeading).toBeVisible();
 
     // Verify the cancelled customer is not
     // present in the current customer list.
-    const cancelledCustomerRow =
-      timePage.customerRows.filter({
-        has: page
-          .locator('.oxd-table-cell')
-          .nth(1)
-          .getByText(customerName, {
-            exact: true,
-          }),
-      });
+    const cancelledCustomerRow = timePage.customerRows.filter({
+      has: page.locator(".oxd-table-cell").nth(1).getByText(customerName, {
+        exact: true,
+      }),
+    });
 
-    await expect(
-      cancelledCustomerRow
-    ).toHaveCount(0);
+    await expect(cancelledCustomerRow).toHaveCount(0);
 
-    await expect(
-      timePage.timeSuccessToast
-    ).not.toBeVisible();
-  }
-);
-test(
-  'TC_TIME_188 - Admin should add a new customer successfully @positive @create @project-info @regression',
-  async ({
+    await expect(timePage.timeSuccessToast).not.toBeVisible();
+  });
+  test("TC_TIME_188 - Admin should add a new customer successfully @positive @create @project-info @regression", async ({
     page,
     navigationPage,
     timePage,
   }) => {
-    const data =
-      timeData.TC_TIME_188;
+    const data = timeData.TC_TIME_188;
 
-    const customerName =
-      `${data.customerNamePrefix}${Date.now()}`;
+    const customerName = `${data.customerNamePrefix}${Date.now()}`;
 
     await navigationPage.gotoTime();
 
@@ -1075,193 +1001,131 @@ test(
 
     await timePage.addCustomerButton.click();
 
-    await expect(
-      timePage.addCustomerHeading
-    ).toBeVisible();
+    await expect(timePage.addCustomerHeading).toBeVisible();
 
-    await timePage.customerNameInput.fill(
-      customerName
+    await timePage.customerNameInput.fill(customerName);
+
+    await timePage.customerDescriptionInput.fill(data.description);
+
+    const createResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/time/customers") &&
+        response.request().method() === "POST",
+      {
+        timeout: 30_000,
+      },
     );
 
-    await timePage
-      .customerDescriptionInput
-      .fill(data.description);
-
-    const createResponsePromise =
-      page.waitForResponse(
-        response =>
-          response.url().includes(
-            '/api/v2/time/customers'
-          ) &&
-          response.request().method() === 'POST',
-        {
-          timeout: 30_000,
-        }
-      );
-
-    const saveToastPromise =
-      timePage.timeSuccessToast.waitFor({
-        state: 'visible',
-        timeout: 15_000,
-      });
+    const saveToastPromise = timePage.timeSuccessToast.waitFor({
+      state: "visible",
+      timeout: 15_000,
+    });
 
     await timePage.customerSaveButton.click();
 
-    const createResponse =
-      await createResponsePromise;
+    const createResponse = await createResponsePromise;
 
     await saveToastPromise;
 
-    const responseBody =
-      await createResponse.text();
+    const responseBody = await createResponse.text();
 
     expect(
       createResponse.ok(),
-      `Customer creation failed with ${createResponse.status()}: ${responseBody}`
+      `Customer creation failed with ${createResponse.status()}: ${responseBody}`,
     ).toBeTruthy();
 
-    await expect(page).toHaveURL(
-      /\/time\/viewCustomers$/
-    );
+    await expect(page).toHaveURL(/\/time\/viewCustomers$/);
 
-    const createdCustomerRow =
-      timePage.customerRows.filter({
-        has: page
-          .locator('.oxd-table-cell')
-          .nth(1)
-          .getByText(customerName, {
-            exact: true,
-          }),
-      });
+    const createdCustomerRow = timePage.customerRows.filter({
+      has: page.locator(".oxd-table-cell").nth(1).getByText(customerName, {
+        exact: true,
+      }),
+    });
 
-    await expect(
-      createdCustomerRow
-    ).toHaveCount(1, {
+    await expect(createdCustomerRow).toHaveCount(1, {
       timeout: 20_000,
     });
 
-    const cells =
-      createdCustomerRow.locator(
-        '.oxd-table-cell'
-      );
+    const cells = createdCustomerRow.locator(".oxd-table-cell");
 
-    await expect(
-      cells.nth(1)
-    ).toHaveText(customerName);
+    await expect(cells.nth(1)).toHaveText(customerName);
 
-    await expect(
-      cells.nth(2)
-    ).toContainText(data.description);
+    await expect(cells.nth(2)).toContainText(data.description);
 
     // Cleanup: delete the created customer.
-    const deleteButton =
-      createdCustomerRow
-        .getByRole('button')
-        .filter({
-          has: page.locator('i.bi-trash'),
-        });
+    const deleteButton = createdCustomerRow.getByRole("button").filter({
+      has: page.locator("i.bi-trash"),
+    });
 
     await deleteButton.click();
 
-    const confirmationDialog =
-      page.getByRole('dialog');
+    const confirmationDialog = page.getByRole("dialog");
 
-    await expect(
-      confirmationDialog
-    ).toBeVisible();
+    await expect(confirmationDialog).toBeVisible();
 
-    const deleteResponsePromise =
-      page.waitForResponse(
-        response =>
-          response.url().includes(
-            '/api/v2/time/customers'
-          ) &&
-          response.request().method() === 'DELETE',
-        {
-          timeout: 30_000,
-        }
-      );
+    const deleteResponsePromise = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/time/customers") &&
+        response.request().method() === "DELETE",
+      {
+        timeout: 30_000,
+      },
+    );
 
     await confirmationDialog
-      .getByRole('button', {
+      .getByRole("button", {
         name: /Yes, Delete$/,
       })
       .click();
 
-    const deleteResponse =
-      await deleteResponsePromise;
+    const deleteResponse = await deleteResponsePromise;
 
-    expect(
-      deleteResponse.ok()
-    ).toBeTruthy();
+    expect(deleteResponse.ok()).toBeTruthy();
 
-    await expect(
-      createdCustomerRow
-    ).toBeHidden({
+    await expect(createdCustomerRow).toBeHidden({
       timeout: 20_000,
     });
-  }
-);
+  });
 
-test('TC_TIME_189 - Admin should navigate to the Projects page @smoke @navigation @project-info @regression',
-  async ({
+  test("TC_TIME_189 - Admin should navigate to the Projects page @smoke @navigation @project-info @regression", async ({
     page,
     navigationPage,
     timePage,
   }) => {
-    const data =
-      timeData.TC_TIME_189;
+    const data = timeData.TC_TIME_189;
 
     await navigationPage.gotoTime();
 
     await timePage.gotoProjects();
 
-    await expect(page).toHaveURL(
-      new RegExp(
-        `${data.expectedUrlPath}$`
-      )
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.expectedUrlPath}$`));
+
+    await expect(timePage.projectsHeading).toHaveText(data.pageHeading);
+
+    await expect(timePage.projectCustomerFilterInput).toBeVisible();
+
+    await expect(timePage.projectNameFilterInput).toBeVisible();
+
+    await expect(timePage.projectSearchButton).toBeVisible();
+
+    await expect(timePage.projectResetButton).toBeVisible();
+
+    await expect(timePage.addProjectButton).toBeVisible();
+
+    await expect(timePage.projectsTable).toBeVisible();
 
     await expect(
-      timePage.projectsHeading
-    ).toHaveText(data.pageHeading);
-
-    await expect(
-      timePage.projectCustomerFilterInput
-    ).toBeVisible();
-
-    await expect(
-      timePage.projectNameFilterInput
-    ).toBeVisible();
-
-    await expect(
-      timePage.projectSearchButton
-    ).toBeVisible();
-
-    await expect(
-      timePage.projectResetButton
-    ).toBeVisible();
-
-    await expect(
-      timePage.addProjectButton
-    ).toBeVisible();
-
-    await expect(
-      timePage.projectsTable
-    ).toBeVisible();
-
-    await expect(
-      timePage.projectRows
-        .first()
-        .or(timePage.projectNoRecords)
+      timePage.projectRows.first().or(timePage.projectNoRecords),
     ).toBeVisible({
       timeout: 20_000,
     });
-  }
-);
+  });
 
-test('TC_TIME_190 - Required validation should appear when adding an empty project @negative @validation @project-info @regression',
-  async ({ page, navigationPage, timePage }) => {
+  test("TC_TIME_190 - Required validation should appear when adding an empty project @negative @validation @project-info @regression", async ({
+    page,
+    navigationPage,
+    timePage,
+  }) => {
     const data = timeData.TC_TIME_190;
 
     await navigationPage.gotoTime();
@@ -1269,14 +1133,12 @@ test('TC_TIME_190 - Required validation should appear when adding an empty proje
 
     await timePage.addProjectButton.click();
 
-    await expect(page).toHaveURL(
-      new RegExp(`${data.addProjectUrlPath}$`),
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.addProjectUrlPath}$`));
 
     await expect(timePage.addProjectHeading).toBeVisible();
-    await expect(timePage.addProjectCustomerInput).toHaveValue('');
-    await expect(timePage.addProjectNameInput).toHaveValue('');
-    await expect(timePage.projectAdminInput).toHaveValue('');
+    await expect(timePage.addProjectCustomerInput).toHaveValue("");
+    await expect(timePage.addProjectNameInput).toHaveValue("");
+    await expect(timePage.projectAdminInput).toHaveValue("");
 
     await timePage.projectSaveButton.click();
 
@@ -1285,93 +1147,65 @@ test('TC_TIME_190 - Required validation should appear when adding an empty proje
     );
 
     for (let index = 0; index < data.requiredCount; index++) {
-      await expect(
-        timePage.projectValidationMessages.nth(index),
-      ).toHaveText(data.requiredMessage);
+      await expect(timePage.projectValidationMessages.nth(index)).toHaveText(
+        data.requiredMessage,
+      );
     }
 
     // Invalid submission must remain on Add Project.
-    await expect(page).toHaveURL(
-      new RegExp(`${data.addProjectUrlPath}$`),
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.addProjectUrlPath}$`));
 
     await timePage.projectCancelButton.click();
 
-    await expect(page).toHaveURL(
-      new RegExp(`${data.projectsUrlPath}$`),
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.projectsUrlPath}$`));
 
     await expect(timePage.projectsHeading).toBeVisible();
-  },
-);
+  });
 
-test(
-  'TC_TIME_191 - Admin should cancel adding a new project @negative @cancel @project-info @regression',
-  async ({
+  test("TC_TIME_191 - Admin should cancel adding a new project @negative @cancel @project-info @regression", async ({
     page,
     navigationPage,
     timePage,
   }) => {
-    const data =
-      timeData.TC_TIME_191;
+    const data = timeData.TC_TIME_191;
 
-    const projectName =
-      `${data.projectNamePrefix}${Date.now()}`;
+    const projectName = `${data.projectNamePrefix}${Date.now()}`;
 
     await navigationPage.gotoTime();
     await timePage.gotoProjects();
 
     await timePage.addProjectButton.click();
 
-    await timePage.addProjectNameInput.fill(
-      projectName
-    );
+    await timePage.addProjectNameInput.fill(projectName);
 
-    await expect(
-      timePage.addProjectNameInput
-    ).toHaveValue(projectName);
+    await expect(timePage.addProjectNameInput).toHaveValue(projectName);
 
     await timePage.projectCancelButton.click();
 
-    await expect(page).toHaveURL(
-      new RegExp(
-        `${data.projectsUrlPath}$`
-      )
-    );
+    await expect(page).toHaveURL(new RegExp(`${data.projectsUrlPath}$`));
 
-    const cancelledProject =
-      timePage.projectRows.filter({
-        hasText: projectName,
-      });
+    const cancelledProject = timePage.projectRows.filter({
+      hasText: projectName,
+    });
 
-    await expect(
-      cancelledProject
-    ).toHaveCount(0);
+    await expect(cancelledProject).toHaveCount(0);
 
-    await expect(
-      timePage.timeSuccessToast
-    ).not.toBeVisible();
-  }
-);
+    await expect(timePage.timeSuccessToast).not.toBeVisible();
+  });
 
-test(
-  'TC_TIME_192 - Admin should add a new project successfully @positive @create @project-info @regression',
-  async ({
+  test("TC_TIME_192 - Admin should add a new project successfully @positive @create @project-info @regression", async ({
     navigationPage,
     timePage,
   }) => {
     test.setTimeout(240_000);
 
-    const data =
-      timeData.TC_TIME_192;
+    const data = timeData.TC_TIME_192;
 
     const uniqueValue = Date.now();
 
-    const customerName =
-      `${data.customerNamePrefix}${uniqueValue}`;
+    const customerName = `${data.customerNamePrefix}${uniqueValue}`;
 
-    const projectName =
-      `${data.projectNamePrefix}${uniqueValue}`;
+    const projectName = `${data.projectNamePrefix}${uniqueValue}`;
 
     await navigationPage.gotoTime();
 
@@ -1386,59 +1220,42 @@ test(
 
     await timePage.addProjectButton.click();
 
-    const createdProject =
-      await timePage.createProject({
-        customerName,
-        projectName,
-        projectAdminSearchText:
-          data.projectAdminSearchText,
-        description:
-          data.projectDescription,
-      });
+    const createdProject = await timePage.createProject({
+      customerName,
+      projectName,
+      projectAdminSearchText: data.projectAdminSearchText,
+      description: data.projectDescription,
+    });
 
-    expect(
-      createdProject.projectId
-    ).not.toBe('');
+    expect(createdProject.projectId).not.toBe("");
 
     await timePage.verifyProjectRow({
       customerName,
       projectName,
-      projectAdmin:
-        createdProject.projectAdmin,
+      projectAdmin: createdProject.projectAdmin,
     });
 
     // Cleanup.
-    await timePage.deleteProjectByName(
-      projectName
-    );
+    await timePage.deleteProjectByName(projectName);
 
     await timePage.gotoCustomers();
 
-    await timePage.deleteCustomerByName(
-      customerName
-    );
-  }
-);
+    await timePage.deleteCustomerByName(customerName);
+  });
 
-
-test(
-  'TC_TIME_193 - Admin should search for a project by project name @positive @search @project-info @regression',
-  async ({
+  test("TC_TIME_193 - Admin should search for a project by project name @positive @search @project-info @regression", async ({
     navigationPage,
     timePage,
   }) => {
     test.setTimeout(240_000);
 
-    const data =
-      timeData.TC_TIME_193;
+    const data = timeData.TC_TIME_193;
 
     const uniqueValue = Date.now();
 
-    const customerName =
-      `${data.customerNamePrefix}${uniqueValue}`;
+    const customerName = `${data.customerNamePrefix}${uniqueValue}`;
 
-    const projectName =
-      `${data.projectNamePrefix}${uniqueValue}`;
+    const projectName = `${data.projectNamePrefix}${uniqueValue}`;
 
     await navigationPage.gotoTime();
 
@@ -1456,17 +1273,14 @@ test(
     await timePage.createProject({
       customerName,
       projectName,
-      projectAdminSearchText:
-        data.projectAdminSearchText,
+      projectAdminSearchText: data.projectAdminSearchText,
     });
 
     await timePage.searchProject({
       projectName,
     });
 
-    await expect(
-      timePage.projectRows
-    ).toHaveCount(1, {
+    await expect(timePage.projectRows).toHaveCount(1, {
       timeout: 20_000,
     });
 
@@ -1476,37 +1290,26 @@ test(
     });
 
     // Cleanup.
-    await timePage.deleteProjectByName(
-      projectName
-    );
+    await timePage.deleteProjectByName(projectName);
 
     await timePage.gotoCustomers();
 
-    await timePage.deleteCustomerByName(
-      customerName
-    );
-  }
-);
+    await timePage.deleteCustomerByName(customerName);
+  });
 
-
-test(
-  'TC_TIME_194 - Admin should search for a project by customer name @positive @search @project-info @regression',
-  async ({
+  test("TC_TIME_194 - Admin should search for a project by customer name @positive @search @project-info @regression", async ({
     navigationPage,
     timePage,
   }) => {
     test.setTimeout(240_000);
 
-    const data =
-      timeData.TC_TIME_194;
+    const data = timeData.TC_TIME_194;
 
     const uniqueValue = Date.now();
 
-    const customerName =
-      `${data.customerNamePrefix}${uniqueValue}`;
+    const customerName = `${data.customerNamePrefix}${uniqueValue}`;
 
-    const projectName =
-      `${data.projectNamePrefix}${uniqueValue}`;
+    const projectName = `${data.projectNamePrefix}${uniqueValue}`;
 
     await navigationPage.gotoTime();
 
@@ -1524,13 +1327,406 @@ test(
     await timePage.createProject({
       customerName,
       projectName,
-      projectAdminSearchText:
-        data.projectAdminSearchText,
+      projectAdminSearchText: data.projectAdminSearchText,
     });
 
     await timePage.searchProject({
       customerName,
     });
+
+    await expect(timePage.projectRows.first()).toBeVisible({
+      timeout: 20_000,
+    });
+
+    const rowCount = await timePage.projectRows.count();
+
+    for (let index = 0; index < rowCount; index++) {
+      const customerCell = timePage.projectRows
+        .nth(index)
+        .locator(".oxd-table-cell")
+        .nth(1);
+
+      await expect(customerCell).toContainText(customerName);
+    }
+
+    // Cleanup.
+    await timePage.deleteProjectByName(projectName);
+
+    await timePage.gotoCustomers();
+
+    await timePage.deleteCustomerByName(customerName);
+  });
+
+  test("TC_TIME_195 - Admin should reset Project search filters @positive @filter @project-info @regression", async ({
+    page,
+    navigationPage,
+    timePage,
+  }) => {
+    const data = timeData.TC_TIME_195;
+
+    const customerName = `${data.customerNamePrefix}${Date.now()}`;
+
+    const projectName = `${data.projectNamePrefix}${Date.now()}`;
+
+    await navigationPage.gotoTime();
+    await timePage.gotoProjects();
+
+    await timePage.projectCustomerFilterInput.fill(customerName);
+
+    await timePage.projectNameFilterInput.fill(projectName);
+
+    await expect(timePage.projectCustomerFilterInput).toHaveValue(customerName);
+
+    await expect(timePage.projectNameFilterInput).toHaveValue(projectName);
+
+    await timePage.projectCustomerFilterInput.press("Escape");
+
+    await timePage.projectResetButton.click();
+
+    await expect(timePage.projectCustomerFilterInput).toHaveValue("");
+
+    await expect(timePage.projectNameFilterInput).toHaveValue("");
+
+    await expect(page).toHaveURL(new RegExp(`${data.projectsUrlPath}$`));
+
+    await expect(timePage.projectsTable).toBeVisible();
+  });
+
+  test("TC_TIME_196 - Invalid validation should appear for a nonexistent customer in Project search @negative @validation @autocomplete @project-info @regression", async ({
+    page,
+    navigationPage,
+    timePage,
+  }) => {
+    const data = timeData.TC_TIME_196;
+
+    const invalidCustomer = `${data.customerNamePrefix}${Date.now()}`;
+
+    await navigationPage.gotoTime();
+    await timePage.gotoProjects();
+
+    await timePage.projectCustomerFilterInput.fill(invalidCustomer);
+
+    await expect(timePage.visibleAutocompleteDropdown).toBeVisible({
+      timeout: 15_000,
+    });
+
+    await expect(timePage.autocompleteNoRecords).toHaveText(
+      data.noRecordsMessage,
+    );
+
+    await timePage.projectCustomerFilterInput.press("Escape");
+
+    await timePage.projectSearchButton.click();
+
+    await expect(timePage.projectCustomerValidation).toHaveText(
+      data.invalidMessage,
+    );
+
+    await expect(timePage.projectCustomerFilterInput).toHaveValue(
+      invalidCustomer,
+    );
+
+    await expect(page).toHaveURL(new RegExp(`${data.projectsUrlPath}$`));
+  });
+
+  test("TC_TIME_197 - Admin should delete an existing project successfully @positive @delete @project-info @regression", async ({
+    navigationPage,
+    timePage,
+  }) => {
+    test.setTimeout(240_000);
+
+    const data = timeData.TC_TIME_197;
+
+    const uniqueValue = Date.now();
+
+    const customerName = `${data.customerNamePrefix}${uniqueValue}`;
+
+    const projectName = `${data.projectNamePrefix}${uniqueValue}`;
+
+    await navigationPage.gotoTime();
+
+    await timePage.gotoCustomers();
+
+    await timePage.createCustomer({
+      name: customerName,
+      description: data.customerDescription,
+    });
+
+    await timePage.gotoProjects();
+
+    await timePage.addProjectButton.click();
+
+    await timePage.createProject({
+      customerName,
+      projectName,
+      projectAdminSearchText: data.projectAdminSearchText,
+    });
+
+    await timePage.searchProject({
+      projectName,
+    });
+
+    await timePage.verifyProjectRow({
+      customerName,
+      projectName,
+    });
+
+    await timePage.deleteProjectByName(projectName);
+
+    const deletedProjectRow = timePage.projectRows.filter({
+      hasText: projectName,
+    });
+
+    await expect(deletedProjectRow).toHaveCount(0);
+
+    // Cleanup customer.
+    await timePage.gotoCustomers();
+
+    await timePage.deleteCustomerByName(customerName);
+  });
+
+  test('TC_TIME_198 - Admin should cancel project deletion @negative @cancel @delete @project-info @regression',
+  async ({ navigationPage, timePage }) => {
+    test.setTimeout(180_000);
+
+    const data = timeData.TC_TIME_198;
+    const uniqueValue = Date.now();
+
+    const customerName =
+      `${data.customerNamePrefix}${uniqueValue}`;
+
+    const projectName =
+      `${data.projectNamePrefix}${uniqueValue}`;
+
+    await navigationPage.gotoTime();
+    await timePage.gotoCustomers();
+
+    await timePage.createCustomer({
+      name: customerName,
+      description: data.customerDescription,
+    });
+
+    await timePage.gotoProjects();
+
+    await timePage.addProjectButton.click();
+
+    await timePage.createProject({
+      customerName,
+      projectName,
+      projectAdminSearchText:
+        data.projectAdminSearchText,
+      description: data.projectDescription,
+    });
+
+    // Search for the created project.
+    await timePage.searchProject({
+      projectName,
+    });
+
+    const projectRow =
+      await timePage.verifyProjectRow({
+        projectName,
+        customerName,
+      });
+
+    // Click Delete in the matching row.
+    const deleteButton =
+      projectRow.getByRole('button').filter({
+        has: timePage.page.locator(
+          'i.bi-trash'
+        ),
+      });
+
+    await expect(deleteButton).toBeVisible();
+    await deleteButton.click();
+
+    // Verify the confirmation dialog.
+    await expect(
+      timePage.confirmationDialog
+    ).toBeVisible();
+
+    // Cancel deletion.
+    await timePage.cancelDeleteButton.click();
+
+    await expect(
+      timePage.confirmationDialog
+    ).toBeHidden();
+
+    // Verify the project still exists.
+    await expect(projectRow).toBeVisible();
+
+    await timePage.verifyProjectRow({
+      projectName,
+      customerName,
+    });
+
+    // Cleanup.
+    await timePage.deleteProjectByName(
+      projectName
+    );
+
+    await timePage.gotoCustomers();
+
+    await timePage.deleteCustomerByName(
+      customerName
+    );
+  }
+);
+
+test('TC_TIME_199 - Admin should edit an existing project successfully @positive @edit @project-info @regression',
+  async ({ page, navigationPage, timePage }) => {
+    test.setTimeout(180_000);
+
+    const data = timeData.TC_TIME_199;
+    const uniqueValue = Date.now();
+
+    const customerName =
+      `${data.customerNamePrefix}${uniqueValue}`;
+
+    const originalProjectName =
+      `${data.projectNamePrefix}${uniqueValue}`;
+
+    const updatedProjectName =
+      `${data.updatedProjectNamePrefix}${uniqueValue}`;
+
+    await navigationPage.gotoTime();
+    await timePage.gotoCustomers();
+
+    await timePage.createCustomer({
+      name: customerName,
+      description: data.customerDescription,
+    });
+
+    await timePage.gotoProjects();
+
+    await timePage.addProjectButton.click();
+
+    await timePage.createProject({
+      customerName,
+      projectName: originalProjectName,
+      projectAdminSearchText:
+        data.projectAdminSearchText,
+      description: data.projectDescription,
+    });
+
+    // Search for the original project.
+    await timePage.searchProject({
+      projectName: originalProjectName,
+    });
+
+    const projectRow =
+      await timePage.verifyProjectRow({
+        projectName: originalProjectName,
+        customerName,
+      });
+
+    // Open the project for editing.
+    const editButton =
+      projectRow.getByRole('button').filter({
+        has: page.locator('i.bi-pencil-fill'),
+      });
+
+    await expect(editButton).toBeVisible();
+    await editButton.click();
+
+    await expect(page).toHaveURL(
+      /\/time\/saveProject\/\d+$/
+    );
+
+    await expect(
+      page.getByRole('heading', {
+        name: 'Edit Project',
+        exact: true,
+      })
+    ).toBeVisible();
+
+    // Update the project.
+    await timePage.addProjectNameInput.click();
+    await timePage.addProjectNameInput.press(
+      'ControlOrMeta+A'
+    );
+    await timePage.addProjectNameInput.pressSequentially(
+      updatedProjectName
+    );
+
+    await expect(
+      timePage.addProjectNameInput
+    ).toHaveValue(updatedProjectName);
+
+    await timePage.projectDescriptionInput.click();
+    await timePage.projectDescriptionInput.press(
+      'ControlOrMeta+A'
+    );
+    await timePage.projectDescriptionInput.pressSequentially(
+      data.updatedDescription
+    );
+
+    await expect(
+      timePage.projectDescriptionInput
+    ).toHaveValue(data.updatedDescription);
+
+    await timePage.projectDescriptionInput.blur();
+
+    const updateResponsePromise =
+      page.waitForResponse(
+        response =>
+          response.url().includes(
+            '/api/v2/time/projects/'
+          ) &&
+          ['PUT', 'PATCH'].includes(
+            response.request().method()
+          ) &&
+          (response.request().postData() ?? '')
+            .includes(updatedProjectName),
+        {
+          timeout: 30_000,
+        }
+      );
+
+    await timePage.projectSaveButton.click();
+
+    const updateResponse =
+      await updateResponsePromise;
+
+    expect(
+      updateResponse.ok(),
+      `Project update failed with ${updateResponse.status()}`
+    ).toBeTruthy();
+
+    await expect(page).toHaveURL(
+      /\/time\/viewProjects$/,
+      {
+        timeout: 30_000,
+      }
+    );
+
+    // Reload the Projects view so verification uses
+    // fresh server data instead of the previous table state.
+    await timePage.gotoProjects();
+
+    // The toast can disappear quickly, so the
+    // successful response and updated table are
+    // the main verification.
+    await timePage.searchProject({
+      projectName: updatedProjectName,
+    });
+
+    await timePage.verifyProjectRow({
+      projectName: updatedProjectName,
+      customerName,
+    });
+
+    // Verify the original name cannot be found.
+    await timePage.projectResetButton.click();
+
+    const originalProjectRow =
+      timePage.projectRows.filter({
+        hasText: originalProjectName,
+      });
+
+    await expect(
+      originalProjectRow
+    ).toHaveCount(0);
 
     await expect(
       timePage.projectRows.first()
@@ -1538,24 +1734,137 @@ test(
       timeout: 20_000,
     });
 
-    const rowCount =
-      await timePage.projectRows.count();
+    // Cleanup.
+    await timePage.projectResetButton.click();
 
-    for (
-      let index = 0;
-      index < rowCount;
-      index++
-    ) {
-      const customerCell =
-        timePage.projectRows
-          .nth(index)
-          .locator('.oxd-table-cell')
-          .nth(1);
+    await timePage.searchProject({
+      projectName: updatedProjectName,
+    });
 
-      await expect(
-        customerCell
-      ).toContainText(customerName);
-    }
+    await timePage.deleteProjectByName(
+      updatedProjectName
+    );
+
+    await timePage.gotoCustomers();
+
+    await timePage.deleteCustomerByName(
+      customerName
+    );
+  }
+);
+
+test('TC_TIME_200 - Duplicate validation should appear for an existing project name under the same customer @negative @validation @project-info @regression',
+  async ({ page, navigationPage, timePage }) => {
+    test.setTimeout(180_000);
+
+    const data = timeData.TC_TIME_200;
+    const uniqueValue = Date.now();
+
+    const customerName =
+      `${data.customerNamePrefix}${uniqueValue}`;
+
+    const projectName =
+      `${data.projectNamePrefix}${uniqueValue}`;
+
+    await navigationPage.gotoTime();
+    await timePage.gotoCustomers();
+
+    await timePage.createCustomer({
+      name: customerName,
+      description: data.customerDescription,
+    });
+
+    await timePage.gotoProjects();
+
+    // Create the original project.
+    await timePage.addProjectButton.click();
+
+    await timePage.createProject({
+      customerName,
+      projectName,
+      projectAdminSearchText:
+        data.projectAdminSearchText,
+      description: data.projectDescription,
+    });
+
+    // Try to create another project with the
+    // same customer and project name.
+    await timePage.addProjectButton.click();
+
+    await expect(page).toHaveURL(
+      new RegExp(
+        `${data.addProjectUrlPath}$`
+      )
+    );
+
+    await timePage.selectAutocompleteOption(
+      timePage.addProjectCustomerInput,
+      customerName,
+      customerName
+    );
+
+    await timePage.addProjectNameInput.fill(
+      projectName
+    );
+
+    await timePage.selectAutocompleteOption(
+      timePage.projectAdminInput,
+      data.projectAdminSearchText
+    );
+
+    await timePage.projectDescriptionInput.fill(
+      data.projectDescription
+    );
+
+    await timePage.projectSaveButton.click();
+
+    // Verify duplicate validation.
+    await expect(
+      timePage.projectValidationMessages.filter({
+        hasText: data.duplicateMessage,
+      })
+    ).toContainText(
+      data.duplicateMessage,
+      {
+        timeout: 20_000,
+      }
+    );
+
+    // Verify the Add Project page remains open.
+    await expect(page).toHaveURL(
+      new RegExp(
+        `${data.addProjectUrlPath}$`
+      )
+    );
+
+    await expect(
+      timePage.addProjectCustomerInput
+    ).toHaveValue(customerName);
+
+    await expect(
+      timePage.addProjectNameInput
+    ).toHaveValue(projectName);
+
+    await expect(
+      timePage.timeSuccessToast
+    ).not.toBeVisible();
+
+    // Cancel the duplicate project.
+    await timePage.projectCancelButton.click();
+
+    await expect(page).toHaveURL(
+      /\/time\/viewProjects$/
+    );
+
+    // Verify only the original project exists.
+    await timePage.searchProject({
+      projectName,
+    });
+
+    await timePage.verifyProjectRow({
+      projectName,
+      customerName,
+    });
 
     // Cleanup.
     await timePage.deleteProjectByName(
@@ -1569,190 +1878,5 @@ test(
     );
   }
 );
-
-test(
-  'TC_TIME_195 - Admin should reset Project search filters @positive @filter @project-info @regression',
-  async ({
-    page,
-    navigationPage,
-    timePage,
-  }) => {
-    const data =
-      timeData.TC_TIME_195;
-
-    const customerName =
-      `${data.customerNamePrefix}${Date.now()}`;
-
-    const projectName =
-      `${data.projectNamePrefix}${Date.now()}`;
-
-    await navigationPage.gotoTime();
-    await timePage.gotoProjects();
-
-    await timePage
-      .projectCustomerFilterInput
-      .fill(customerName);
-
-    await timePage
-      .projectNameFilterInput
-      .fill(projectName);
-
-    await expect(
-      timePage.projectCustomerFilterInput
-    ).toHaveValue(customerName);
-
-    await expect(
-      timePage.projectNameFilterInput
-    ).toHaveValue(projectName);
-
-    await timePage.projectCustomerFilterInput.press('Escape');
-
-    await timePage.projectResetButton.click();
-
-    await expect(
-      timePage.projectCustomerFilterInput
-    ).toHaveValue('');
-
-    await expect(
-      timePage.projectNameFilterInput
-    ).toHaveValue('');
-
-    await expect(page).toHaveURL(
-      new RegExp(
-        `${data.projectsUrlPath}$`
-      )
-    );
-
-    await expect(
-      timePage.projectsTable
-    ).toBeVisible();
-  }
-);
-
-test(
-  'TC_TIME_196 - Invalid validation should appear for a nonexistent customer in Project search @negative @validation @autocomplete @project-info @regression',
-  async ({
-    page,
-    navigationPage,
-    timePage,
-  }) => {
-    const data =
-      timeData.TC_TIME_196;
-
-    const invalidCustomer =
-      `${data.customerNamePrefix}${Date.now()}`;
-
-    await navigationPage.gotoTime();
-    await timePage.gotoProjects();
-
-    await timePage
-      .projectCustomerFilterInput
-      .fill(invalidCustomer);
-
-    await expect(
-      timePage.visibleAutocompleteDropdown
-    ).toBeVisible({
-      timeout: 15_000,
-    });
-
-    await expect(
-      timePage.autocompleteNoRecords
-    ).toHaveText(data.noRecordsMessage);
-
-    await timePage
-      .projectCustomerFilterInput
-      .press('Escape');
-
-    await timePage.projectSearchButton.click();
-
-    await expect(
-      timePage.projectCustomerValidation
-    ).toHaveText(data.invalidMessage);
-
-    await expect(
-      timePage.projectCustomerFilterInput
-    ).toHaveValue(invalidCustomer);
-
-    await expect(page).toHaveURL(
-      new RegExp(
-        `${data.projectsUrlPath}$`
-      )
-    );
-  }
-);
-
-test(
-  'TC_TIME_197 - Admin should delete an existing project successfully @positive @delete @project-info @regression',
-  async ({
-    navigationPage,
-    timePage,
-  }) => {
-    test.setTimeout(240_000);
-
-    const data =
-      timeData.TC_TIME_197;
-
-    const uniqueValue = Date.now();
-
-    const customerName =
-      `${data.customerNamePrefix}${uniqueValue}`;
-
-    const projectName =
-      `${data.projectNamePrefix}${uniqueValue}`;
-
-    await navigationPage.gotoTime();
-
-    await timePage.gotoCustomers();
-
-    await timePage.createCustomer({
-      name: customerName,
-      description: data.customerDescription,
-    });
-
-    await timePage.gotoProjects();
-
-    await timePage.addProjectButton.click();
-
-    await timePage.createProject({
-      customerName,
-      projectName,
-      projectAdminSearchText:
-        data.projectAdminSearchText,
-    });
-
-    await timePage.searchProject({
-      projectName,
-    });
-
-    await timePage.verifyProjectRow({
-      customerName,
-      projectName,
-    });
-
-    await timePage.deleteProjectByName(
-      projectName
-    );
-
-    await timePage.searchProject({
-      projectName,
-    });
-
-    await expect(
-      timePage.projectRows
-    ).toHaveCount(0);
-
-    await expect(
-      timePage.projectNoRecords
-    ).toBeVisible();
-
-    // Cleanup customer.
-    await timePage.gotoCustomers();
-
-    await timePage.deleteCustomerByName(
-      customerName
-    );
-  }
-);
-
 
 });

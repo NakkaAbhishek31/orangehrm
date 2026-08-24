@@ -107,9 +107,13 @@ readonly leaveStatusField: Locator;
 
     this.loadingSpinner = page.locator(".oxd-loading-spinner");
 
-    this.noRecordsFound = page.getByText("No Records Found", {
-      exact: true,
-    });
+    this.noRecordsFound = page
+      .locator(".orangehrm-container span.oxd-text--span")
+      .filter({
+        hasText: /^No Records Found$/,
+        visible: true,
+      })
+      .first();
 
       this.selectedLeaveStatuses = page
         .locator(".oxd-input-group")

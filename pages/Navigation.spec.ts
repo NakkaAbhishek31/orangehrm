@@ -6,6 +6,7 @@ export class NavigationPage {
   readonly adminLink: Locator;
   readonly recruitmentLink:Locator;
   readonly timeMenu: Locator;
+  readonly  performance:Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -19,6 +20,8 @@ export class NavigationPage {
     exact: true,
   }
 );
+this.performance=page.getByRole('link', { name: 'Performance' });
+
   }
 
   async gotoPIM(): Promise<void> {
@@ -84,5 +87,15 @@ async gotoTime(): Promise<void> {
   );
 }
 
+async gotoPerformance(): Promise<void> {
+  await this.performance.click();
+
+  await this.page.waitForURL(
+    /\/performance\//,
+    {
+      timeout: 30_000,
+    }
+  );
+}
 
 }
