@@ -28,11 +28,35 @@
     "defaultDropdownValue": "-- Select --"
   },
   "TC_PERFORMANCE_206": {
-    "jobTitle": "Account Assistant",
     "defaultDropdownValue": "-- Select --"
   },
   "TC_PERFORMANCE_207": {
-    "reviewStatus": "Activated",
+    "defaultDropdownValue": "-- Select --"
+  },
+  "TC_PERFORMANCE_208": {
+    "defaultDropdownValue": "-- Select --"
+  },
+  "TC_PERFORMANCE_209": {
+    "fromDate": "01-01-2025",
+    "toDate": "12-31-2025"
+  },
+  "TC_PERFORMANCE_210": {
+    "pageHeading": "Employee Reviews"
+  },
+  "TC_PERFORMANCE_211": {
+    "pageHeading": "Employee Reviews"
+  },
+  "TC_PERFORMANCE_212": {
+    "pageHeading": "Employee Reviews"
+  },
+  "TC_PERFORMANCE_213": {
+    "pageHeading": "Employee Reviews"
+  },
+  "TC_PERFORMANCE_214": {
+    "defaultDropdownValue": "-- Select --"
+  },
+  "TC_PERFORMANCE_215": {
+    "employeeNamePrefix": "RepeatedResetEmployee",
     "defaultDropdownValue": "-- Select --"
   }
 }

@@ -32,7 +32,7 @@ pipeline {
         choice(
             name: 'WORKERS',
             choices: [
-                '1'
+                '1','2','3','4','5','6'
             ],
             description: 'Serialized for the shared OrangeHRM demo'
         )

@@ -327,4 +327,20 @@ async selectEmployeeFromAutocomplete(
 
   return selectedEmployeeName;
 }
+
+async waitForReviewResults(): Promise<void> {
+  await expect(this.loadingSpinner).toBeHidden({
+    timeout: 30_000,
+  });
+
+  await expect.poll(
+    async () =>
+      (await this.reviewRows.count()) > 0 ||
+      await this.noRecordsFound.isVisible(),
+    {
+      timeout: 20_000,
+      message: 'Expected review rows or No Records Found',
+    }
+  ).toBe(true);
+}
 }

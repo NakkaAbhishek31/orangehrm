@@ -1,0 +1,347 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Recruitment\recruitment.spec.ts >> Recruitment - Candidates >> TC_RECRUITMENT_159 - Admin should cancel scheduling an interview @negative @cancel @workflow @regression
+- Location: tests\Recruitment\recruitment.spec.ts:2152:5
+
+# Error details
+
+```
+Error: Candidate workflow failed with 500: {"error":{"status":"500","message":"Unexpected Error Occurred"}}
+
+expect(received).toBeTruthy()
+
+Received: false
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=f8e2]:
+  - generic [ref=f8e3]:
+    - generic:
+      - complementary [ref=f8e4]:
+        - navigation "Sidepanel" [ref=f8e5]:
+          - generic [ref=f8e6]:
+            - link [ref=f8e7] [cursor=pointer]:
+              - /url: https://www.orangehrm.com/
+              - img "client brand banner" [ref=f8e9]
+            - text: 
+          - generic [ref=f8e10]:
+            - generic [ref=f8e11]:
+              - generic [ref=f8e12]:
+                - textbox "Search" [ref=f8e15]
+                - button "" [ref=f8e16] [cursor=pointer]
+              - separator [ref=f8e18]
+            - list [ref=f8e19]:
+              - listitem [ref=f8e20]:
+                - link "Admin" [ref=f8e21] [cursor=pointer]:
+                  - /url: /web/index.php/admin/viewAdminModule
+              - listitem [ref=f8e25]:
+                - link "PIM" [ref=f8e26] [cursor=pointer]:
+                  - /url: /web/index.php/pim/viewPimModule
+              - listitem [ref=f8e41]:
+                - link "Leave" [ref=f8e42] [cursor=pointer]:
+                  - /url: /web/index.php/leave/viewLeaveModule
+              - listitem [ref=f8e46]:
+                - link "Time" [ref=f8e47] [cursor=pointer]:
+                  - /url: /web/index.php/time/viewTimeModule
+              - listitem [ref=f8e54]:
+                - link "Recruitment" [ref=f8e55] [cursor=pointer]:
+                  - /url: /web/index.php/recruitment/viewRecruitmentModule
+              - listitem [ref=f8e62]:
+                - link "My Info" [ref=f8e63] [cursor=pointer]:
+                  - /url: /web/index.php/pim/viewMyDetails
+              - listitem [ref=f8e70]:
+                - link "Performance" [ref=f8e71] [cursor=pointer]:
+                  - /url: /web/index.php/performance/viewPerformanceModule
+              - listitem [ref=f8e80]:
+                - link "Dashboard" [ref=f8e81] [cursor=pointer]:
+                  - /url: /web/index.php/dashboard/index
+              - listitem [ref=f8e85]:
+                - link "Directory" [ref=f8e86] [cursor=pointer]:
+                  - /url: /web/index.php/directory/viewDirectory
+              - listitem [ref=f8e90]:
+                - link "Maintenance" [ref=f8e91] [cursor=pointer]:
+                  - /url: /web/index.php/maintenance/viewMaintenanceModule
+              - listitem [ref=f8e96]:
+                - link "Claim" [ref=f8e97] [cursor=pointer]:
+                  - /url: /web/index.php/claim/viewClaimModule
+              - listitem [ref=f8e105]:
+                - link "Buzz" [ref=f8e106] [cursor=pointer]:
+                  - /url: /web/index.php/buzz/viewBuzz
+      - banner [ref=f8e110]:
+        - generic [ref=f8e111]:
+          - generic [ref=f8e112]:
+            - text: 
+            - heading "Recruitment" [level=6] [ref=f8e114]
+          - link [ref=f8e116]:
+            - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+            - button "Upgrade" [ref=f8e117] [cursor=pointer]
+          - list [ref=f8e123]:
+            - listitem [ref=f8e124]:
+              - generic [ref=f8e125] [cursor=pointer]:
+                - img "profile picture" [ref=f8e126]
+                - paragraph [ref=f8e127]: Emp_YJQynJ User_KwCyeJnB
+                - generic [ref=f8e128]: 
+        - navigation "Topbar Menu" [ref=f8e130]:
+          - list [ref=f8e131]:
+            - listitem [ref=f8e132] [cursor=pointer]:
+              - link "Candidates" [ref=f8e133]:
+                - /url: "#"
+            - listitem [ref=f8e134] [cursor=pointer]:
+              - link "Vacancies" [ref=f8e135]:
+                - /url: "#"
+            - button "" [ref=f8e137] [cursor=pointer]
+    - generic [ref=f8e139]:
+      - generic [ref=f8e142]:
+        - heading "Shortlist Candidate" [level=6] [ref=f8e143]
+        - separator [ref=f8e144]
+        - generic [ref=f8e145]:
+          - generic [ref=f8e150]:
+            - generic [ref=f8e152]:
+              - generic [ref=f8e153]: Candidate
+              - textbox [ref=f8e156]: CancelInterview1787642275509 Test Candidate
+            - generic [ref=f8e158]:
+              - generic [ref=f8e159]: Vacancy
+              - textbox [ref=f8e162]: Junior Account Assistant
+            - generic [ref=f8e164]:
+              - generic [ref=f8e165]: Hiring Manager
+              - textbox [ref=f8e168]
+            - generic [ref=f8e170]:
+              - generic [ref=f8e171]: Current Status
+              - textbox [ref=f8e174]: Application Initiated
+          - generic [ref=f8e178]:
+            - generic [ref=f8e179]: Notes
+            - textbox "Type here" [ref=f8e182]: Candidate shortlisted before cancelling interview
+          - separator [ref=f8e183]
+          - generic [ref=f8e184]:
+            - button "Cancel" [ref=f8e185] [cursor=pointer]
+            - button "Save" [active] [ref=f8e186] [cursor=pointer]
+      - generic [ref=f8e187]:
+        - paragraph [ref=f8e188]: OrangeHRM OS 5.9
+        - paragraph [ref=f8e189]:
+          - text: © 2005 - 2026
+          - link "OrangeHRM, Inc" [ref=f8e190] [cursor=pointer]:
+            - /url: http://www.orangehrm.com
+          - text: . All rights reserved.
+  - generic [ref=f8e192] [cursor=pointer]:
+    - generic [ref=f8e193]:
+      - generic [ref=f8e194]: 
+      - generic [ref=f8e197]:
+        - paragraph [ref=f8e198]: Error
+        - paragraph [ref=f8e199]: Unexpected Error Occurred
+    - button "×" [ref=f8e201]
+```
+
+# Test source
+
+```ts
+  1004 | 
+  1005 |     await viewButton.click();
+  1006 | 
+  1007 |     await this.page.waitForURL(/\/recruitment\/addCandidate\/\d+$/, {
+  1008 |       timeout: 30_000,
+  1009 |     });
+  1010 | 
+  1011 |     await expect(this.candidateProfileHeading).toBeVisible();
+  1012 |   }
+  1013 | 
+  1014 |   async selectFirstAvailableInterviewer(
+  1015 |   searchText: string
+  1016 | ): Promise<string> {
+  1017 |   await this.interviewerInput.fill(
+  1018 |     searchText
+  1019 |   );
+  1020 | 
+  1021 |   await expect(
+  1022 |     this.interviewerDropdown
+  1023 |   ).toBeVisible({
+  1024 |     timeout: 15_000,
+  1025 |   });
+  1026 | 
+  1027 |   const validOptions =
+  1028 |     this.interviewerOptions.filter({
+  1029 |       hasNotText:
+  1030 |         /Searching|No Records Found/i,
+  1031 |     });
+  1032 | 
+  1033 |   const optionCount =
+  1034 |     await validOptions.count();
+  1035 | 
+  1036 |   if (optionCount === 0) {
+  1037 |     throw new Error(
+  1038 |       `No interviewer found for: ${searchText}`
+  1039 |     );
+  1040 |   }
+  1041 | 
+  1042 |   const firstOption =
+  1043 |     validOptions.first();
+  1044 | 
+  1045 |   const interviewerName = (
+  1046 |     await firstOption.innerText()
+  1047 |   ).trim();
+  1048 | 
+  1049 |   await firstOption.click();
+  1050 | 
+  1051 |   await expect(
+  1052 |     this.interviewerInput
+  1053 |   ).toHaveValue(interviewerName);
+  1054 | 
+  1055 |   return interviewerName;
+  1056 | }
+  1057 | 
+  1058 | 
+  1059 | private async completeCandidateWorkflowAction(
+  1060 |   actionButton: Locator,
+  1061 |   notes: string,
+  1062 |   expectedStatus: string
+  1063 | ): Promise<void> {
+  1064 |   await expect(actionButton).toBeVisible({
+  1065 |     timeout: 20_000,
+  1066 |   });
+  1067 | 
+  1068 |   await actionButton.click();
+  1069 | 
+  1070 |   await expect(
+  1071 |     this.workflowNotesInput
+  1072 |   ).toBeVisible();
+  1073 | 
+  1074 |   await this.workflowNotesInput.fill(notes);
+  1075 | 
+  1076 |   await expect(
+  1077 |     this.workflowNotesInput
+  1078 |   ).toHaveValue(notes);
+  1079 | 
+  1080 |   const responsePromise =
+  1081 |     this.page.waitForResponse(
+  1082 |       response =>
+  1083 |         response.url().includes(
+  1084 |           '/api/v2/recruitment/'
+  1085 |         ) &&
+  1086 |         ['POST', 'PUT'].includes(
+  1087 |           response.request().method()
+  1088 |         ),
+  1089 |       {
+  1090 |         timeout: 30_000,
+  1091 |       }
+  1092 |     );
+  1093 | 
+  1094 |   await this.workflowSaveButton.click();
+  1095 | 
+  1096 |   const response = await responsePromise;
+  1097 | 
+  1098 |   const responseText =
+  1099 |     await response.text();
+  1100 | 
+  1101 |   expect(
+  1102 |     response.ok(),
+  1103 |     `Candidate workflow failed with ${response.status()}: ${responseText}`
+> 1104 |   ).toBeTruthy();
+       |     ^ Error: Candidate workflow failed with 500: {"error":{"status":"500","message":"Unexpected Error Occurred"}}
+  1105 | 
+  1106 |   await expect(
+  1107 |     this.loadingSpinner
+  1108 |   ).toBeHidden({
+  1109 |     timeout: 30_000,
+  1110 |   });
+  1111 | 
+  1112 |   await expect(
+  1113 |     this.candidateStatusText
+  1114 |   ).toContainText(expectedStatus, {
+  1115 |     timeout: 30_000,
+  1116 |   });
+  1117 | }
+  1118 | 
+  1119 | async shortlistCurrentCandidate(
+  1120 |   notes: string
+  1121 | ): Promise<void> {
+  1122 |   await this.completeCandidateWorkflowAction(
+  1123 |     this.shortlistButton,
+  1124 |     notes,
+  1125 |     'Shortlisted'
+  1126 |   );
+  1127 | }
+  1128 | 
+  1129 | async scheduleCurrentCandidateInterview(
+  1130 |   details: InterviewDetails
+  1131 | ): Promise<string> {
+  1132 |   await expect(
+  1133 |     this.scheduleInterviewButton
+  1134 |   ).toBeVisible({
+  1135 |     timeout: 20_000,
+  1136 |   });
+  1137 | 
+  1138 |   await this.scheduleInterviewButton.click();
+  1139 | 
+  1140 |   await expect(
+  1141 |     this.scheduleInterviewHeading
+  1142 |   ).toBeVisible();
+  1143 | 
+  1144 |   await this.interviewTitleInput.fill(
+  1145 |     details.title
+  1146 |   );
+  1147 | 
+  1148 |   const interviewer =
+  1149 |     await this.selectFirstAvailableInterviewer(
+  1150 |       details.interviewerSearchText
+  1151 |     );
+  1152 | 
+  1153 |   await this.interviewDateInput.fill(
+  1154 |     details.date
+  1155 |   );
+  1156 | 
+  1157 |   await this.interviewTimeInput.fill(
+  1158 |     details.time
+  1159 |   );
+  1160 | 
+  1161 |   await expect(
+  1162 |     this.interviewTitleInput
+  1163 |   ).toHaveValue(details.title);
+  1164 | 
+  1165 |   await expect(
+  1166 |     this.interviewerInput
+  1167 |   ).toHaveValue(interviewer);
+  1168 | 
+  1169 |   await expect(
+  1170 |     this.interviewDateInput
+  1171 |   ).toHaveValue(details.date);
+  1172 | 
+  1173 |   await expect(
+  1174 |     this.interviewTimeInput
+  1175 |   ).toHaveValue(details.time);
+  1176 | 
+  1177 |   const responsePromise =
+  1178 |     this.page.waitForResponse(
+  1179 |       response =>
+  1180 |         response.url().includes(
+  1181 |           '/api/v2/recruitment/'
+  1182 |         ) &&
+  1183 |         response.url().includes(
+  1184 |           'interview'
+  1185 |         ) &&
+  1186 |         ['POST', 'PUT'].includes(
+  1187 |           response.request().method()
+  1188 |         ),
+  1189 |       {
+  1190 |         timeout: 30_000,
+  1191 |       }
+  1192 |     );
+  1193 | 
+  1194 |   const toastPromise =
+  1195 |     this.updateSuccessToast.waitFor({
+  1196 |       state: 'visible',
+  1197 |       timeout: 15_000,
+  1198 |     });
+  1199 | 
+  1200 |   await this.interviewSaveButton.click();
+  1201 | 
+  1202 |   const response = await responsePromise;
+  1203 | 
+  1204 |   await toastPromise;
+```

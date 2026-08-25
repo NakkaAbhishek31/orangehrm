@@ -1,0 +1,2 @@
+Created candidate: SearchCandidate1787641993626 Test User
+Candidate ID for cleanup: 93

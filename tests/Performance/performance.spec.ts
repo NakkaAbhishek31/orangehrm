@@ -364,4 +364,235 @@ test('TC_PERFORMANCE_205 - Admin should reset Employee Review search filters @po
   }
 );
 
+test('TC_PERFORMANCE_206 - Reset should clear the selected job title @positive @reset @filter @regression', async ({
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_206;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  const selectedJobTitle = await performancePage
+    .selectFirstAvailableDropdownOption(
+      performancePage.jobTitleDropdown
+    );
+
+  await expect(performancePage.jobTitleDropdown)
+    .toContainText(selectedJobTitle);
+
+  await performancePage.resetButton.click();
+
+  await expect(performancePage.jobTitleDropdown)
+    .toContainText(data.defaultDropdownValue);
+});
+
+test('TC_PERFORMANCE_207 - Reset should clear the selected review status @positive @reset @filter @regression', async ({
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_207;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  const selectedStatus = await performancePage
+    .selectFirstAvailableDropdownOption(
+      performancePage.reviewStatusDropdown
+    );
+
+  await expect(performancePage.reviewStatusDropdown)
+    .toContainText(selectedStatus);
+
+  await performancePage.resetButton.click();
+
+  await expect(performancePage.reviewStatusDropdown)
+    .toContainText(data.defaultDropdownValue);
+});
+
+test('TC_PERFORMANCE_208 - Reset should clear the selected sub unit @positive @reset @filter @regression', async ({
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_208;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  const selectedSubUnit = await performancePage
+    .selectFirstAvailableDropdownOption(
+      performancePage.subUnitDropdown
+    );
+
+  await expect(performancePage.subUnitDropdown)
+    .toContainText(selectedSubUnit);
+
+  await performancePage.resetButton.click();
+
+  await expect(performancePage.subUnitDropdown)
+    .toContainText(data.defaultDropdownValue);
+});
+
+test('TC_PERFORMANCE_209 - Reset should restore the default review date range @positive @reset @date @regression', async ({
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_209;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  const defaultFromDate = await performancePage.fromDateInput.inputValue();
+  const defaultToDate = await performancePage.toDateInput.inputValue();
+
+  await performancePage.fromDateInput.fill(data.fromDate);
+  await performancePage.toDateInput.fill(data.toDate);
+
+  await performancePage.resetButton.click();
+
+  await expect(performancePage.fromDateInput).toHaveValue(defaultFromDate);
+  await expect(performancePage.toDateInput).toHaveValue(defaultToDate);
+});
+
+test('TC_PERFORMANCE_210 - Selected job title should remain after searching reviews @positive @filter @persistence @regression', async ({
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_210;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  const selectedJobTitle = await performancePage
+    .selectFirstAvailableDropdownOption(
+      performancePage.jobTitleDropdown
+    );
+
+  await performancePage.searchButton.click();
+  await performancePage.waitForReviewResults();
+
+  await expect(performancePage.jobTitleDropdown)
+    .toContainText(selectedJobTitle);
+  await expect(performancePage.employeeReviewsHeading)
+    .toHaveText(data.pageHeading);
+});
+
+test('TC_PERFORMANCE_211 - Selected sub unit should remain after searching reviews @positive @filter @persistence @regression', async ({
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_211;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  const selectedSubUnit = await performancePage
+    .selectFirstAvailableDropdownOption(
+      performancePage.subUnitDropdown
+    );
+
+  await performancePage.searchButton.click();
+  await performancePage.waitForReviewResults();
+
+  await expect(performancePage.subUnitDropdown)
+    .toContainText(selectedSubUnit);
+  await expect(performancePage.employeeReviewsHeading)
+    .toHaveText(data.pageHeading);
+});
+
+test('TC_PERFORMANCE_212 - Selected review status should remain after searching reviews @positive @filter @persistence @regression', async ({
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_212;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  const selectedStatus = await performancePage
+    .selectFirstAvailableDropdownOption(
+      performancePage.reviewStatusDropdown
+    );
+
+  await performancePage.searchButton.click();
+  await performancePage.waitForReviewResults();
+
+  await expect(performancePage.reviewStatusDropdown)
+    .toContainText(selectedStatus);
+  await expect(performancePage.employeeReviewsHeading)
+    .toHaveText(data.pageHeading);
+});
+
+test('TC_PERFORMANCE_213 - Admin should search reviews using combined dropdown filters @positive @filter @regression', async ({
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_213;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  const selectedJobTitle = await performancePage
+    .selectFirstAvailableDropdownOption(
+      performancePage.jobTitleDropdown
+    );
+  const selectedSubUnit = await performancePage
+    .selectFirstAvailableDropdownOption(
+      performancePage.subUnitDropdown
+    );
+  const selectedStatus = await performancePage
+    .selectFirstAvailableDropdownOption(
+      performancePage.reviewStatusDropdown
+    );
+
+  await performancePage.searchButton.click();
+  await performancePage.waitForReviewResults();
+
+  await expect(performancePage.jobTitleDropdown).toContainText(selectedJobTitle);
+  await expect(performancePage.subUnitDropdown).toContainText(selectedSubUnit);
+  await expect(performancePage.reviewStatusDropdown).toContainText(selectedStatus);
+  await expect(performancePage.employeeReviewsHeading).toHaveText(data.pageHeading);
+});
+
+test('TC_PERFORMANCE_214 - Employee Review filters should show their default values @smoke @filter @regression', async ({
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_214;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  await expect(performancePage.employeeNameInput).toHaveValue('');
+  await expect(performancePage.jobTitleDropdown).toContainText(data.defaultDropdownValue);
+  await expect(performancePage.subUnitDropdown).toContainText(data.defaultDropdownValue);
+  await expect(performancePage.reviewStatusDropdown).toContainText(data.defaultDropdownValue);
+  await expect(performancePage.fromDateInput).not.toHaveValue('');
+  await expect(performancePage.toDateInput).not.toHaveValue('');
+});
+
+test('TC_PERFORMANCE_215 - Reset should remain idempotent when clicked repeatedly @positive @reset @filter @regression', async ({
+  page,
+  navigationPage,
+  performancePage,
+}) => {
+  const data = performanceData.TC_PERFORMANCE_215;
+
+  await navigationPage.gotoPerformance();
+  await performancePage.gotoEmployeeReviews();
+
+  await performancePage.employeeNameInput.fill(
+    `${data.employeeNamePrefix}${Date.now()}`
+  );
+  await page.keyboard.press('Escape');
+
+  await performancePage.resetButton.click();
+  await performancePage.resetButton.click();
+
+  await expect(performancePage.employeeNameInput).toHaveValue('');
+  await expect(performancePage.jobTitleDropdown).toContainText(data.defaultDropdownValue);
+  await expect(performancePage.subUnitDropdown).toContainText(data.defaultDropdownValue);
+  await expect(performancePage.reviewStatusDropdown).toContainText(data.defaultDropdownValue);
+});
+
 });
