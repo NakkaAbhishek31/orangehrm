@@ -17,8 +17,8 @@ export default defineConfig({
   expect: {
     timeout: 20_000,
   },
-  fullyParallel: false,
-  workers: 1,
+  fullyParallel: true,
+  workers: 6,
   testDir: './tests',
   /* Run tests in files in parallel */
   //fullyParallel: true,
