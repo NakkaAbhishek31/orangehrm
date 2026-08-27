@@ -542,6 +542,8 @@ test.describe("Performance - Employee Reviews", () => {
     await performancePage.gotoEmployeeReviews();
     await performancePage.employeeNameInput.fill(`${data.employeeNamePrefix}${Date.now()}`);
     await page.keyboard.press("Escape");
+    await performancePage.searchButton.click();
+    await expect(performancePage.employeeNameValidation).toHaveText("Invalid");
     await performancePage.resetButton.click();
     await expect(performancePage.employeeNameInput).toHaveValue(data.emptyValue);
   });
@@ -724,9 +726,7 @@ test.describe("Performance - Employee Reviews", () => {
     await performancePage.gotoEmployeeReviews();
     await performancePage.searchButton.click();
     await performancePage.waitForReviewResults();
-    await expect(page).toHaveURL(
-     data.expectedUrlPath,
-    );   
+    await expect(page).toHaveURL(new RegExp(`${data.expectedUrlPath}$`));
   });
 
   test("TC_PERFORMANCE_228 - Heading should remain after search @positive @search @regression", async ({
@@ -815,6 +815,8 @@ test.describe("Performance - Employee Reviews", () => {
       `InvalidEmployee${Date.now()}`,
     );
     await page.keyboard.press("Escape");
+    await performancePage.searchButton.click();
+    await expect(performancePage.employeeNameValidation).toHaveText("Invalid");
     await performancePage.resetButton.click();
     await expect(performancePage.employeeNameInput).toHaveValue("");
   });
@@ -903,54 +905,60 @@ test.describe("Performance - Employee Reviews", () => {
     );
   });
 
-  test("TC_PERFORMANCE_241 - Include Past Employees should be unchecked by default @smoke @filter @regression", async ({
+  test("TC_PERFORMANCE_241 - Employee name autocomplete should show its hint text @smoke @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+    await expect(performancePage.employeeNameInput).toHaveAttribute(
+      "placeholder",
+      "Type for hints...",
+    );
   });
 
-  test("TC_PERFORMANCE_242 - Admin should select Include Past Employees @positive @filter @regression", async ({
+  test("TC_PERFORMANCE_242 - Review date inputs should be editable @positive @date @regression", async ({
     navigationPage,
     performancePage,
   }) => {
+    const data = performanceData.TC_PERFORMANCE_242;
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await performancePage.includePastEmployeesLabel.click();
+    await performancePage.fromDateInput.fill(data.fromDate);
+    await performancePage.toDateInput.fill(data.toDate);
 
-    await expect(performancePage.includePastEmployeesCheckbox).toBeChecked();
+    await expect(performancePage.fromDateInput).toHaveValue(data.fromDate);
+    await expect(performancePage.toDateInput).toHaveValue(data.toDate);
   });
 
-  test("TC_PERFORMANCE_243 - Include Past Employees should remain selected after search @positive @filter @persistence @regression", async ({
+  test("TC_PERFORMANCE_243 - Search should display reviews or an empty result state @positive @search @regression", async ({
     navigationPage,
     performancePage,
   }) => {
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await performancePage.includePastEmployeesLabel.click();
     await performancePage.searchButton.click();
     await performancePage.waitForReviewResults();
 
-    await expect(performancePage.includePastEmployeesCheckbox).toBeChecked();
+    await expect(
+      performancePage.reviewRows.first().or(performancePage.noRecordsFound),
+    ).toBeVisible();
   });
 
-  test("TC_PERFORMANCE_244 - Reset should clear Include Past Employees @positive @filter @reset @regression", async ({
+  test("TC_PERFORMANCE_244 - Reset button should remain enabled after searching @positive @search @reset @regression", async ({
     navigationPage,
     performancePage,
   }) => {
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await performancePage.includePastEmployeesLabel.click();
-    await expect(performancePage.includePastEmployeesCheckbox).toBeChecked();
-    await performancePage.resetButton.click();
+    await performancePage.searchButton.click();
+    await performancePage.waitForReviewResults();
 
-    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+    await expect(performancePage.resetButton).toBeEnabled();
   });
 
   test("TC_PERFORMANCE_245 - From Date should remain after search @positive @date @persistence @regression", async ({

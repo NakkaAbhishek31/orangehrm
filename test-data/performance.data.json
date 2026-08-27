@@ -93,7 +93,10 @@
   "TC_PERFORMANCE_239": {},
   "TC_PERFORMANCE_240": { "defaultDropdownValue": "-- Select --" },
   "TC_PERFORMANCE_241": {},
-  "TC_PERFORMANCE_242": {},
+  "TC_PERFORMANCE_242": {
+    "fromDate": "01-01-2025",
+    "toDate": "12-31-2025"
+  },
   "TC_PERFORMANCE_243": {},
   "TC_PERFORMANCE_244": {},
   "TC_PERFORMANCE_245": { "fromDate": "01-01-2025" },

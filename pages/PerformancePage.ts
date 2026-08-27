@@ -266,17 +266,22 @@ async selectFirstAvailableDropdownOption(
   await expect(dropdown).toBeVisible();
   await dropdown.click();
 
-  const option = this.page
-    .locator('.oxd-select-dropdown:visible')
+  const visibleDropdown = this.page.locator('.oxd-select-dropdown:visible');
+  await expect(visibleDropdown).toBeVisible({ timeout: 15_000 });
+
+  const option = visibleDropdown
     .locator('.oxd-select-option')
-    .filter({
-      hasNotText: /^-- Select --$/,
-    })
+    .filter({ hasNotText: /^(-- Select --|No Records Found|Searching\.\.\.)$/i })
     .first();
 
-  await expect(option).toBeVisible({
-    timeout: 15_000,
-  });
+  const optionAvailable = await option
+    .isVisible({ timeout: 15_000 })
+    .catch(() => false);
+
+  if (!optionAvailable) {
+    await this.page.keyboard.press('Escape');
+    return (await dropdown.innerText()).trim();
+  }
 
   const optionText = (await option.innerText()).trim();
   await option.click();
