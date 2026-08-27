@@ -3,7 +3,7 @@
     "expectedUrlPath": "/performance/searchEvaluatePerformanceReview",
     "pageHeading": "Employee Reviews"
   },
-  
+
   "TC_PERFORMANCE_202": {
     "requiredMessage": "Required",
     "expectedUrlPath": "/performance/searchEvaluatePerformanceReview"
@@ -58,5 +58,57 @@
   "TC_PERFORMANCE_215": {
     "employeeNamePrefix": "RepeatedResetEmployee",
     "defaultDropdownValue": "-- Select --"
+  },
+  "TC_PERFORMANCE_216": {
+    "employeeNamePrefix": "ResetEmployee",
+    "emptyValue": ""
+  },
+  "TC_PERFORMANCE_217": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_218": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_219": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_220": { "fromDate": "01-01-2025", "toDate": "12-31-2025" },
+  "TC_PERFORMANCE_221": {},
+  "TC_PERFORMANCE_222": {},
+  "TC_PERFORMANCE_223": {},
+  "TC_PERFORMANCE_224": {},
+  "TC_PERFORMANCE_225": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_226": { "fromDate": "01-01-2025", "toDate": "12-31-2025" },
+  "TC_PERFORMANCE_227": {
+    "expectedUrlPath": "/performance/searchEvaluatePerformanceReview"
+  },
+  "TC_PERFORMANCE_228": { "pageHeading": "Employee Reviews" },
+  "TC_PERFORMANCE_229": { "emptyValue": "" },
+  "TC_PERFORMANCE_230": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_231": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_232": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_233": { "emptyValue": "" },
+  "TC_PERFORMANCE_234": { "emptyValue": "" },
+  "TC_PERFORMANCE_235": {
+    "employeeNamePrefix": "InvalidEmployee",
+    "emptyValue": ""
+  },
+  "TC_PERFORMANCE_236": { "fromDate": "01-01-2025" },
+  "TC_PERFORMANCE_237": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_238": {},
+  "TC_PERFORMANCE_239": {},
+  "TC_PERFORMANCE_240": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_241": {},
+  "TC_PERFORMANCE_242": {},
+  "TC_PERFORMANCE_243": {},
+  "TC_PERFORMANCE_244": {},
+  "TC_PERFORMANCE_245": { "fromDate": "01-01-2025" },
+  "TC_PERFORMANCE_246": { "toDate": "12-31-2025" },
+  "TC_PERFORMANCE_247": {
+    "fromDate": "01-01-2025",
+    "toDate": "12-31-2025"
+  },
+  "TC_PERFORMANCE_248": {},
+  "TC_PERFORMANCE_249": {
+    "employeeNamePrefix": "UnknownEmployee",
+    "invalidMessage": "Invalid"
+  },
+  "TC_PERFORMANCE_250": {
+    "expectedUrlPath": "/performance/searchEvaluatePerformanceReview",
+    "pageHeading": "Employee Reviews"
   }
 }
