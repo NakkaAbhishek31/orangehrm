@@ -197,7 +197,7 @@ pipeline {
                         'call npx.cmd playwright test ' +
                         "\"${testTarget}\" " +
                         "--project=${params.BROWSER} " +
-                        '--workers=1 ' +
+                        "--workers=${params.WORKERS} " +
                         '--retries=1'
 
                     if (testName) {
