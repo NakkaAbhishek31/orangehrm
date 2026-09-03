@@ -1061,4 +1061,265 @@ test.describe("Performance - Employee Reviews", () => {
     );
     await expect(performancePage.searchButton).toBeEnabled();
   });
+
+  test("TC_PERFORMANCE_251 - Employee name field should be enabled @smoke @filter @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await expect(performancePage.employeeNameInput).toBeEnabled();
+    await expect(performancePage.employeeNameInput).toBeEditable();
+  });
+
+  test("TC_PERFORMANCE_252 - Review dropdown filters should be enabled @smoke @filter @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await expect(performancePage.jobTitleDropdown).toBeEnabled();
+    await expect(performancePage.subUnitDropdown).toBeEnabled();
+    await expect(performancePage.reviewStatusDropdown).toBeEnabled();
+  });
+
+  test("TC_PERFORMANCE_253 - Review date fields should be enabled and editable @smoke @date @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await expect(performancePage.fromDateInput).toBeEditable();
+    await expect(performancePage.toDateInput).toBeEditable();
+  });
+
+  test("TC_PERFORMANCE_254 - Empty employee name should remain empty after search @positive @search @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.searchButton.click();
+    await performancePage.waitForReviewResults();
+
+    await expect(performancePage.employeeNameInput).toHaveValue("");
+  });
+
+  test("TC_PERFORMANCE_255 - Reload should restore default dropdown filters @positive @navigation @filter @regression", async ({
+    page,
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_255;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await page.reload();
+
+    await expect(performancePage.jobTitleDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+    await expect(performancePage.subUnitDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+    await expect(performancePage.reviewStatusDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+  });
+
+  test("TC_PERFORMANCE_256 - Reset should keep the Employee Reviews URL @positive @reset @navigation @regression", async ({
+    page,
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_256;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.resetButton.click();
+
+    await expect(page).toHaveURL(new RegExp(`${data.expectedUrlPath}$`));
+  });
+
+  test("TC_PERFORMANCE_257 - Unknown employee should show no autocomplete records @negative @autocomplete @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_257;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.employeeNameInput.fill(
+      `${data.employeeNamePrefix}${Date.now()}`,
+    );
+
+    await expect(performancePage.autocompleteNoRecords).toHaveText(
+      data.noRecordsMessage,
+    );
+  });
+
+  test("TC_PERFORMANCE_258 - Reset should allow another search after invalid employee validation @negative @validation @reset @regression", async ({
+    page,
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_258;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.employeeNameInput.fill(
+      `${data.employeeNamePrefix}${Date.now()}`,
+    );
+    await expect(performancePage.autocompleteNoRecords).toBeVisible();
+    await page.keyboard.press("Escape");
+    await performancePage.searchButton.click();
+    await expect(performancePage.employeeNameValidation).toHaveText(
+      data.invalidMessage,
+    );
+
+    await performancePage.resetButton.click();
+    await performancePage.searchButton.click();
+    await performancePage.waitForReviewResults();
+
+    await expect(performancePage.employeeNameValidation).toBeHidden();
+  });
+
+  test("TC_PERFORMANCE_259 - Repeated searches should continue to return a result state @positive @search @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.searchButton.click();
+    await performancePage.waitForReviewResults();
+    await performancePage.searchButton.click();
+    await performancePage.waitForReviewResults();
+
+    await expect(
+      performancePage.reviewRows.first().or(performancePage.noRecordsFound),
+    ).toBeVisible();
+  });
+
+  test("TC_PERFORMANCE_260 - Search should work after reloading Employee Reviews @positive @search @navigation @regression", async ({
+    page,
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_260;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await page.reload();
+    await performancePage.searchButton.click();
+    await performancePage.waitForReviewResults();
+
+    await expect(performancePage.employeeReviewsHeading).toHaveText(
+      data.pageHeading,
+    );
+  });
+
+  test("TC_PERFORMANCE_261 - Employee name field should accept and clear text @positive @filter @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_261;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.employeeNameInput.fill(data.employeeName);
+    await expect(performancePage.employeeNameInput).toHaveValue(
+      data.employeeName,
+    );
+
+    await performancePage.employeeNameInput.clear();
+    await expect(performancePage.employeeNameInput).toHaveValue("");
+  });
+
+  test("TC_PERFORMANCE_262 - Reset should restore both default dates after editing @positive @date @reset @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_262;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    const defaultFromDate = await performancePage.fromDateInput.inputValue();
+    const defaultToDate = await performancePage.toDateInput.inputValue();
+
+    await performancePage.fromDateInput.fill(data.fromDate);
+    await performancePage.toDateInput.fill(data.toDate);
+    await performancePage.resetButton.click();
+
+    await expect(performancePage.fromDateInput).toHaveValue(defaultFromDate);
+    await expect(performancePage.toDateInput).toHaveValue(defaultToDate);
+  });
+
+  test("TC_PERFORMANCE_263 - Invalid employee validation should keep the user on Employee Reviews @negative @validation @navigation @regression", async ({
+    page,
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_263;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.employeeNameInput.fill(
+      `${data.employeeNamePrefix}${Date.now()}`,
+    );
+    await expect(performancePage.autocompleteNoRecords).toBeVisible();
+    await page.keyboard.press("Escape");
+    await performancePage.searchButton.click();
+
+    await expect(performancePage.employeeNameValidation).toHaveText(
+      data.invalidMessage,
+    );
+    await expect(page).toHaveURL(new RegExp(`${data.expectedUrlPath}$`));
+  });
+
+  test("TC_PERFORMANCE_264 - Default dropdown values should remain after an unfiltered search @positive @search @filter @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_264;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.searchButton.click();
+    await performancePage.waitForReviewResults();
+
+    await expect(performancePage.jobTitleDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+    await expect(performancePage.subUnitDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+    await expect(performancePage.reviewStatusDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+  });
+
+  test("TC_PERFORMANCE_265 - Reload should clear unselected employee text @positive @navigation @filter @regression", async ({
+    page,
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_265;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.employeeNameInput.fill(
+      `${data.employeeNamePrefix}${Date.now()}`,
+    );
+    await page.reload();
+
+    await expect(performancePage.employeeNameInput).toHaveValue("");
+    await expect(performancePage.employeeReviewsHeading).toHaveText(
+      data.pageHeading,
+    );
+  });
 });

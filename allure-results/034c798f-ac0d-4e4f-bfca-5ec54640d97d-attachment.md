@@ -1,0 +1,98 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Recruitment\recruitment.spec.ts >> Recruitment - Candidates >> TC_RECRUITMENT_157 - Admin should schedule an interview for a shortlisted candidate @positive @workflow @regression
+- Location: tests\Recruitment\recruitment.spec.ts:1780:5
+
+# Error details
+
+```
+Test timeout of 120000ms exceeded while running "beforeEach" hook.
+```
+
+```
+Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+Call log:
+  - navigating to "https://opensource-demo.orangehrmlive.com/", waiting until "domcontentloaded"
+
+```
+
+# Test source
+
+```ts
+  1  | import { Locator, Page, expect } from "@playwright/test";
+  2  | 
+  3  | export class LoginPage {
+  4  |   readonly page: Page;
+  5  |   readonly usernameInput: Locator;
+  6  |   readonly passwordInput: Locator;
+  7  |   readonly loginButton: Locator;
+  8  |   readonly profileMenu: Locator;
+  9  |   readonly errorMessage: Locator;
+  10 |   readonly validationMessages: Locator;
+  11 |   readonly forgotPasswordButton: Locator;
+  12 | 
+  13 |   constructor(page: Page) {
+  14 |     this.page = page;
+  15 |     this.usernameInput = page.getByRole("textbox", { name: "Username" });
+  16 |     this.passwordInput = page.getByRole("textbox", { name: "Password" });
+  17 |     this.loginButton = page.getByRole("button", { name: "Login" });
+  18 |     this.profileMenu = page.locator("li.oxd-userdropdown");
+  19 |     this.errorMessage = page.getByText(
+  20 |       /^(Invalid credentials|Account disabled)$/,
+  21 |     );
+  22 |     this.validationMessages = page.locator(".oxd-input-field-error-message");
+  23 |     this.forgotPasswordButton = page.getByText("Forgot your password?", {
+  24 |       exact: true,
+  25 |     });
+  26 |   }
+  27 | 
+  28 |   async visitPage(): Promise<void> {
+  29 |     for (let attempt = 1; attempt <= 2; attempt++) {
+  30 |       try {
+> 31 |         await this.page.goto("/", {
+     |                         ^ Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+  32 |           waitUntil: "domcontentloaded",
+  33 |           timeout: 60_000,
+  34 |         });
+  35 |         return;
+  36 |       } catch (error) {
+  37 |         if (attempt === 2) {
+  38 |           throw error;
+  39 |         }
+  40 |       }
+  41 |     }
+  42 |   }
+  43 | 
+  44 |   async login(Username: string, Password: string) {
+  45 |     await this.usernameInput.fill(Username);
+  46 |     await this.passwordInput.fill(Password);
+  47 |     await this.loginButton.click();
+  48 |   }
+  49 | 
+  50 |   async verifyLoginSuccessful(): Promise<void> {
+  51 |     await expect(this.page).toHaveURL(
+  52 |       /\/(dashboard\/index|pim\/viewPersonalDetails\/empNumber\/\d+)/,
+  53 |       { timeout: 20_000 },
+  54 |     );
+  55 |     await expect(this.profileMenu).toBeVisible({ timeout: 20_000 });
+  56 |   }
+  57 | 
+  58 |   async verifyLoginUnsuccessful(): Promise<void> {
+  59 |     await expect(this.page).toHaveURL(/auth\/login/);
+  60 |     await expect(this.profileMenu).not.toBeVisible();
+  61 |     await expect(this.usernameInput).toBeVisible();
+  62 |     await expect(this.passwordInput).toBeVisible();
+  63 |     await expect(this.loginButton).toBeVisible();
+  64 |   }
+  65 |   async clickOnForgotPassword(): Promise<void> {
+  66 |     await this.forgotPasswordButton.click();
+  67 |   }
+  68 | }
+  69 | 
+```

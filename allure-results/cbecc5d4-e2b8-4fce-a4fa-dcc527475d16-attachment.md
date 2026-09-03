@@ -1,0 +1,331 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Admin\admin-users.spec.ts >> Admin - System Users >> TC_ADMIN_055 - Admin should delete an existing System User @positive @delete @regression
+- Location: tests\Admin\admin-users.spec.ts:355:7
+
+# Error details
+
+```
+Test timeout of 180000ms exceeded.
+```
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByRole('heading', { name: 'System Users', exact: true })
+Expected: visible
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 20000ms
+  - waiting for getByRole('heading', { name: 'System Users', exact: true })
+  - Protocol error (Runtime.callFunctionOn): Internal server error, session closed.
+
+```
+
+```yaml
+- complementary:
+  - navigation "Sidepanel":
+    - link "client brand banner":
+      - /url: https://www.orangehrm.com/
+      - img "client brand banner"
+    - textbox "Search"
+    - button ""
+    - separator
+    - list:
+      - listitem:
+        - link "Admin":
+          - /url: /web/index.php/admin/viewAdminModule
+      - listitem:
+        - link "PIM":
+          - /url: /web/index.php/pim/viewPimModule
+      - listitem:
+        - link "Leave":
+          - /url: /web/index.php/leave/viewLeaveModule
+      - listitem:
+        - link "Time":
+          - /url: /web/index.php/time/viewTimeModule
+      - listitem:
+        - link "Recruitment":
+          - /url: /web/index.php/recruitment/viewRecruitmentModule
+      - listitem:
+        - link "My Info":
+          - /url: /web/index.php/pim/viewMyDetails
+      - listitem:
+        - link "Performance":
+          - /url: /web/index.php/performance/viewPerformanceModule
+      - listitem:
+        - link "Dashboard":
+          - /url: /web/index.php/dashboard/index
+      - listitem:
+        - link "Directory":
+          - /url: /web/index.php/directory/viewDirectory
+      - listitem:
+        - link "Maintenance":
+          - /url: /web/index.php/maintenance/viewMaintenanceModule
+      - listitem:
+        - link "Claim":
+          - /url: /web/index.php/claim/viewClaimModule
+          - img
+          - text: Claim
+      - listitem:
+        - link "Buzz":
+          - /url: /web/index.php/buzz/viewBuzz
+- banner:
+  - heading "Admin" [level=6]
+  - heading "/ User Management" [level=6]
+  - link "general.upgrade":
+    - /url: https://orangehrm.com/open-source/upgrade-to-advanced
+    - button "general.upgrade"
+  - list:
+    - listitem:
+      - img "profile picture"
+      - paragraph: manda user
+      - text: 
+  - navigation "Topbar Menu":
+    - list:
+      - listitem: User Management 
+      - listitem: Job 
+      - listitem: Organization 
+      - listitem: Qualifications 
+      - listitem:
+        - link "Nationalities":
+          - /url: "#"
+      - listitem:
+        - link "Corporate Branding":
+          - /url: "#"
+      - listitem: Configuration 
+      - button ""
+- heading "admin.system_users" [level=5]
+- button ""
+- separator
+- text: general.username
+- textbox
+- text: general.user_role -- Select --  general.employee_name
+- textbox "Type for hints..."
+- text: general.status -- Select -- 
+- separator
+- button "general.reset"
+- button "general.search"
+- button " general.add"
+- table
+- paragraph: OrangeHRM OS 5.9
+- paragraph:
+  - text: © 2005 - 2026
+  - link "OrangeHRM, Inc":
+    - /url: http://www.orangehrm.com
+  - text: . All rights reserved.
+```
+
+# Test source
+
+```ts
+  197 |     this.addUserCancelButton = page.getByRole("button", {
+  198 |       name: "Cancel",
+  199 |       exact: true,
+  200 |     });
+  201 | 
+  202 |     this.autocompleteOptions = page.locator(".oxd-autocomplete-option");
+  203 | 
+  204 |     this.successToast = page.locator(".oxd-toast-content-text").filter({
+  205 |       hasText: /Successfully Saved/i,
+  206 |     });
+  207 | 
+  208 |     this.validationMessages = page.locator(".oxd-input-field-error-message");
+  209 | 
+  210 |     this.toastMessage = page.locator(".oxd-toast-content-text");
+  211 | 
+  212 |     this.usernameValidation = page
+  213 |       .locator(".oxd-input-group")
+  214 |       .filter({
+  215 |         has: page.getByText("Username", {
+  216 |           exact: true,
+  217 |         }),
+  218 |       })
+  219 |       .locator(".oxd-input-field-error-message");
+  220 |     this.confirmPasswordValidation = page
+  221 |       .locator(".oxd-input-group")
+  222 |       .filter({
+  223 |         has: page.getByText("Confirm Password", {
+  224 |           exact: true,
+  225 |         }),
+  226 |       })
+  227 |       .locator(".oxd-input-field-error-message");
+  228 | 
+  229 |     this.editUserHeading = page.getByRole("heading", {
+  230 |       name: "Edit User",
+  231 |       exact: true,
+  232 |     });
+  233 | 
+  234 |     this.editStatusDropdown = page
+  235 |       .locator(".oxd-input-group")
+  236 |       .filter({
+  237 |         has: page.getByText("Status", {
+  238 |           exact: true,
+  239 |         }),
+  240 |       })
+  241 |       .locator(".oxd-select-text");
+  242 | 
+  243 |     this.editUserSaveButton = page.getByRole("button", {
+  244 |       name: "Save",
+  245 |       exact: true,
+  246 |     });
+  247 | 
+  248 |     this.deleteSelectedButton = page
+  249 |       .locator(
+  250 |         ".orangehrm-horizontal-padding " + "button.oxd-button--label-danger",
+  251 |       )
+  252 |       .filter({
+  253 |         has: page.locator("i.bi-trash-fill"),
+  254 |       });
+  255 | 
+  256 |     this.nextPageButton = page
+  257 |       .locator("button.oxd-pagination-page-item--previous-next")
+  258 |       .filter({
+  259 |         has: page.locator("i.bi-chevron-right"),
+  260 |       });
+  261 | 
+  262 |     this.previousPageButton = page
+  263 |       .locator("button.oxd-pagination-page-item--previous-next")
+  264 |       .filter({
+  265 |         has: page.locator("i.bi-chevron-left"),
+  266 |       });
+  267 | 
+  268 |     this.passwordValidation = page
+  269 |       .locator(".oxd-input-group")
+  270 |       .filter({
+  271 |         has: page.getByText("Password", {
+  272 |           exact: true,
+  273 |         }),
+  274 |       })
+  275 |       .locator(".oxd-input-field-error-message");
+  276 | 
+  277 |     this.employeeNameValidation = page
+  278 |       .locator(".oxd-input-group")
+  279 |       .filter({
+  280 |         has: page.locator("label").getByText("Employee Name", {
+  281 |           exact: true,
+  282 |         }),
+  283 |       })
+  284 |       .locator(".oxd-input-field-error-message");
+  285 |   }
+  286 | 
+  287 |   async gotoUserManagementUsers(): Promise<void> {
+  288 |     await this.userManagementMenu.click();
+  289 |     await this.usersMenuItem.click();
+  290 |   }
+  291 | 
+  292 |   private async selectDropdownOption(
+  293 |     dropdown: Locator,
+  294 |     option: string,
+  295 |   ): Promise<void> {
+  296 |     await dropdown.click();
+> 297 | 
+      |                                                      ^ Error: expect(locator).toBeVisible() failed
+  298 |     const dropdownOption = this.page
+  299 |       .locator(".oxd-select-option")
+  300 |       .getByText(option, {
+  301 |         exact: true,
+  302 |       });
+  303 | 
+  304 |     await expect(dropdownOption).toBeVisible();
+  305 |     await dropdownOption.click();
+  306 |   }
+  307 | 
+  308 |   async searchSystemUsers(filters: SystemUserFilters): Promise<void> {
+  309 |     if (filters.username !== undefined) {
+  310 |       await this.usernameInput.fill(filters.username);
+  311 |     }
+  312 | 
+  313 |     if (filters.userRole !== undefined) {
+  314 |       await this.selectDropdownOption(this.userRoleDropdown, filters.userRole);
+  315 |     }
+  316 | 
+  317 |     if (filters.employeeName !== undefined) {
+  318 |       await this.employeeNameInput.fill(filters.employeeName);
+  319 | 
+  320 |       const employeeOption = this.page
+  321 |         .locator(".oxd-autocomplete-option")
+  322 |         .filter({
+  323 |           hasText: filters.employeeName,
+  324 |         })
+  325 |         .first();
+  326 | 
+  327 |       await expect(employeeOption).toBeVisible({
+  328 |         timeout: 15_000,
+  329 |       });
+  330 | 
+  331 |       await employeeOption.click();
+  332 |     }
+  333 | 
+  334 |     if (filters.status !== undefined) {
+  335 |       await this.selectDropdownOption(this.statusDropdown, filters.status);
+  336 |     }
+  337 | 
+  338 |     const searchResponse = this.page.waitForResponse(
+  339 |       (response) =>
+  340 |         response.url().includes("/api/v2/admin/users") &&
+  341 |         response.request().method() === "GET" &&
+  342 |         response.ok(),
+  343 |       {
+  344 |         timeout: 20_000,
+  345 |       },
+  346 |     );
+  347 | 
+  348 |     await this.searchButton.click();
+  349 |     await searchResponse;
+  350 | 
+  351 |     await expect(this.loadingSpinner).toBeHidden();
+  352 |   }
+  353 | 
+  354 |   async verifySystemUserResult(expected: SystemUserFilters): Promise<void> {
+  355 |     await expect(this.userRows.first()).toBeVisible();
+  356 | 
+  357 |     const matchingRow = expected.username
+  358 |       ? this.userRows.filter({
+  359 |           has: this.page
+  360 |             .locator(".oxd-table-cell")
+  361 |             .nth(1)
+  362 |             .getByText(expected.username, {
+  363 |               exact: true,
+  364 |             }),
+  365 |         })
+  366 |       : this.userRows.first();
+  367 | 
+  368 |     await expect(matchingRow).toHaveCount(1);
+  369 | 
+  370 |     const cells = matchingRow.locator(".oxd-table-cell");
+  371 | 
+  372 |     if (expected.username !== undefined) {
+  373 |       await expect(cells.nth(1)).toHaveText(expected.username);
+  374 |     }
+  375 | 
+  376 |     if (expected.userRole !== undefined) {
+  377 |       await expect(cells.nth(2)).toHaveText(expected.userRole);
+  378 |     }
+  379 | 
+  380 |     if (expected.employeeName !== undefined) {
+  381 |       await expect(cells.nth(3)).toContainText(expected.employeeName);
+  382 |     }
+  383 | 
+  384 |     if (expected.status !== undefined) {
+  385 |       await expect(cells.nth(4)).toHaveText(expected.status);
+  386 |     }
+  387 |   }
+  388 | 
+  389 |   async resetSystemUserFilters(): Promise<void> {
+  390 |     const resetResponse = this.page.waitForResponse(
+  391 |       (response) =>
+  392 |         response.url().includes("/api/v2/admin/users") &&
+  393 |         response.request().method() === "GET" &&
+  394 |         response.ok(),
+  395 |       { timeout: 20_000 },
+  396 |     );
+  397 | 
+```

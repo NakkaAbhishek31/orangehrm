@@ -113,5 +113,38 @@
   "TC_PERFORMANCE_250": {
     "expectedUrlPath": "/performance/searchEvaluatePerformanceReview",
     "pageHeading": "Employee Reviews"
+  },
+  "TC_PERFORMANCE_251": {},
+  "TC_PERFORMANCE_252": {},
+  "TC_PERFORMANCE_253": {},
+  "TC_PERFORMANCE_254": {},
+  "TC_PERFORMANCE_255": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_256": {
+    "expectedUrlPath": "/performance/searchEvaluatePerformanceReview"
+  },
+  "TC_PERFORMANCE_257": {
+    "employeeNamePrefix": "UnknownEmployee",
+    "noRecordsMessage": "No Records Found"
+  },
+  "TC_PERFORMANCE_258": {
+    "employeeNamePrefix": "InvalidEmployee",
+    "invalidMessage": "Invalid"
+  },
+  "TC_PERFORMANCE_259": {},
+  "TC_PERFORMANCE_260": { "pageHeading": "Employee Reviews" },
+  "TC_PERFORMANCE_261": { "employeeName": "Test Employee" },
+  "TC_PERFORMANCE_262": {
+    "fromDate": "01-01-2025",
+    "toDate": "12-31-2025"
+  },
+  "TC_PERFORMANCE_263": {
+    "employeeNamePrefix": "UnknownEmployee",
+    "invalidMessage": "Invalid",
+    "expectedUrlPath": "/performance/searchEvaluatePerformanceReview"
+  },
+  "TC_PERFORMANCE_264": { "defaultDropdownValue": "-- Select --" },
+  "TC_PERFORMANCE_265": {
+    "employeeNamePrefix": "ReloadEmployee",
+    "pageHeading": "Employee Reviews"
   }
 }
