@@ -1,0 +1,45 @@
+{
+  "TC_DIRECTORY_371": {
+    "pageHeading": "Directory",
+    "expectedUrlPath": "/directory/viewDirectory"
+  },
+  "TC_DIRECTORY_372": { "defaultDropdownValue": "-- Select --" },
+  "TC_DIRECTORY_373": {},
+  "TC_DIRECTORY_374": {
+    "employeeNamePrefix": "UnknownEmployee",
+    "noRecordsMessage": "No Records Found",
+    "invalidMessage": "Invalid"
+  },
+  "TC_DIRECTORY_375": {},
+  "TC_DIRECTORY_376": {},
+  "TC_DIRECTORY_377": {},
+  "TC_DIRECTORY_378": { "defaultDropdownValue": "-- Select --" },
+  "TC_DIRECTORY_379": { "defaultDropdownValue": "-- Select --" },
+  "TC_DIRECTORY_380": {
+    "employeeNamePrefix": "InvalidEmployee",
+    "invalidMessage": "Invalid"
+  },
+  "TC_DIRECTORY_381": {
+    "expectedUrlPath": "/directory/viewDirectory"
+  },
+  "TC_DIRECTORY_382": {
+    "pageHeading": "Directory",
+    "expectedUrlPath": "/directory/viewDirectory"
+  },
+  "TC_DIRECTORY_383": { "placeholder": "Type for hints..." },
+  "TC_DIRECTORY_384": {},
+  "TC_DIRECTORY_385": { "defaultDropdownValue": "-- Select --" },
+  "TC_DIRECTORY_386": {},
+  "TC_DIRECTORY_387": {},
+  "TC_DIRECTORY_388": { "defaultDropdownValue": "-- Select --" },
+  "TC_DIRECTORY_389": {},
+  "TC_DIRECTORY_390": { "defaultDropdownValue": "-- Select --" },
+  "TC_DIRECTORY_391": {
+    "employeeNamePrefix": "UnknownDirectoryEmployee",
+    "noRecordsMessage": "No Records Found"
+  },
+  "TC_DIRECTORY_392": {
+    "pageHeading": "Directory",
+    "expectedUrlPath": "/directory/viewDirectory"
+  }
+}

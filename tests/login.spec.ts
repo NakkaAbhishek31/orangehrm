@@ -2,6 +2,8 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/baseTest";
 import loginData from "../test-data/login.data.json";
 
+test.use({ storageState: { cookies: [], origins: [] } });
+
 test.describe("loginpage",()=>{
 test("TC_LOGIN_001 - Admin should login with valid credentials @smoke @regression", async ({
   loginPage,

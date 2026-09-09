@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
 
 export interface SystemUserFilters {
   username?: string;
@@ -17,6 +18,7 @@ export type AddSystemUserDetails = {
 
 export class AdminPage {
   readonly page: Page;
+  readonly confirmationDialog: ConfirmationDialog;
   readonly userManagementMenu: Locator;
   readonly usersMenuItem: Locator;
   readonly systemUsersHeading: Locator;
@@ -57,6 +59,7 @@ export class AdminPage {
 
   constructor(page: Page) {
     this.page = page;
+    this.confirmationDialog = new ConfirmationDialog(page);
     this.userManagementMenu = page.locator(".oxd-topbar-body-nav-tab").filter({
       hasText: "User Management",
     });
@@ -489,7 +492,7 @@ export class AdminPage {
       })
       .click();
 
-    const confirmationDialog = this.page.getByRole("dialog");
+    const confirmationDialog = this.confirmationDialog.root;
 
     await expect(confirmationDialog).toBeVisible();
 
@@ -513,11 +516,7 @@ export class AdminPage {
       timeout: 10_000,
     });
 
-    await confirmationDialog
-      .getByRole("button", {
-        name: /Yes, Delete/i,
-      })
-      .click();
+    await this.confirmationDialog.confirmDelete();
 
     await Promise.all([deleteResponse, deletedToastAppears]);
 
@@ -602,16 +601,11 @@ export class AdminPage {
       })
       .click();
 
-    const confirmationDialog = this.page.getByRole("dialog");
+    const confirmationDialog = this.confirmationDialog.root;
 
     await expect(confirmationDialog).toBeVisible();
 
-    await confirmationDialog
-      .getByRole("button", {
-        name: "No, Cancel",
-        exact: true,
-      })
-      .click();
+    await this.confirmationDialog.cancel();
 
     await expect(confirmationDialog).toBeHidden();
 
@@ -762,13 +756,11 @@ export class AdminPage {
 
     await this.deleteSelectedButton.click();
 
-    const confirmationDialog = this.page.getByRole("dialog");
+    const confirmationDialog = this.confirmationDialog.root;
 
     await expect(confirmationDialog).toBeVisible();
 
-    const confirmDeleteButton = confirmationDialog
-      .locator("button.oxd-button--label-danger")
-      .filter({ hasText: /Yes,\s*Delete/i });
+    const confirmDeleteButton = this.confirmationDialog.confirmDeleteButton;
 
     await expect(confirmDeleteButton).toBeVisible();
     await expect(confirmDeleteButton).toBeEnabled();

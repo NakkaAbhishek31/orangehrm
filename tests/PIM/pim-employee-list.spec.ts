@@ -1,28 +1,12 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
-import loginData from "../../test-data/login.data.json";
 import employeeListData from "../../test-data/pimEmployeeList.data.json";
-
-type EmployeeTemplate = {
-  firstNamePrefix: string;
-  middleName: string;
-  lastName: string;
-};
-
-const createEmployee = (template: EmployeeTemplate) => ({
-  firstName: `${template.firstNamePrefix}${Date.now()}${Math.floor(Math.random() * 1000)}`,
-  middleName: template.middleName,
-  lastName: template.lastName,
-});
+import { routes } from "../../utils/routes";
+import { createUniqueEmployee as createEmployee } from "../../utils/testData";
 
 test.describe("PIM Employee List", () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.visitPage();
-    await loginPage.login(
-      loginData.validAdmin.username,
-      loginData.validAdmin.password,
-    );
-    await loginPage.verifyLoginSuccessful();
+  test.beforeEach(async ({ page }) => {
+    await page.goto(routes.dashboard);
   });
 
   test("TC_PIM_002 - Admin should search for an employee by employee ID @positive @regression", async ({

@@ -1,16 +1,11 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import dashboardData from "../../test-data/dashboard.data.json";
-import loginData from "../../test-data/login.data.json";
+import { routes } from "../../utils/routes";
 
 test.describe("Dashboard - Quick Launch", () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.visitPage();
-    await loginPage.login(
-      loginData.validAdmin.username,
-      loginData.validAdmin.password,
-    );
-    await loginPage.verifyLoginSuccessful();
+  test.beforeEach(async ({ page }) => {
+    await page.goto(routes.dashboard);
   });
 
   test("TC_DASHBOARD_266 - Admin should navigate to the Dashboard page @smoke @navigation @regression", async ({
@@ -258,5 +253,275 @@ test.describe("Dashboard - Quick Launch", () => {
     await dashboardPage.sidebarSearchInput.clear();
 
     await expect(dashboardPage.sidebarSearchInput).toHaveValue("");
+  });
+
+  for (const data of dashboardData.filteredNavigationCases) {
+    test(`${data.id} - Admin should search for and open ${data.linkName} from the sidebar @positive @search @navigation @regression`, async ({
+      dashboardPage,
+    }) => {
+      await dashboardPage.sidebarSearchInput.fill(data.linkName);
+      await expect(dashboardPage.sidebarMenuLinks).toHaveCount(1);
+
+      await dashboardPage.openSidebarLink(
+        data.linkName,
+        new RegExp(data.expectedUrlPath),
+      );
+    });
+  }
+
+  for (const data of dashboardData.reloadedQuickLaunchCases) {
+    test(`${data.id} - ${data.action} Quick Launch action should remain available after reload @positive @navigation @regression`, async ({
+      page,
+      dashboardPage,
+    }) => {
+      await page.reload();
+
+      await expect(dashboardPage.quickLaunchAction(data.action)).toBeVisible();
+      await expect(dashboardPage.quickLaunchAction(data.action)).toBeEnabled();
+    });
+  }
+
+  test("TC_DASHBOARD_346 - My Timesheet Quick Launch action should remain available after reload @positive @navigation @regression", async ({
+    page,
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_346;
+
+    await page.reload();
+
+    await expect(dashboardPage.quickLaunchAction(data.action)).toBeVisible();
+    await expect(dashboardPage.quickLaunchAction(data.action)).toBeEnabled();
+  });
+
+  test("TC_DASHBOARD_347 - Clicking the profile menu twice should close it @positive @profile @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_347;
+
+    await dashboardPage.openUserMenu();
+    await dashboardPage.profileMenu.click();
+
+    await expect(dashboardPage.userMenuItem(data.menuItem)).toBeHidden();
+  });
+
+  test("TC_DASHBOARD_348 - Reload should clear the sidebar search text @positive @search @navigation @regression", async ({
+    page,
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_348;
+
+    await dashboardPage.sidebarSearchInput.fill(data.searchText);
+    await expect(dashboardPage.sidebarSearchInput).toHaveValue(data.searchText);
+    await page.reload();
+
+    await expect(dashboardPage.sidebarSearchInput).toHaveValue("");
+  });
+
+  test("TC_DASHBOARD_349 - Clearing an unknown sidebar search should restore module links @negative @search @reset @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_349;
+
+    await dashboardPage.sidebarSearchInput.fill(data.searchText);
+    await expect(dashboardPage.sidebarMenuLinks).toHaveCount(0);
+    await dashboardPage.sidebarSearchInput.clear();
+
+    await expect(dashboardPage.sidebarLink(data.restoredLink)).toBeVisible();
+    await expect.poll(() => dashboardPage.sidebarMenuLinks.count()).toBeGreaterThan(1);
+  });
+
+  test("TC_DASHBOARD_350 - Dashboard sidebar link should be marked active @smoke @navigation @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_350;
+
+    await expect(dashboardPage.activeSidebarLink).toBeVisible();
+    await expect(dashboardPage.activeSidebarLink).toContainText(data.activeLink);
+  });
+
+  for (const data of dashboardData.sidebarRoundTripCases) {
+    test(`${data.id} - Admin should return to Dashboard after opening ${data.linkName} @positive @navigation @regression`, async ({
+      dashboardPage,
+    }) => {
+      await dashboardPage.openSidebarLink(
+        data.linkName,
+        new RegExp(data.expectedUrlPath),
+      );
+      await dashboardPage.returnToDashboard();
+    });
+  }
+
+  for (const data of dashboardData.quickLaunchRoundTripCases) {
+    test(`${data.id} - Admin should return to Dashboard after opening ${data.action} @positive @navigation @regression`, async ({
+      dashboardPage,
+    }) => {
+      await dashboardPage.openQuickLaunchAction(
+        data.action,
+        new RegExp(`${data.expectedUrlPath}$`),
+      );
+      await dashboardPage.returnToDashboard();
+    });
+  }
+
+  test("TC_DASHBOARD_367 - Dashboard should remain visible after filtering and clearing sidebar search @positive @search @reset @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_367;
+
+    await dashboardPage.sidebarSearchInput.fill(data.searchText);
+    await expect(dashboardPage.sidebarMenuLinks).toHaveCount(1);
+    await dashboardPage.sidebarSearchInput.clear();
+
+    await expect(dashboardPage.heading).toHaveText(data.pageHeading);
+  });
+
+  test("TC_DASHBOARD_368 - Dashboard link should become active again after browser back navigation @positive @navigation @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_368;
+
+    await dashboardPage.openSidebarLink(
+      data.linkName,
+      new RegExp(data.expectedUrlPath),
+    );
+    await dashboardPage.returnToDashboard();
+
+    await expect(dashboardPage.activeSidebarLink).toContainText(data.activeLink);
+  });
+
+  test("TC_DASHBOARD_369 - Quick Launch should contain six actions @smoke @navigation @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_369;
+
+    await expect(
+      dashboardPage.quickLaunchWidget.locator(".orangehrm-quick-launch-card"),
+    ).toHaveCount(data.expectedActionCount);
+  });
+
+  test("TC_DASHBOARD_370 - Sidebar should contain all standard module links @smoke @navigation @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_370;
+
+    await expect
+      .poll(() => dashboardPage.sidebarMenuLinks.count())
+      .toBeGreaterThanOrEqual(data.minimumSidebarLinkCount);
+  });
+
+  test("TC_DASHBOARD_371 - Dashboard should display the OrangeHRM brand logo @smoke @branding @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_371;
+
+    await expect(dashboardPage.brandLogo).toBeVisible();
+    await expect(dashboardPage.brandLogo).toHaveAttribute(
+      "src",
+      new RegExp(data.logoSourcePattern, "i"),
+    );
+  });
+
+  test("TC_DASHBOARD_372 - Dashboard should display the user profile image @smoke @profile @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_372;
+
+    await expect(dashboardPage.profileImage).toBeVisible();
+    await expect(dashboardPage.profileImage).toHaveAttribute(
+      "alt",
+      data.profileImageAlt,
+    );
+  });
+
+  test("TC_DASHBOARD_373 - Dashboard should display the logged-in user name @smoke @profile @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_373;
+
+    await expect(dashboardPage.profileName).toBeVisible();
+    await expect(dashboardPage.profileName).toHaveText(
+      new RegExp(data.profileNamePattern),
+    );
+  });
+
+  test("TC_DASHBOARD_374 - Dashboard should display its topbar breadcrumb @smoke @navigation @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_374;
+
+    await expect(dashboardPage.topbarHeader).toBeVisible();
+    await expect(dashboardPage.topbarHeader).toContainText(data.topbarText);
+  });
+
+  test("TC_DASHBOARD_375 - Admin should collapse the Dashboard sidebar @positive @navigation @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_375;
+
+    await dashboardPage.toggleSidebar();
+
+    await expect(dashboardPage.sidebarSearchInput).toHaveCSS(
+      "width",
+      data.collapsedWidth,
+    );
+  });
+
+  test("TC_DASHBOARD_376 - Admin should expand the Dashboard sidebar after collapsing it @positive @navigation @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_376;
+
+    await dashboardPage.toggleSidebar();
+    await dashboardPage.toggleSidebar();
+
+    await expect(dashboardPage.sidebarSearchInput).toBeVisible();
+    await expect(dashboardPage.sidebarSearchInput).toHaveAttribute(
+      "placeholder",
+      data.searchPlaceholder,
+    );
+  });
+
+  test("TC_DASHBOARD_377 - Admin should open the About dialog from the user menu @positive @profile @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_377;
+
+    await dashboardPage.openUserMenuItem(data.menuItem);
+
+    await expect(dashboardPage.aboutDialog).toBeVisible();
+  });
+
+  test("TC_DASHBOARD_378 - Admin should close the About dialog @positive @profile @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_378;
+
+    await dashboardPage.openUserMenuItem(data.menuItem);
+    await dashboardPage.closeAboutDialog();
+
+    await expect(dashboardPage.aboutDialog).toBeHidden();
+  });
+
+  test("TC_DASHBOARD_379 - Admin should open Change Password from the user menu @positive @profile @navigation @regression", async ({
+    page,
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_379;
+
+    await dashboardPage.openUserMenuItem(data.menuItem);
+
+    await expect(page).toHaveURL(new RegExp(`${data.expectedUrlPath}$`));
+  });
+
+  test("TC_DASHBOARD_380 - Logout option should remain available after reopening the user menu @smoke @profile @regression", async ({
+    dashboardPage,
+  }) => {
+    const data = dashboardData.TC_DASHBOARD_380;
+
+    await dashboardPage.openUserMenu();
+    await dashboardPage.profileMenu.click();
+    await dashboardPage.openUserMenu();
+
+    await expect(dashboardPage.userMenuItem(data.menuItem)).toBeVisible();
   });
 });

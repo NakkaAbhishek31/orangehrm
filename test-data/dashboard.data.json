@@ -201,5 +201,174 @@
       "linkName": "Buzz"
     }
   ],
-  "TC_DASHBOARD_330": { "searchText": "Performance" }
+  "TC_DASHBOARD_330": { "searchText": "Performance" },
+  "filteredNavigationCases": [
+    {
+      "id": "TC_DASHBOARD_331",
+      "linkName": "Admin",
+      "expectedUrlPath": "/admin/viewSystemUsers"
+    },
+    {
+      "id": "TC_DASHBOARD_332",
+      "linkName": "PIM",
+      "expectedUrlPath": "/pim/viewEmployeeList"
+    },
+    {
+      "id": "TC_DASHBOARD_333",
+      "linkName": "Leave",
+      "expectedUrlPath": "/leave/viewLeaveList"
+    },
+    {
+      "id": "TC_DASHBOARD_334",
+      "linkName": "Time",
+      "expectedUrlPath": "/time/viewEmployeeTimesheet"
+    },
+    {
+      "id": "TC_DASHBOARD_335",
+      "linkName": "Recruitment",
+      "expectedUrlPath": "/recruitment/viewCandidates"
+    },
+    {
+      "id": "TC_DASHBOARD_336",
+      "linkName": "My Info",
+      "expectedUrlPath": "/pim/viewPersonalDetails/empNumber/"
+    },
+    {
+      "id": "TC_DASHBOARD_337",
+      "linkName": "Performance",
+      "expectedUrlPath": "/performance/searchEvaluatePerformanceReview"
+    },
+    {
+      "id": "TC_DASHBOARD_338",
+      "linkName": "Directory",
+      "expectedUrlPath": "/directory/viewDirectory"
+    },
+    {
+      "id": "TC_DASHBOARD_339",
+      "linkName": "Claim",
+      "expectedUrlPath": "/claim/viewAssignClaim"
+    },
+    {
+      "id": "TC_DASHBOARD_340",
+      "linkName": "Buzz",
+      "expectedUrlPath": "/buzz/viewBuzz"
+    }
+  ],
+  "reloadedQuickLaunchCases": [
+    { "id": "TC_DASHBOARD_341", "action": "Assign Leave" },
+    { "id": "TC_DASHBOARD_342", "action": "Leave List" },
+    { "id": "TC_DASHBOARD_343", "action": "Timesheets" },
+    { "id": "TC_DASHBOARD_344", "action": "Apply Leave" },
+    { "id": "TC_DASHBOARD_345", "action": "My Leave" }
+  ],
+  "TC_DASHBOARD_346": { "action": "My Timesheet" },
+  "TC_DASHBOARD_347": { "menuItem": "Logout" },
+  "TC_DASHBOARD_348": { "searchText": "Performance" },
+  "TC_DASHBOARD_349": { "searchText": "UnknownModule", "restoredLink": "Admin" },
+  "TC_DASHBOARD_350": { "activeLink": "Dashboard" },
+  "sidebarRoundTripCases": [
+    {
+      "id": "TC_DASHBOARD_351",
+      "linkName": "Admin",
+      "expectedUrlPath": "/admin/viewSystemUsers"
+    },
+    {
+      "id": "TC_DASHBOARD_352",
+      "linkName": "PIM",
+      "expectedUrlPath": "/pim/viewEmployeeList"
+    },
+    {
+      "id": "TC_DASHBOARD_353",
+      "linkName": "Leave",
+      "expectedUrlPath": "/leave/viewLeaveList"
+    },
+    {
+      "id": "TC_DASHBOARD_354",
+      "linkName": "Time",
+      "expectedUrlPath": "/time/viewEmployeeTimesheet"
+    },
+    {
+      "id": "TC_DASHBOARD_355",
+      "linkName": "Recruitment",
+      "expectedUrlPath": "/recruitment/viewCandidates"
+    },
+    {
+      "id": "TC_DASHBOARD_356",
+      "linkName": "My Info",
+      "expectedUrlPath": "/pim/viewPersonalDetails/empNumber/"
+    },
+    {
+      "id": "TC_DASHBOARD_357",
+      "linkName": "Performance",
+      "expectedUrlPath": "/performance/searchEvaluatePerformanceReview"
+    },
+    {
+      "id": "TC_DASHBOARD_358",
+      "linkName": "Directory",
+      "expectedUrlPath": "/directory/viewDirectory"
+    },
+    {
+      "id": "TC_DASHBOARD_359",
+      "linkName": "Claim",
+      "expectedUrlPath": "/claim/viewAssignClaim"
+    },
+    {
+      "id": "TC_DASHBOARD_360",
+      "linkName": "Buzz",
+      "expectedUrlPath": "/buzz/viewBuzz"
+    }
+  ],
+  "quickLaunchRoundTripCases": [
+    {
+      "id": "TC_DASHBOARD_361",
+      "action": "Assign Leave",
+      "expectedUrlPath": "/leave/assignLeave"
+    },
+    {
+      "id": "TC_DASHBOARD_362",
+      "action": "Leave List",
+      "expectedUrlPath": "/leave/viewLeaveList"
+    },
+    {
+      "id": "TC_DASHBOARD_363",
+      "action": "Timesheets",
+      "expectedUrlPath": "/time/viewEmployeeTimesheet"
+    },
+    {
+      "id": "TC_DASHBOARD_364",
+      "action": "Apply Leave",
+      "expectedUrlPath": "/leave/applyLeave"
+    },
+    {
+      "id": "TC_DASHBOARD_365",
+      "action": "My Leave",
+      "expectedUrlPath": "/leave/viewMyLeaveList"
+    },
+    {
+      "id": "TC_DASHBOARD_366",
+      "action": "My Timesheet",
+      "expectedUrlPath": "/time/viewMyTimesheet"
+    }
+  ],
+  "TC_DASHBOARD_367": { "searchText": "Admin", "pageHeading": "Dashboard" },
+  "TC_DASHBOARD_368": {
+    "linkName": "Admin",
+    "expectedUrlPath": "/admin/viewSystemUsers",
+    "activeLink": "Dashboard"
+  },
+  "TC_DASHBOARD_369": { "expectedActionCount": 6 },
+  "TC_DASHBOARD_370": { "minimumSidebarLinkCount": 12 },
+  "TC_DASHBOARD_371": { "logoSourcePattern": "orangehrm-logo" },
+  "TC_DASHBOARD_372": { "profileImageAlt": "profile picture" },
+  "TC_DASHBOARD_373": { "profileNamePattern": "\\S+" },
+  "TC_DASHBOARD_374": { "topbarText": "Dashboard" },
+  "TC_DASHBOARD_375": { "collapsedWidth": "0px" },
+  "TC_DASHBOARD_376": { "searchPlaceholder": "Search" },
+  "TC_DASHBOARD_377": { "menuItem": "About" },
+  "TC_DASHBOARD_378": { "menuItem": "About" },
+  "TC_DASHBOARD_379": {
+    "menuItem": "Change Password",
+    "expectedUrlPath": "/pim/updatePassword"
+  },
+  "TC_DASHBOARD_380": { "menuItem": "Logout" }
 }

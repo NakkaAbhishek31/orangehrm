@@ -1,18 +1,11 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
-import loginData from "../../test-data/login.data.json";
 import performanceData from "../../test-data/performance.data.json";
+import { routes } from "../../utils/routes";
 
 test.describe("Performance - Employee Reviews", () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.visitPage();
-
-    await loginPage.login(
-      loginData.validAdmin.username,
-      loginData.validAdmin.password,
-    );
-
-    await loginPage.verifyLoginSuccessful();
+  test.beforeEach(async ({ page }) => {
+    await page.goto(routes.dashboard);
   });
 
   test("TC_PERFORMANCE_201 - Admin should navigate to the Employee Reviews page @smoke @navigation @regression", async ({

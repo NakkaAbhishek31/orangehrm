@@ -3,26 +3,15 @@ import { test } from "../../fixtures/baseTest";
 import path from "node:path";
 import loginData from "../../test-data/login.data.json";
 import pimData from "../../test-data/pimEmployee.data.json";
-
-const unique = () => `${Date.now()}${Math.floor(Math.random() * 1000)}`;
-const employeeFrom = (d: {
-  firstNamePrefix: string;
-  middleName: string;
-  lastName: string;
-}) => ({
-  firstName: `${d.firstNamePrefix}${unique()}`,
-  middleName: d.middleName,
-  lastName: d.lastName,
-});
+import { routes } from "../../utils/routes";
+import {
+  createUniqueEmployee as employeeFrom,
+  generateUniqueId as unique,
+} from "../../utils/testData";
 
 test.describe("PIM Employee", () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.visitPage();
-    await loginPage.login(
-      loginData.validAdmin.username,
-      loginData.validAdmin.password,
-    );
-    await loginPage.verifyLoginSuccessful();
+  test.beforeEach(async ({ page }) => {
+    await page.goto(routes.dashboard);
   });
 
   test("TC_PIM_001 - Admin should add a new employee successfully @positive @regression", async ({

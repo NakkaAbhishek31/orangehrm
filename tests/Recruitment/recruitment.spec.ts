@@ -1,30 +1,12 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
-import loginData from "../../test-data/login.data.json";
 import recruitmentData from "../../test-data/recruitment.data.json";
-
-const dateFromOffset = (daysOffset: number): string => {
-  const date = new Date();
-
-  date.setDate(date.getDate() + daysOffset);
-
-  const year = date.getFullYear();
-
-  const day = String(date.getDate()).padStart(2, "0");
-
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-
-  return `${year}-${day}-${month}`;
-};
+import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
+import { routes } from "../../utils/routes";
 
 test.describe("Recruitment - Candidates", () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.visitPage();
-    await loginPage.login(
-      loginData.validAdmin.username,
-      loginData.validAdmin.password,
-    );
-    await loginPage.verifyLoginSuccessful();
+  test.beforeEach(async ({ page }) => {
+    await page.goto(routes.dashboard);
   });
 
   test("TC_RECRUITMENT_133 - Admin should navigate to the Candidates page @smoke @navigation @regression", async ({

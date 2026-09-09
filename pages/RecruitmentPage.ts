@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
 
 const DEFAULT_TIMEOUT = 15_000;
 const API_TIMEOUT = 20_000;
@@ -37,6 +38,7 @@ export interface UpdateCandidateDetails {
 }
 
 export class RecruitmentPage {
+  readonly confirmationDialog: ConfirmationDialog;
   readonly candidateLink: Locator;
   readonly candidatePageHeading: Locator;
   readonly candidateNameInput: Locator;
@@ -114,6 +116,7 @@ readonly rejectCandidateHeading: Locator;
 readonly workflowCancelButton: Locator; 
 
   constructor(readonly page: Page) {
+    this.confirmationDialog = new ConfirmationDialog(page);
     this.candidateLink = page.getByRole("link", {
       name: "Candidates",
       exact: true,
@@ -803,7 +806,7 @@ this.workflowCancelButton = page
 
     await deleteButton.click();
 
-    const confirmationDialog = this.page.getByRole("dialog");
+    const confirmationDialog = this.confirmationDialog.root;
 
     await expect(confirmationDialog).toBeVisible();
 
@@ -827,9 +830,7 @@ this.workflowCancelButton = page
       },
     );
 
-    const confirmDeleteButton = confirmationDialog.getByRole("button", {
-      name: /Yes, Delete/i,
-    });
+    const confirmDeleteButton = this.confirmationDialog.confirmDeleteButton;
 
     await expect(confirmDeleteButton).toBeVisible();
     await confirmDeleteButton.click();
@@ -880,16 +881,11 @@ this.workflowCancelButton = page
 
     await deleteButton.click();
 
-    const confirmationDialog = this.page.getByRole("dialog");
+    const confirmationDialog = this.confirmationDialog.root;
 
     await expect(confirmationDialog).toBeVisible();
 
-    await confirmationDialog
-      .getByRole("button", {
-        name: "No, Cancel",
-        exact: true,
-      })
-      .click();
+    await this.confirmationDialog.cancel();
 
     await expect(confirmationDialog).toBeHidden();
 

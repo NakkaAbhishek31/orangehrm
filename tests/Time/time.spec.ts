@@ -1,42 +1,12 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
-import loginData from "../../test-data/login.data.json";
 import timeData from "../../test-data/time.data.json";
-const unique = () => `${Date.now()}${Math.floor(Math.random() * 1000)}`;
-const employeeFrom = (
-  d: { firstNamePrefix: string; middleName: string; lastName: string },
-  value = unique(),
-) => ({
-  firstName: `${d.firstNamePrefix}${value}`,
-  middleName: d.middleName,
-  lastName: d.lastName,
-});
-
-const dateFromOffset = (daysOffset: number): string => {
-  const date = new Date();
-
-  date.setDate(date.getDate() + daysOffset);
-
-  const year = date.getFullYear();
-
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-
-  const day = String(date.getDate()).padStart(2, "0");
-
-  // OrangeHRM Time fields use yyyy-dd-mm.
-  return `${year}-${day}-${month}`;
-};
+import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
+import { routes } from "../../utils/routes";
 
 test.describe("Time - Timesheets, Attendance and Reports", () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.visitPage();
-
-    await loginPage.login(
-      loginData.validAdmin.username,
-      loginData.validAdmin.password,
-    );
-
-    await loginPage.verifyLoginSuccessful();
+  test.beforeEach(async ({ page }) => {
+    await page.goto(routes.dashboard);
   });
 
   test("TC_TIME_166 - Admin should navigate to the Employee Timesheets page @smoke @navigation @regression", async ({

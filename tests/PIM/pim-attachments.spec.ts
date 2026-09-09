@@ -1,12 +1,12 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
+import { routes } from "../../utils/routes";
 
 test("TC_PIM_011 - Admin should upload an employee attachment @positive @upload @regression", async ({
   page,
-  loginPage,
   navigationPage,
   pimPage,
-  employeeAttachmentspage,
+  employeeAttachmentsPage,
 }) => {
   const firstName = `Auto${Date.now()}`;
   const middleName = "Test";
@@ -14,9 +14,7 @@ test("TC_PIM_011 - Admin should upload an employee attachment @positive @upload 
   const profilePicturePath = "test-data/OIP.jpg";
   const pdfAttachement = "test-data/employee-handbook-template.pdf";
   const attachmentComment = "Attachment PDF";
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
+  await page.goto(routes.dashboard);
 
   await navigationPage.gotoPIM();
   await pimPage.gotoAddEmployee();
@@ -32,19 +30,19 @@ test("TC_PIM_011 - Admin should upload an employee attachment @positive @upload 
     timeout: 60000, // 60 seconds
   });
 
-  await employeeAttachmentspage.clickonuploadtheAttachement();
-  await employeeAttachmentspage.attachmentFileInput.setInputFiles(
+  await employeeAttachmentsPage.clickonuploadtheAttachement();
+  await employeeAttachmentsPage.attachmentFileInput.setInputFiles(
     pdfAttachement,
   );
-  await employeeAttachmentspage.attachmentCommentInput.fill(attachmentComment);
-  await expect(employeeAttachmentspage.attachmentFileInput).toHaveValue(
+  await employeeAttachmentsPage.attachmentCommentInput.fill(attachmentComment);
+  await expect(employeeAttachmentsPage.attachmentFileInput).toHaveValue(
     /employee-handbook-template\.pdf$/,
   );
-  await expect(employeeAttachmentspage.attachmentCommentInput).toHaveValue(
+  await expect(employeeAttachmentsPage.attachmentCommentInput).toHaveValue(
     attachmentComment,
   );
-  await employeeAttachmentspage.saveUploadtheAttachement();
-  await employeeAttachmentspage.verifyUploadedAttachment(
+  await employeeAttachmentsPage.saveUploadtheAttachement();
+  await employeeAttachmentsPage.verifyUploadedAttachment(
     "employee-handbook-template.pdf",
     "Attachment PDF",
   );
@@ -60,10 +58,9 @@ test("TC_PIM_011 - Admin should upload an employee attachment @positive @upload 
 
 test("TC_PIM_012 - Admin should download an employee attachment @positive @download @regression", async ({
   page,
-  loginPage,
   navigationPage,
   pimPage,
-  employeeAttachmentspage,
+  employeeAttachmentsPage,
 }) => {
   const firstName = `Auto${Date.now()}`;
   const middleName = "Test";
@@ -71,9 +68,7 @@ test("TC_PIM_012 - Admin should download an employee attachment @positive @downl
   const profilePicturePath = "test-data/OIP.jpg";
   const pdfAttachement = "test-data/employee-handbook-template.pdf";
   const attachmentComment = "Attachment PDF";
-  await loginPage.visitPage();
-  await loginPage.login("Admin", "admin123");
-  await loginPage.verifyLoginSuccessful();
+  await page.goto(routes.dashboard);
 
   await navigationPage.gotoPIM();
   await pimPage.gotoAddEmployee();
@@ -89,19 +84,19 @@ test("TC_PIM_012 - Admin should download an employee attachment @positive @downl
     timeout: 60000, // 60 seconds
   });
 
-  await employeeAttachmentspage.clickonuploadtheAttachement();
-  await employeeAttachmentspage.attachmentFileInput.setInputFiles(
+  await employeeAttachmentsPage.clickonuploadtheAttachement();
+  await employeeAttachmentsPage.attachmentFileInput.setInputFiles(
     pdfAttachement,
   );
-  await employeeAttachmentspage.attachmentCommentInput.fill(attachmentComment);
-  await expect(employeeAttachmentspage.attachmentFileInput).toHaveValue(
+  await employeeAttachmentsPage.attachmentCommentInput.fill(attachmentComment);
+  await expect(employeeAttachmentsPage.attachmentFileInput).toHaveValue(
     /employee-handbook-template\.pdf$/,
   );
-  await expect(employeeAttachmentspage.attachmentCommentInput).toHaveValue(
+  await expect(employeeAttachmentsPage.attachmentCommentInput).toHaveValue(
     attachmentComment,
   );
-  await employeeAttachmentspage.saveUploadtheAttachement();
-  await employeeAttachmentspage.verifyUploadedAttachment(
+  await employeeAttachmentsPage.saveUploadtheAttachement();
+  await employeeAttachmentsPage.verifyUploadedAttachment(
     "employee-handbook-template.pdf",
     "Attachment PDF",
   );
@@ -110,7 +105,7 @@ test("TC_PIM_012 - Admin should download an employee attachment @positive @downl
   await pimPage.clickOnFilterSearch();
   await pimPage.verifyEmployeeSearchResult(employeeId, firstName, lastName);
   await pimPage.openEmployeeById(employeeId);
-  const download = await employeeAttachmentspage.downloadAttachemnt(
+  const download = await employeeAttachmentsPage.downloadAttachemnt(
     "employee-handbook-template.pdf",
   );
   expect(download.suggestedFilename()).toBe("employee-handbook-template.pdf");

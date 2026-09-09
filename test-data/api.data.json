@@ -1,0 +1,10 @@
+{
+  "employeeEndpoint": "/web/index.php/api/v2/pim/employees?limit=10&offset=0",
+  "jobTitlesEndpoint": "/web/index.php/api/v2/admin/job-titles?limit=50&offset=0",
+  "locationsEndpoint": "/web/index.php/api/v2/admin/locations?limit=50&offset=0",
+  "subunitsEndpoint": "/web/index.php/api/v2/admin/subunits",
+  "leaveTypesEndpoint": "/web/index.php/api/v2/leave/leave-types?limit=50&offset=0",
+  "directoryEndpoint": "/web/index.php/api/v2/directory/employees?limit=14&offset=0",
+  "candidatesEndpoint": "/web/index.php/api/v2/recruitment/candidates?limit=10&offset=0",
+  "unknownEndpoint": "/web/index.php/api/v2/endpoint-that-does-not-exist"
+}

@@ -1,15 +1,20 @@
 {
-  "name": "orangehrmlive",
+  "name": "orangehrm-playwright-automation",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Production-style Playwright E2E and API automation for OrangeHRM",
   "scripts": {
     "test": "playwright test",
     "test:all": "playwright test",
+    "test:api": "playwright test tests/API",
+    "test:dashboard": "playwright test tests/Dashboard",
+    "test:directory": "playwright test tests/Directory",
+    "test:performance": "playwright test tests/Performance",
 
-    "test:admin": "playwright test tests/admin",
-    "test:pim": "playwright test tests/pim",
-    "test:employee": "playwright test tests/employee",
+    "test:admin": "playwright test tests/Admin",
+    "test:pim": "playwright test tests/PIM",
+    "test:leave": "playwright test tests/Leave",
+    "test:recruitment": "playwright test tests/Recruitment",
+    "test:time": "playwright test tests/Time",
 
     "test:smoke": "playwright test --grep @smoke",
     "test:regression": "playwright test --grep @regression",
@@ -33,12 +38,12 @@
     "test:details": "playwright test --grep @details",
     "test:autocomplete": "playwright test --grep @autocomplete",
 
-    "test:admin:smoke": "playwright test tests/admin --grep @smoke",
-    "test:admin:regression": "playwright test tests/admin --grep @regression",
-    "test:pim:smoke": "playwright test tests/pim --grep @smoke",
-    "test:pim:regression": "playwright test tests/pim --grep @regression",
-    "test:pim:positive": "playwright test tests/pim --grep @positive",
-    "test:pim:negative": "playwright test tests/pim --grep @negative",
+    "test:admin:smoke": "playwright test tests/Admin --grep @smoke",
+    "test:admin:regression": "playwright test tests/Admin --grep @regression",
+    "test:pim:smoke": "playwright test tests/PIM --grep @smoke",
+    "test:pim:regression": "playwright test tests/PIM --grep @regression",
+    "test:pim:positive": "playwright test tests/PIM --grep @positive",
+    "test:pim:negative": "playwright test tests/PIM --grep @negative",
 
     "test:chromium": "playwright test --project=chromium",
     "test:firefox": "playwright test --project=firefox",
@@ -48,9 +53,9 @@
     "test:debug": "playwright test --debug",
     "test:ui": "playwright test --ui",
 
-    "test:ci": "playwright test --project=chromium --workers=1",
-    "test:ci:smoke": "playwright test --project=chromium --workers=1 --grep @smoke",
-    "test:ci:regression": "playwright test --project=chromium --workers=1 --grep @regression",
+    "test:ci": "playwright test --project=chromium",
+    "test:ci:smoke": "playwright test --project=chromium --grep @smoke",
+    "test:ci:regression": "playwright test --project=chromium --grep @regression",
 
     "test:list": "playwright test --list",
     "test:last-failed": "playwright test --last-failed",
@@ -60,9 +65,10 @@
 
     "install:browsers": "playwright install",
     "install:chromium": "playwright install chromium",
-    "codegen": "playwright codegen"
+    "codegen": "playwright codegen",
+    "clean:reports": "node scripts/clean-reports.js"
   },
-  "keywords": [],
+  "keywords": ["playwright", "typescript", "e2e", "api", "orangehrm"],
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.62.0",

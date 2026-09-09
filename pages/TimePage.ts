@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
 
 export type CreateProjectDetails = {
   customerName: string;
@@ -31,6 +32,7 @@ export type SearchProjectFilters = {
 
 export class TimePage {
   readonly page: Page;
+  readonly deleteDialog: ConfirmationDialog;
 
   // Top navigation
   readonly timesheetsMenu: Locator;
@@ -154,6 +156,7 @@ readonly cancelDeleteButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
+    this.deleteDialog = new ConfirmationDialog(page);
 
     const topNavigation = page.locator(".oxd-topbar-body-nav");
 
@@ -750,25 +753,9 @@ this.projectsHeading = page.getByRole('heading', {
         exact: true,
       });
 
-    this.confirmationDialog =
-      page.getByRole('dialog');
-
-    this.confirmDeleteButton =
-      this.confirmationDialog.getByRole(
-        'button',
-        {
-          name: /Yes, Delete$/,
-        }
-      );
-
-    this.cancelDeleteButton =
-      this.confirmationDialog.getByRole(
-        'button',
-        {
-          name: 'No, Cancel',
-          exact: true,
-        }
-      );
+    this.confirmationDialog = this.deleteDialog.root;
+    this.confirmDeleteButton = this.deleteDialog.confirmDeleteButton;
+    this.cancelDeleteButton = this.deleteDialog.cancelButton;
 
     this.timeSuccessToast = page
       .locator('.oxd-toast-content-text')

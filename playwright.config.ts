@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import { environment } from './config/environment';
+
+const adminAuthFile = 'playwright/.auth/admin.json';
 
 /**
  * Read environment variables from file.
@@ -18,7 +21,7 @@ export default defineConfig({
     timeout: 20_000,
   },
   fullyParallel: true,
-  workers: 6,
+  workers: environment.workers,
   testDir: './tests',
   /* Run tests in files in parallel */
   //fullyParallel: true,
@@ -46,10 +49,10 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
-    baseURL: 'https://opensource-demo.orangehrmlive.com',
+    baseURL: environment.baseUrl,
       locale: 'en-US',
-      actionTimeout: 70_000,
-    navigationTimeout: 70_000,
+      actionTimeout: environment.actionTimeoutMs,
+    navigationTimeout: environment.navigationTimeoutMs,
 
     
   extraHTTPHeaders: {
@@ -66,8 +69,17 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      testIgnore: /.*\.setup\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: adminAuthFile,
+      },
+      dependencies: ['setup'],
     },
 
     // {

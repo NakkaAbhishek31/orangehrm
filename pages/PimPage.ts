@@ -1,4 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
+import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { generateEmployeeId } from "../utils/testData";
 
 type EmployeeFilters = {
   employeeId?: string;
@@ -37,6 +39,7 @@ export interface EmployeeData {
 
 export class PIMPage {
   readonly page: Page;
+  readonly confirmationDialog: ConfirmationDialog;
   readonly AddEmployeeLink: Locator;
   readonly firstnameInput: Locator;
   readonly middlenameInput: Locator;
@@ -78,11 +81,11 @@ export class PIMPage {
   readonly passwordStrengthIndicator: Locator;
   readonly createLoginDetailsCheckbox: Locator;
   readonly usernameValidation: Locator;
-  readonly canceldeletiondilogbutton: Locator;
   readonly addEmployeeIdInput: Locator;
 
   constructor(page: Page) {
     this.page = page;
+    this.confirmationDialog = new ConfirmationDialog(page);
     this.AddEmployeeLink = page.getByRole("link", { name: /Add Employee/i });
     this.firstnameInput = page.getByRole("textbox", { name: "First Name" });
     this.middlenameInput = page.getByRole("textbox", { name: "Middle Name" });
@@ -244,10 +247,6 @@ export class PIMPage {
       })
       .locator(".oxd-input-field-error-message");
 
-    this.canceldeletiondilogbutton = page.getByRole("button", {
-      name: /No, Cancel/i,
-    });
-
     this.addEmployeeIdInput = page
       .locator(".oxd-input-group")
       .filter({ hasText: "Employee Id" })
@@ -377,9 +376,7 @@ export class PIMPage {
 
     await this.lastnameInput.fill(data.lastName);
 
-    const employeeId =
-      data.employeeId ??
-      `${Date.now().toString().slice(-8)}${Math.floor(Math.random() * 10)}`;
+    const employeeId = data.employeeId ?? generateEmployeeId();
     await this.employeeID.fill(employeeId);
 
     if (data.profilePicturePath) {
@@ -515,7 +512,7 @@ export class PIMPage {
     });
     await deleteButton.click();
 
-    const confirmationDilaog = this.page.getByRole("dialog");
+    const confirmationDilaog = this.confirmationDialog.root;
     await expect(confirmationDilaog).toBeVisible();
     const deleteResponse = this.page.waitForResponse(
       (response) =>
@@ -525,7 +522,7 @@ export class PIMPage {
       { timeout: 20_000 },
     );
 
-    await confirmationDilaog.getByText("Yes, Delete", { exact: true }).click();
+    await this.confirmationDialog.confirmDelete();
 
     await deleteResponse;
 
@@ -776,10 +773,10 @@ export class PIMPage {
     });
     await deleteButton.click();
 
-    const confirmationDilaog = this.page.getByRole("dialog");
+    const confirmationDilaog = this.confirmationDialog.root;
     await expect(confirmationDilaog).toBeVisible();
 
-    await confirmationDilaog.getByText("No, Cancel", { exact: true }).click();
+    await this.confirmationDialog.cancel();
 
     await expect(this.page).toHaveURL(/pim\/viewEmployeeList/);
   }
@@ -811,7 +808,7 @@ export class PIMPage {
     await expect(deleteSelectedButton).toBeVisible();
     await deleteSelectedButton.click();
 
-    const confirmationDialog = this.page.getByRole("dialog");
+    const confirmationDialog = this.confirmationDialog.root;
 
     await expect(confirmationDialog).toBeVisible();
 
@@ -823,11 +820,7 @@ export class PIMPage {
       { timeout: 20_000 },
     );
 
-    await confirmationDialog
-      .getByRole("button", {
-        name: /Yes, Delete/i,
-      })
-      .click();
+    await this.confirmationDialog.confirmDelete();
 
     await deleteResponse;
 
@@ -911,17 +904,13 @@ export class PIMPage {
     await expect(deleteButton).toBeVisible();
     await deleteButton.click();
 
-    const confirmationDialog = this.page.getByRole("dialog");
+    const confirmationDialog = this.confirmationDialog.root;
 
     await expect(confirmationDialog).toBeVisible();
 
     await expect(confirmationDialog).toContainText("Are you Sure?");
 
-    await confirmationDialog
-      .getByRole("button", {
-        name: /No, Cancel/i,
-      })
-      .click();
+    await this.confirmationDialog.cancel();
 
     await expect(confirmationDialog).toBeHidden();
 

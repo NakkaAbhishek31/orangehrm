@@ -1,59 +1,32 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
-import loginData from "../../test-data/login.data.json";
 import leaveData from "../../test-data/leave.data.json";
-
-const dateFromOffset = (daysOffset: number): string => {
-  const date = new Date();
-
-  date.setDate(date.getDate() + daysOffset);
-
-  const year = date.getFullYear();
-
-  const day = String(date.getDate()).padStart(2, "0");
-
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-
-  return `${year}-${day}-${month}`;
-};
-
-const unique = () => `${Date.now()}${Math.floor(Math.random() * 1000)}`;
-const employeeFrom = (
-  d: { firstNamePrefix: string; middleName: string; lastName: string },
-  value = unique(),
-) => ({
-  firstName: `${d.firstNamePrefix}${value}`,
-  middleName: d.middleName,
-  lastName: d.lastName,
-});
+import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
+import { routes } from "../../utils/routes";
+import { createUniqueEmployee as employeeFrom } from "../../utils/testData";
 
 test.describe("Leaves - leaves for  Users", () => {
-  test.beforeEach(async ({ loginPage }) => {
-    await loginPage.visitPage();
-    await loginPage.login(
-      loginData.validAdmin.username,
-      loginData.validAdmin.password,
-    );
-    await loginPage.verifyLoginSuccessful();
+  test.beforeEach(async ({ page }) => {
+    await page.goto(routes.dashboard);
   });
 
   test("TC_LEAVE_109 - Admin should navigate to the Leave List page @smoke @navigation @regression", async ({
     page,
     loginPage,
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     // Click Leave in the main navigation.
     await navigationPage.gotoLeave();
     // Verify the Leave List URL and heading and inputs.
     await expect(page).toHaveURL(/leave\/viewLeaveList/);
-    await leavepage.verifyLeaveListPage();
+    await leavePage.verifyLeaveListPage();
   });
 
   test("TC_LEAVE_110 - Admin should search the Leave List using a valid date range @positive @search @regression", async ({
     page,
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const fromDate = dateFromOffset(leaveData.validDateRange.fromDaysOffset);
 
@@ -62,32 +35,32 @@ test.describe("Leaves - leaves for  Users", () => {
     // Navigate to Leave → Leave List.
     await navigationPage.gotoLeave();
 
-    await leavepage.fromDateInput.fill(fromDate);
-    await leavepage.toDateInput.fill(toDate);
-    await expect(leavepage.fromDateInput).toHaveValue(fromDate);
-    await expect(leavepage.toDateInput).toHaveValue(toDate);
+    await leavePage.fromDateInput.fill(fromDate);
+    await leavePage.toDateInput.fill(toDate);
+    await expect(leavePage.fromDateInput).toHaveValue(fromDate);
+    await expect(leavePage.toDateInput).toHaveValue(toDate);
     // Click Search.
-    await leavepage.searchButton.click();
+    await leavePage.searchButton.click();
     // Wait for the Leave List request and loading spinner.
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
     // Verify the entered date values remain displayed.
-    await expect(leavepage.fromDateInput).toHaveValue(fromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(fromDate);
 
-    await expect(leavepage.toDateInput).toHaveValue(toDate);
+    await expect(leavePage.toDateInput).toHaveValue(toDate);
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    await expect(leavepage.dateValidationMessages).toHaveCount(0);
+    await expect(leavePage.dateValidationMessages).toHaveCount(0);
   });
 
   test("TC_LEAVE_111 - Validation should appear when From Date is later than To Date @negative @validation @regression", async ({
     page,
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     // Generate From Date using invalidDateRange.fromDaysOffset.
     const fromDate = dateFromOffset(leaveData.invalidDateRange.fromDaysOffset);
@@ -99,16 +72,16 @@ test.describe("Leaves - leaves for  Users", () => {
     // Navigate to Leave → Leave List.
     await navigationPage.gotoLeave();
     // Enter the future From Date.
-    await leavepage.fromDateInput.fill(fromDate);
+    await leavePage.fromDateInput.fill(fromDate);
     // Enter the earlier To Date.
-    await leavepage.toDateInput.fill(toDate);
+    await leavePage.toDateInput.fill(toDate);
     // Click Search.
-    await leavepage.searchButton.click();
+    await leavePage.searchButton.click();
     // Verify the date-range validation appears.
-    await expect(leavepage.toDateValidation).toBeVisible();
+    await expect(leavePage.toDateValidation).toBeVisible();
     // Verify the validation message says:
     // “To date should be after from date”.
-    await expect(leavepage.toDateValidation).toHaveText(
+    await expect(leavePage.toDateValidation).toHaveText(
       "To date should be after from date",
     );
 
@@ -117,29 +90,29 @@ test.describe("Leaves - leaves for  Users", () => {
 
     // Verify no search results are loaded.
 
-    await expect(leavepage.noRecordsFound).toBeVisible();
+    await expect(leavePage.noRecordsFound).toBeVisible();
     // Verify the entered dates remain unchanged.
-    await expect(leavepage.fromDateInput).toHaveValue(fromDate);
-    await expect(leavepage.toDateInput).toHaveValue(toDate);
+    await expect(leavePage.fromDateInput).toHaveValue(fromDate);
+    await expect(leavePage.toDateInput).toHaveValue(toDate);
   });
 
   test("TC_LEAVE_112 - Admin should reset Leave List search filters @positive @filter @regression", async ({
     page,
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     await navigationPage.gotoLeave();
 
     // Store default filter values.
     const { fromDate: defaultFromDate, toDate: defaultToDate } =
-      await leavepage.waitForDefaultDateRange();
+      await leavePage.waitForDefaultDateRange();
 
     const defaultStatusText = (
-      await leavepage.leaveStatusDropdown.innerText()
+      await leavePage.leaveStatusDropdown.innerText()
     ).trim();
 
     const defaultLeaveTypeText = (
-      await leavepage.leaveTypeDropdown.innerText()
+      await leavePage.leaveTypeDropdown.innerText()
     ).trim();
 
     // Generate different valid dates.
@@ -147,12 +120,12 @@ test.describe("Leaves - leaves for  Users", () => {
 
     const changedToDate = dateFromOffset(-15);
 
-    await leavepage.fromDateInput.fill(changedFromDate);
+    await leavePage.fromDateInput.fill(changedFromDate);
 
-    await leavepage.toDateInput.fill(changedToDate);
+    await leavePage.toDateInput.fill(changedToDate);
 
     // Select Rejected status.
-    await leavepage.leaveStatusDropdown.click();
+    await leavePage.leaveStatusDropdown.click();
 
     const statusOptions = page.locator(".oxd-select-dropdown:visible");
 
@@ -166,62 +139,62 @@ test.describe("Leaves - leaves for  Users", () => {
       .click();
 
     // Verify filters were changed.
-    await expect(leavepage.fromDateInput).toHaveValue(changedFromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(changedFromDate);
 
-    await expect(leavepage.toDateInput).toHaveValue(changedToDate);
+    await expect(leavePage.toDateInput).toHaveValue(changedToDate);
 
     // Reset all filters.
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     // Verify dates return to defaults.
-    await expect(leavepage.fromDateInput).toHaveValue(defaultFromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(defaultFromDate);
 
-    await expect(leavepage.toDateInput).toHaveValue(defaultToDate);
+    await expect(leavePage.toDateInput).toHaveValue(defaultToDate);
 
     // Verify status returns to its default value.
     await expect
       .poll(async () =>
-        (await leavepage.leaveStatusDropdown.innerText()).trim(),
+        (await leavePage.leaveStatusDropdown.innerText()).trim(),
       )
       .toContain("-- Select --");
 
     // Verify Leave Type returns to default.
     await expect
-      .poll(async () => (await leavepage.leaveTypeDropdown.innerText()).trim())
+      .poll(async () => (await leavePage.leaveTypeDropdown.innerText()).trim())
       .toBe(defaultLeaveTypeText);
 
     // Verify Employee Name is cleared.
-    await expect(leavepage.employeeNameInput).toHaveValue("");
+    await expect(leavePage.employeeNameInput).toHaveValue("");
 
   });
 
   test("TC_LEAVE_114 - Admin should filter the Leave List by leave type @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     await navigationPage.gotoLeave();
 
-    const leaveType = await leavepage.selectFirstAvailableLeaveType();
+    const leaveType = await leavePage.selectFirstAvailableLeaveType();
 
-    await leavepage.searchButton.click();
+    await leavePage.searchButton.click();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    await expect(leavepage.leaveTypeDropdown).toContainText(leaveType);
+    await expect(leavePage.leaveTypeDropdown).toContainText(leaveType);
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0 && leaveType !== "-- Select --") {
       for (let index = 0; index < rowCount; index++) {
-        const leaveTypeCell = leavepage.leaveRows
+        const leaveTypeCell = leavePage.leaveRows
           .nth(index)
           .locator(".oxd-table-cell")
           .nth(2);
@@ -229,46 +202,46 @@ test.describe("Leaves - leaves for  Users", () => {
         await expect(leaveTypeCell).toContainText(leaveType);
       }
     } else {
-      await expect(leavepage.noRecordsFound).toBeVisible();
+      await expect(leavePage.noRecordsFound).toBeVisible();
     }
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.leaveTypeDropdown).toContainText("Select");
+    await expect(leavePage.leaveTypeDropdown).toContainText("Select");
   });
 
   test("TC_LEAVE_115 - Admin should filter the Leave List by employee name @positive @filter @autocomplete @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const testData = leaveData.TC_LEAVE_115;
 
     // Navigate to Leave → Leave List.
     await navigationPage.gotoLeave();
     // Enter a partial employee name.
-    const employeeName = await leavepage.selectFirstAvailableEmployee(
+    const employeeName = await leavePage.selectFirstAvailableEmployee(
       leaveData.TC_LEAVE_115.partialEmployeeName,
     );
 
-    await leavepage.searchButton.click();
+    await leavePage.searchButton.click();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    await expect(leavepage.employeeNameInput).toHaveValue(
+    await expect(leavePage.employeeNameInput).toHaveValue(
       new RegExp(employeeName.trim().split(/\s+/).join("\\s+")),
     );
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const employeeNameCell = leavepage.leaveRows
+        const employeeNameCell = leavePage.leaveRows
           .nth(index)
           .locator(".oxd-table-cell")
           .nth(1);
@@ -276,27 +249,27 @@ test.describe("Leaves - leaves for  Users", () => {
         await expect(employeeNameCell).toContainText(employeeName);
       }
     } else {
-      await expect(leavepage.noRecordsFound).toBeVisible();
+      await expect(leavePage.noRecordsFound).toBeVisible();
     }
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.employeeNameInput).toHaveValue("");
+    await expect(leavePage.employeeNameInput).toHaveValue("");
   });
 
   test("TC_LEAVE_116 - Invalid validation should appear for a nonexistent employee name @negative @validation @autocomplete @regression", async ({
     page,
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const testData = leaveData.TC_LEAVE_116;
 
     await navigationPage.gotoLeave();
 
-    await leavepage.employeeNameInput.fill(testData.employeeName);
+    await leavePage.employeeNameInput.fill(testData.employeeName);
 
     // Verify autocomplete has no matching employee.
-    const noAutocompleteRecords = leavepage.autocompleteOptions.filter({
+    const noAutocompleteRecords = leavePage.autocompleteOptions.filter({
       hasText: "No Records Found",
     });
 
@@ -305,17 +278,17 @@ test.describe("Leaves - leaves for  Users", () => {
     });
 
     // Close autocomplete without selecting an option.
-    await leavepage.employeeNameInput.press("Escape");
+    await leavePage.employeeNameInput.press("Escape");
 
     // Attempt to search.
-    await leavepage.searchButton.click();
+    await leavePage.searchButton.click();
 
     // Verify invalid employee validation.
-    await expect(leavepage.employeeNameValidation).toBeVisible();
+    await expect(leavePage.employeeNameValidation).toBeVisible();
 
-    await expect(leavepage.employeeNameValidation).toHaveText("Invalid");
+    await expect(leavePage.employeeNameValidation).toHaveText("Invalid");
 
-    await expect(leavepage.employeeNameInput).toHaveValue(
+    await expect(leavePage.employeeNameInput).toHaveValue(
       testData.employeeName,
     );
 
@@ -323,138 +296,138 @@ test.describe("Leaves - leaves for  Users", () => {
     await expect(page).toHaveURL(/leave\/viewLeaveList/);
 
     // Reset filters.
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.employeeNameInput).toHaveValue("");
+    await expect(leavePage.employeeNameInput).toHaveValue("");
 
-    await expect(leavepage.employeeNameValidation).toBeHidden();
+    await expect(leavePage.employeeNameValidation).toBeHidden();
   });
 
   test("TC_LEAVE_117 - Admin should search using combined date, status, and leave type filters @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_117;
     // Read the date offsets and status from JSON.
     await navigationPage.gotoLeave();
     const { fromDate: defaultFromDate, toDate: defaultToDate } =
-      await leavepage.waitForDefaultDateRange();
+      await leavePage.waitForDefaultDateRange();
 
     // Generate dynamic dates from JSON offsets.
     const fromDate = dateFromOffset(data.fromDaysOffset);
 
     const toDate = dateFromOffset(data.toDaysOffset);
 
-    await leavepage.fromDateInput.fill(fromDate);
+    await leavePage.fromDateInput.fill(fromDate);
 
-    await leavepage.toDateInput.fill(toDate);
+    await leavePage.toDateInput.fill(toDate);
     // Select the configured Leave Status.
-    await leavepage.selectLeaveStatus(data.leaveStatus);
+    await leavePage.selectLeaveStatus(data.leaveStatus);
     // Select the first available Leave Type dynamically.
-    const leaveType = await leavepage.selectFirstAvailableLeaveType();
+    const leaveType = await leavePage.selectFirstAvailableLeaveType();
 
-    await expect(leavepage.fromDateInput).toHaveValue(fromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(fromDate);
 
-    await expect(leavepage.toDateInput).toHaveValue(toDate);
+    await expect(leavePage.toDateInput).toHaveValue(toDate);
 
-    await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+    await expect(leavePage.selectedLeaveStatuses).toContainText(data.leaveStatus);
 
-    await expect(leavepage.leaveTypeDropdown).toContainText(leaveType);
+    await expect(leavePage.leaveTypeDropdown).toContainText(leaveType);
     // Click Search.
-    await leavepage.searchButton.click();
+    await leavePage.searchButton.click();
 
     // Wait for the loading spinner to disappear.
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     // Verify all entered filters remain selected.
-    await expect(leavepage.fromDateInput).toHaveValue(fromDate);
-    await expect(leavepage.toDateInput).toHaveValue(toDate);
-    await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+    await expect(leavePage.fromDateInput).toHaveValue(fromDate);
+    await expect(leavePage.toDateInput).toHaveValue(toDate);
+    await expect(leavePage.selectedLeaveStatuses).toContainText(data.leaveStatus);
 
-    await expect(leavepage.leaveTypeDropdown).toContainText(leaveType);
+    await expect(leavePage.leaveTypeDropdown).toContainText(leaveType);
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
     // Reset filters.
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    await expect(leavepage.fromDateInput).toHaveValue(defaultFromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(defaultFromDate);
 
-    await expect(leavepage.toDateInput).toHaveValue(defaultToDate);
+    await expect(leavePage.toDateInput).toHaveValue(defaultToDate);
 
-    await expect(leavepage.leaveTypeDropdown).toContainText("Select");
+    await expect(leavePage.leaveTypeDropdown).toContainText("Select");
   });
 
   test("TC_LEAVE_118 - Admin should include past employees in Leave List search @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     // Navigate to Leave → Leave List.
     await navigationPage.gotoLeave();
-    await expect(leavepage.includePastEmployeesCheckbox).not.toBeChecked();
+    await expect(leavePage.includePastEmployeesCheckbox).not.toBeChecked();
 
     // Verify Include Past Employees is unchecked initially.
-    await leavepage.setIncludePastEmployees(true);
+    await leavePage.setIncludePastEmployees(true);
     // Enable Include Past Employees.
-    await expect(leavepage.includePastEmployeesCheckbox).toBeChecked();
+    await expect(leavePage.includePastEmployeesCheckbox).toBeChecked();
 
     // Verify the checkbox becomes checked.
 
     // Click Search.
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
     // Wait for the loading spinner to disappear.
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
     // Verify the checkbox remains checked after searching.
-    await expect(leavepage.includePastEmployeesCheckbox).toBeChecked();
+    await expect(leavePage.includePastEmployeesCheckbox).toBeChecked();
     // Verify either leave rows or “No Records Found” appears.
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
     // Click Reset.
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
     // Verify Include Past Employees returns to unchecked.
-    await expect(leavepage.loadingSpinner).toBeHidden();
-    await expect(leavepage.includePastEmployeesCheckbox).toBeChecked();
-    await leavepage.setIncludePastEmployees(false);
-    await expect(leavepage.includePastEmployeesCheckbox).not.toBeChecked();
+    await expect(leavePage.loadingSpinner).toBeHidden();
+    await expect(leavePage.includePastEmployeesCheckbox).toBeChecked();
+    await leavePage.setIncludePastEmployees(false);
+    await expect(leavePage.includePastEmployeesCheckbox).not.toBeChecked();
   });
 
   test("TC_LEAVE_119 - Admin should filter Leave List by Pending Approval status @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_119;
 
     await navigationPage.gotoLeave();
 
-    await leavepage.selectLeaveStatus(data.leaveStatus);
+    await leavePage.selectLeaveStatus(data.leaveStatus);
 
-    await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+    await expect(leavePage.selectedLeaveStatuses).toContainText(data.leaveStatus);
 
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavepage.leaveRows
+        const statusCell = leavePage.leaveRows
           .nth(index)
           .locator(".oxd-table-cell")
           .nth(6);
@@ -463,74 +436,74 @@ test.describe("Leaves - leaves for  Users", () => {
       }
     }
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
   });
 
   test("TC_LEAVE_120 - Invalid date validation should appear for an incorrect From Date @negative @validation @regression", async ({
     page,
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_120;
 
     await navigationPage.gotoLeave();
 
-    await leavepage.fromDateInput.fill(data.invalidFromDate);
+    await leavePage.fromDateInput.fill(data.invalidFromDate);
 
-    await leavepage.fromDateInput.blur();
+    await leavePage.fromDateInput.blur();
 
-    await leavepage.searchButton.click();
+    await leavePage.searchButton.click();
 
-    await expect(leavepage.fromDateValidation).toBeVisible();
+    await expect(leavePage.fromDateValidation).toBeVisible();
 
-    await expect(leavepage.fromDateValidation).toContainText(
+    await expect(leavePage.fromDateValidation).toContainText(
       data.expectedValidation,
     );
 
     await expect(page).toHaveURL(/leave\/viewLeaveList/);
 
-    await expect(leavepage.fromDateInput).toHaveValue(data.invalidFromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(data.invalidFromDate);
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.fromDateValidation).toBeHidden();
+    await expect(leavePage.fromDateValidation).toBeHidden();
   });
 
   test("TC_LEAVE_121 - Admin should filter Leave List using employee name and leave status @positive @filter @autocomplete @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_121;
 
     await navigationPage.gotoLeave();
 
-    const employeeName = await leavepage.selectFirstAvailableEmployee(
+    const employeeName = await leavePage.selectFirstAvailableEmployee(
       data.partialEmployeeName,
     );
 
-    await leavepage.selectLeaveStatus(data.leaveStatus);
+    await leavePage.selectLeaveStatus(data.leaveStatus);
 
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    await expect(leavepage.employeeNameInput).toHaveValue(
+    await expect(leavePage.employeeNameInput).toHaveValue(
       new RegExp(employeeName.trim().split(/\s+/).join("\\s+")),
     );
 
-    await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+    await expect(leavePage.selectedLeaveStatuses).toContainText(data.leaveStatus);
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const cells = leavepage.leaveRows.nth(index).locator(".oxd-table-cell");
+        const cells = leavePage.leaveRows.nth(index).locator(".oxd-table-cell");
 
         await expect(cells.nth(1)).toContainText(employeeName);
 
@@ -538,33 +511,33 @@ test.describe("Leaves - leaves for  Users", () => {
       }
     }
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.employeeNameInput).toHaveValue("");
+    await expect(leavePage.employeeNameInput).toHaveValue("");
   });
 
   test("TC_LEAVE_122 - Admin should remove an individually selected leave status @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_122;
 
     await navigationPage.gotoLeave();
 
-    await leavepage.selectLeaveStatus(data.leaveStatus);
+    await leavePage.selectLeaveStatus(data.leaveStatus);
 
-    await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+    await expect(leavePage.selectedLeaveStatuses).toContainText(data.leaveStatus);
 
-    await leavepage.removeSelectedLeaveStatus(data.leaveStatus);
+    await leavePage.removeSelectedLeaveStatus(data.leaveStatus);
 
-    await expect(leavepage.selectedLeaveStatuses).not.toContainText(
+    await expect(leavePage.selectedLeaveStatuses).not.toContainText(
       data.leaveStatus,
     );
   });
 
   test("TC_LEAVE_123 - Admin should preserve Leave List filters after searching @positive @persistence @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_123;
 
@@ -574,38 +547,38 @@ test.describe("Leaves - leaves for  Users", () => {
 
     await navigationPage.gotoLeave();
 
-    await leavepage.fromDateInput.fill(fromDate);
+    await leavePage.fromDateInput.fill(fromDate);
 
-    await leavepage.toDateInput.fill(toDate);
+    await leavePage.toDateInput.fill(toDate);
 
-    await leavepage.selectLeaveStatus(data.leaveStatus);
+    await leavePage.selectLeaveStatus(data.leaveStatus);
 
-    const leaveType = await leavepage.selectFirstAvailableLeaveType();
+    const leaveType = await leavePage.selectFirstAvailableLeaveType();
 
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    await expect(leavepage.fromDateInput).toHaveValue(fromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(fromDate);
 
-    await expect(leavepage.toDateInput).toHaveValue(toDate);
+    await expect(leavePage.toDateInput).toHaveValue(toDate);
 
-    await expect(leavepage.selectedLeaveStatuses).toContainText(data.leaveStatus);
+    await expect(leavePage.selectedLeaveStatuses).toContainText(data.leaveStatus);
 
-    await expect(leavepage.leaveTypeDropdown).toContainText(leaveType);
+    await expect(leavePage.leaveTypeDropdown).toContainText(leaveType);
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
   });
 
   test("TC_LEAVE_124 - Admin should navigate through Leave List pages @pagination @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_124;
 
@@ -615,44 +588,44 @@ test.describe("Leaves - leaves for  Users", () => {
 
     await navigationPage.gotoLeave();
 
-    await leavepage.fromDateInput.fill(fromDate);
+    await leavePage.fromDateInput.fill(fromDate);
 
-    await leavepage.toDateInput.fill(toDate);
+    await leavePage.toDateInput.fill(toDate);
 
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    const pageOneRecords = await leavepage.getVisibleLeaveRecords();
+    const pageOneRecords = await leavePage.getVisibleLeaveRecords();
 
     test.skip(
       pageOneRecords.length === 0,
       "No leave records are currently available",
     );
 
-    const nextButtonCount = await leavepage.nextPageButton.count();
+    const nextButtonCount = await leavePage.nextPageButton.count();
 
     test.skip(
       nextButtonCount === 0,
       "Leave List currently contains only one page",
     );
 
-    await leavepage.nextPageButton.click();
+    await leavePage.nextPageButton.click();
 
     await expect
-      .poll(async () => leavepage.getVisibleLeaveRecords(), {
+      .poll(async () => leavePage.getVisibleLeaveRecords(), {
         timeout: 15_000,
       })
       .not.toEqual(pageOneRecords);
 
-    const pageTwoRecords = await leavepage.getVisibleLeaveRecords();
+    const pageTwoRecords = await leavePage.getVisibleLeaveRecords();
 
     expect(pageTwoRecords.length).toBeGreaterThan(0);
 
-    await leavepage.previousPageButton.click();
+    await leavePage.previousPageButton.click();
 
     await expect
-      .poll(async () => leavepage.getVisibleLeaveRecords(), {
+      .poll(async () => leavePage.getVisibleLeaveRecords(), {
         timeout: 15_000,
       })
       .toEqual(pageOneRecords);
@@ -660,7 +633,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
   test("TC_LEAVE_125 - Admin should filter Leave List by Scheduled status @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_125;
 
@@ -668,10 +641,10 @@ test.describe("Leaves - leaves for  Users", () => {
 
     // Store the complete default status state.
     const defaultStatusText = (
-      await leavepage.leaveStatusField.innerText()
+      await leavePage.leaveStatusField.innerText()
     ).trim();
 
-    const scheduledStatus = leavepage.leaveStatusField.getByText(
+    const scheduledStatus = leavePage.leaveStatusField.getByText(
       data.leaveStatus,
       { exact: true },
     );
@@ -681,15 +654,15 @@ test.describe("Leaves - leaves for  Users", () => {
     // Select Scheduled only when it is not
     // already selected by default.
     if (!alreadySelected) {
-      await leavepage.selectLeaveStatus(data.leaveStatus);
+      await leavePage.selectLeaveStatus(data.leaveStatus);
     }
 
     await expect(scheduledStatus).toBeVisible();
 
     // Search using Scheduled status.
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     // Verify Scheduled remains selected.
     await expect(scheduledStatus).toBeVisible();
@@ -697,16 +670,16 @@ test.describe("Leaves - leaves for  Users", () => {
     // The shared demo can return records or
     // display No Records Found.
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavepage.leaveRows
+        const statusCell = leavePage.leaveRows
           .nth(index)
           .locator(".oxd-table-cell")
           .nth(6);
@@ -714,18 +687,18 @@ test.describe("Leaves - leaves for  Users", () => {
         await expect(statusCell).toContainText(data.leaveStatus);
       }
     } else {
-      await expect(leavepage.noRecordsFound).toBeVisible();
+      await expect(leavePage.noRecordsFound).toBeVisible();
     }
 
     // Reset filters.
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     // Reset should restore the original default
     // status selection, which may include Scheduled.
     await expect
-      .poll(async () => (await leavepage.leaveStatusField.innerText()).trim(), {
+      .poll(async () => (await leavePage.leaveStatusField.innerText()).trim(), {
         timeout: 15_000,
       })
       .toContain("-- Select --");
@@ -733,7 +706,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
   test("TC_LEAVE_126 - Admin should filter Leave List by Taken status @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_126;
 
@@ -741,10 +714,10 @@ test.describe("Leaves - leaves for  Users", () => {
 
     // Capture the original default status state.
     const defaultStatusText = (
-      await leavepage.leaveStatusField.innerText()
+      await leavePage.leaveStatusField.innerText()
     ).trim();
 
-    const takenStatus = leavepage.leaveStatusField.getByText(data.leaveStatus, {
+    const takenStatus = leavePage.leaveStatusField.getByText(data.leaveStatus, {
       exact: true,
     });
 
@@ -753,31 +726,31 @@ test.describe("Leaves - leaves for  Users", () => {
     // Select Taken only when it is not
     // already selected by default.
     if (!alreadySelected) {
-      await leavepage.selectLeaveStatus(data.leaveStatus);
+      await leavePage.selectLeaveStatus(data.leaveStatus);
     }
 
     await expect(takenStatus).toBeVisible();
 
     // Search using Taken status.
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     // Verify Taken remains selected.
     await expect(takenStatus).toBeVisible();
 
     // Verify records or No Records Found.
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavepage.leaveRows
+        const statusCell = leavePage.leaveRows
           .nth(index)
           .locator(".oxd-table-cell")
           .nth(6);
@@ -785,17 +758,17 @@ test.describe("Leaves - leaves for  Users", () => {
         await expect(statusCell).toContainText(data.leaveStatus);
       }
     } else {
-      await expect(leavepage.noRecordsFound).toBeVisible();
+      await expect(leavePage.noRecordsFound).toBeVisible();
     }
 
     // Reset filters.
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     // Verify the default status state is restored.
     await expect
-      .poll(async () => (await leavepage.leaveStatusField.innerText()).trim(), {
+      .poll(async () => (await leavePage.leaveStatusField.innerText()).trim(), {
         timeout: 15_000,
       })
       .toContain("-- Select --");
@@ -803,50 +776,50 @@ test.describe("Leaves - leaves for  Users", () => {
 
   test("TC_LEAVE_127 - Admin should filter Leave List by Cancelled status @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_127;
 
     await navigationPage.gotoLeave();
 
-    const defaultDates = await leavepage.waitForDefaultDateRange();
+    const defaultDates = await leavePage.waitForDefaultDateRange();
 
     const defaultStatusText = (
-      await leavepage.leaveStatusField.innerText()
+      await leavePage.leaveStatusField.innerText()
     ).trim();
 
-    const cancelledStatus = leavepage.leaveStatusField.getByText(
+    const cancelledStatus = leavePage.leaveStatusField.getByText(
       data.leaveStatus,
       { exact: true },
     );
 
     if ((await cancelledStatus.count()) === 0) {
-      await leavepage.selectLeaveStatus(data.leaveStatus);
+      await leavePage.selectLeaveStatus(data.leaveStatus);
     }
 
     await expect(cancelledStatus).toBeVisible();
 
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    await expect(leavepage.fromDateInput).toHaveValue(defaultDates.fromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(defaultDates.fromDate);
 
-    await expect(leavepage.toDateInput).toHaveValue(defaultDates.toDate);
+    await expect(leavePage.toDateInput).toHaveValue(defaultDates.toDate);
 
     await expect(cancelledStatus).toBeVisible();
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavepage.leaveRows
+        const statusCell = leavePage.leaveRows
           .nth(index)
           .locator(".oxd-table-cell")
           .nth(6);
@@ -854,67 +827,67 @@ test.describe("Leaves - leaves for  Users", () => {
         await expect(statusCell).toContainText(data.leaveStatus);
       }
     } else {
-      await expect(leavepage.noRecordsFound).toBeVisible();
+      await expect(leavePage.noRecordsFound).toBeVisible();
     }
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await leavepage.waitForDefaultDateRange();
+    await leavePage.waitForDefaultDateRange();
 
     await expect
-      .poll(async () => (await leavepage.leaveStatusField.innerText()).trim())
+      .poll(async () => (await leavePage.leaveStatusField.innerText()).trim())
       .toContain("-- Select --");
   });
 
   test("TC_LEAVE_128 - Admin should filter Leave List using multiple statuses @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_128;
 
     await navigationPage.gotoLeave();
 
-    await leavepage.waitForDefaultDateRange();
+    await leavePage.waitForDefaultDateRange();
 
-    const firstStatus = leavepage.leaveStatusField.getByText(data.firstStatus, {
+    const firstStatus = leavePage.leaveStatusField.getByText(data.firstStatus, {
       exact: true,
     });
 
-    const secondStatus = leavepage.leaveStatusField.getByText(
+    const secondStatus = leavePage.leaveStatusField.getByText(
       data.secondStatus,
       { exact: true },
     );
 
     if ((await firstStatus.count()) === 0) {
-      await leavepage.selectLeaveStatus(data.firstStatus);
+      await leavePage.selectLeaveStatus(data.firstStatus);
     }
 
     if ((await secondStatus.count()) === 0) {
-      await leavepage.selectLeaveStatus(data.secondStatus);
+      await leavePage.selectLeaveStatus(data.secondStatus);
     }
 
     await expect(firstStatus).toBeVisible();
     await expect(secondStatus).toBeVisible();
 
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     await expect(firstStatus).toBeVisible();
     await expect(secondStatus).toBeVisible();
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
         const statusText = (
-          await leavepage.leaveRows
+          await leavePage.leaveRows
             .nth(index)
             .locator(".oxd-table-cell")
             .nth(6)
@@ -926,49 +899,49 @@ test.describe("Leaves - leaves for  Users", () => {
         expect([data.firstStatus, data.secondStatus]).toContain(statusText);
       }
     } else {
-      await expect(leavepage.noRecordsFound).toBeVisible();
+      await expect(leavePage.noRecordsFound).toBeVisible();
     }
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
   });
 
   test("TC_LEAVE_129 - Reset should restore default Leave Status selections @positive @reset @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_129;
 
     await navigationPage.gotoLeave();
 
-    const defaultDates = await leavepage.waitForDefaultDateRange();
+    const defaultDates = await leavePage.waitForDefaultDateRange();
 
     const defaultStatusText = (
-      await leavepage.leaveStatusField.innerText()
+      await leavePage.leaveStatusField.innerText()
     ).trim();
 
-    const selectedStatus = leavepage.leaveStatusField.getByText(
+    const selectedStatus = leavePage.leaveStatusField.getByText(
       data.leaveStatus,
       { exact: true },
     );
 
     if ((await selectedStatus.count()) === 0) {
-      await leavepage.selectLeaveStatus(data.leaveStatus);
+      await leavePage.selectLeaveStatus(data.leaveStatus);
     }
 
     await expect(selectedStatus).toBeVisible();
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    await leavepage.waitForDefaultDateRange();
+    await leavePage.waitForDefaultDateRange();
 
-    await expect(leavepage.fromDateInput).toHaveValue(defaultDates.fromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(defaultDates.fromDate);
 
-    await expect(leavepage.toDateInput).toHaveValue(defaultDates.toDate);
+    await expect(leavePage.toDateInput).toHaveValue(defaultDates.toDate);
 
     await expect
-      .poll(async () => (await leavepage.leaveStatusField.innerText()).trim(), {
+      .poll(async () => (await leavePage.leaveStatusField.innerText()).trim(), {
         timeout: 15_000,
       })
       .toContain("-- Select --");
@@ -976,48 +949,48 @@ test.describe("Leaves - leaves for  Users", () => {
 
   test("TC_LEAVE_130 - Admin should filter Leave List by Rejected and Cancelled statuses @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_130;
 
     await navigationPage.gotoLeave();
 
-    await leavepage.waitForDefaultDateRange();
+    await leavePage.waitForDefaultDateRange();
 
     for (const status of data.statuses) {
-      const selectedStatus = leavepage.leaveStatusField.getByText(status, {
+      const selectedStatus = leavePage.leaveStatusField.getByText(status, {
         exact: true,
       });
 
       if ((await selectedStatus.count()) === 0) {
-        await leavepage.selectLeaveStatus(status);
+        await leavePage.selectLeaveStatus(status);
       }
 
       await expect(selectedStatus).toBeVisible();
     }
 
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     for (const status of data.statuses) {
       await expect(
-        leavepage.leaveStatusField.getByText(status, { exact: true }),
+        leavePage.leaveStatusField.getByText(status, { exact: true }),
       ).toBeVisible();
     }
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
         const statusText = (
-          await leavepage.leaveRows
+          await leavePage.leaveRows
             .nth(index)
             .locator(".oxd-table-cell")
             .nth(6)
@@ -1031,64 +1004,64 @@ test.describe("Leaves - leaves for  Users", () => {
         expect(matchesSelectedStatus).toBeTruthy();
       }
     } else {
-      await expect(leavepage.noRecordsFound).toBeVisible();
+      await expect(leavePage.noRecordsFound).toBeVisible();
     }
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
   });
   test("TC_LEAVE_131 - Admin should remove one status from multiple selected statuses @positive @filter @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_131;
 
     await navigationPage.gotoLeave();
 
-    await leavepage.waitForDefaultDateRange();
+    await leavePage.waitForDefaultDateRange();
 
     for (const status of data.statuses) {
-      const selectedStatus = leavepage.leaveStatusField.getByText(status, {
+      const selectedStatus = leavePage.leaveStatusField.getByText(status, {
         exact: true,
       });
 
       if ((await selectedStatus.count()) === 0) {
-        await leavepage.selectLeaveStatus(status);
+        await leavePage.selectLeaveStatus(status);
       }
 
       await expect(selectedStatus).toBeVisible();
     }
 
-    await leavepage.removeSelectedLeaveStatus(data.statusToRemove);
+    await leavePage.removeSelectedLeaveStatus(data.statusToRemove);
 
     await expect(
-      leavepage.leaveStatusField.getByText(data.statusToRemove, {
+      leavePage.leaveStatusField.getByText(data.statusToRemove, {
         exact: true,
       }),
     ).toHaveCount(0);
 
     await expect(
-      leavepage.leaveStatusField.getByText(data.remainingStatus, {
+      leavePage.leaveStatusField.getByText(data.remainingStatus, {
         exact: true,
       }),
     ).toBeVisible();
 
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavepage.leaveRows
+        const statusCell = leavePage.leaveRows
           .nth(index)
           .locator(".oxd-table-cell")
           .nth(6);
@@ -1098,54 +1071,54 @@ test.describe("Leaves - leaves for  Users", () => {
         await expect(statusCell).not.toContainText(data.statusToRemove);
       }
     } else {
-      await expect(leavepage.noRecordsFound).toBeVisible();
+      await expect(leavePage.noRecordsFound).toBeVisible();
     }
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
   });
 
   test("TC_LEAVE_132 - Leave List date range should remain unchanged after status search @positive @persistence @regression", async ({
     navigationPage,
-    leavepage,
+    leavePage,
   }) => {
     const data = leaveData.TC_LEAVE_132;
 
     await navigationPage.gotoLeave();
 
-    const defaultDates = await leavepage.waitForDefaultDateRange();
+    const defaultDates = await leavePage.waitForDefaultDateRange();
 
-    const selectedStatus = leavepage.leaveStatusField.getByText(
+    const selectedStatus = leavePage.leaveStatusField.getByText(
       data.leaveStatus,
       { exact: true },
     );
 
     if ((await selectedStatus.count()) === 0) {
-      await leavepage.selectLeaveStatus(data.leaveStatus);
+      await leavePage.selectLeaveStatus(data.leaveStatus);
     }
 
     await expect(selectedStatus).toBeVisible();
 
-    await leavepage.searchLeaveList();
+    await leavePage.searchLeaveList();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    await expect(leavepage.fromDateInput).toHaveValue(defaultDates.fromDate);
+    await expect(leavePage.fromDateInput).toHaveValue(defaultDates.fromDate);
 
-    await expect(leavepage.toDateInput).toHaveValue(defaultDates.toDate);
+    await expect(leavePage.toDateInput).toHaveValue(defaultDates.toDate);
 
     await expect(selectedStatus).toBeVisible();
 
     await expect(
-      leavepage.leaveRows.first().or(leavepage.noRecordsFound),
+      leavePage.leaveRows.first().or(leavePage.noRecordsFound),
     ).toBeVisible({
       timeout: 15_000,
     });
 
-    const rowCount = await leavepage.leaveRows.count();
+    const rowCount = await leavePage.leaveRows.count();
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavepage.leaveRows
+        const statusCell = leavePage.leaveRows
           .nth(index)
           .locator(".oxd-table-cell")
           .nth(6);
@@ -1153,13 +1126,13 @@ test.describe("Leaves - leaves for  Users", () => {
         await expect(statusCell).toContainText(data.leaveStatus);
       }
     } else {
-      await expect(leavepage.noRecordsFound).toBeVisible();
+      await expect(leavePage.noRecordsFound).toBeVisible();
     }
 
-    await leavepage.resetButton.click();
+    await leavePage.resetButton.click();
 
-    await expect(leavepage.loadingSpinner).toBeHidden();
+    await expect(leavePage.loadingSpinner).toBeHidden();
 
-    await leavepage.waitForDefaultDateRange();
+    await leavePage.waitForDefaultDateRange();
   });
 });

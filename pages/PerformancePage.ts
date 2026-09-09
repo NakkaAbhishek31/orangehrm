@@ -2,6 +2,9 @@ import {
   Locator,expect,
   Page,
 } from '@playwright/test';
+import { Autocomplete } from '../components/Autocomplete';
+import { SelectDropdown } from '../components/SelectDropdown';
+import { waitForListResult } from '../components/ListResult';
 
 export class PerformancePage {
   readonly page: Page;
@@ -28,9 +31,12 @@ export class PerformancePage {
 readonly autocompleteOptions: Locator;
 readonly autocompleteNoRecords: Locator;
 readonly employeeNameValidation: Locator;
+private readonly selectDropdown: SelectDropdown;
+private readonly employeeAutocomplete: Autocomplete;
 
   constructor(page: Page) {
     this.page = page;
+    this.selectDropdown = new SelectDropdown(page);
 
     this.manageReviewsMenu = page
       .getByLabel('Topbar Menu')
@@ -190,6 +196,10 @@ this.employeeNameValidation = page
   .locator(
     '.oxd-input-field-error-message'
   );
+this.employeeAutocomplete = new Autocomplete(
+  this.employeeNameInput,
+  this.autocompleteDropdown,
+);
   }
 
   async gotoEmployeeReviews(): Promise<void> {
@@ -227,125 +237,26 @@ async selectDropdownOption(
   dropdown: Locator,
   optionText: string
 ): Promise<void> {
-  await expect(dropdown).toBeVisible();
-
-  await dropdown.click();
-
-  const visibleDropdown =
-    this.page.locator(
-      '.oxd-select-dropdown:visible'
-    );
-
-  await expect(
-    visibleDropdown
-  ).toBeVisible({
-    timeout: 15_000,
-  });
-
-  const option =
-    visibleDropdown
-      .locator('.oxd-select-option')
-      .getByText(optionText, {
-        exact: true,
-      });
-
-  await expect(option).toBeVisible({
-    timeout: 15_000,
-  });
-
-  await option.click();
-
-  await expect(dropdown).toContainText(
-    optionText
-  );
+  await this.selectDropdown.select(dropdown, optionText);
 }
 
 async selectFirstAvailableDropdownOption(
   dropdown: Locator
 ): Promise<string> {
-  await expect(dropdown).toBeVisible();
-  await dropdown.click();
-
-  const visibleDropdown = this.page.locator('.oxd-select-dropdown:visible');
-  await expect(visibleDropdown).toBeVisible({ timeout: 15_000 });
-
-  const option = visibleDropdown
-    .locator('.oxd-select-option')
-    .filter({ hasNotText: /^(-- Select --|No Records Found|Searching\.\.\.)$/i })
-    .first();
-
-  const optionAvailable = await option
-    .isVisible({ timeout: 15_000 })
-    .catch(() => false);
-
-  if (!optionAvailable) {
-    await this.page.keyboard.press('Escape');
-    return (await dropdown.innerText()).trim();
-  }
-
-  const optionText = (await option.innerText()).trim();
-  await option.click();
-  await expect(dropdown).toContainText(optionText);
-
-  return optionText;
+  return this.selectDropdown.selectFirstAvailable(dropdown);
 }
 
 async selectEmployeeFromAutocomplete(
   searchText: string
 ): Promise<string> {
-  await expect(
-    this.employeeNameInput
-  ).toBeVisible();
-
-  await this.employeeNameInput.fill(
-    searchText
-  );
-
-  await expect(
-    this.autocompleteDropdown
-  ).toBeVisible({
-    timeout: 20_000,
-  });
-
-  const employeeOption =
-    this.autocompleteOptions
-      .filter({
-        hasNotText: /Searching|No Records Found/i,
-      })
-      .first();
-
-  await expect(
-    employeeOption
-  ).toBeVisible({
-    timeout: 20_000,
-  });
-
-  const selectedEmployeeName = (
-    await employeeOption.innerText()
-  ).trim();
-
-  await employeeOption.click();
-
-  await expect(
-    this.employeeNameInput
-  ).toHaveValue(selectedEmployeeName);
-
-  return selectedEmployeeName;
+  return this.employeeAutocomplete.selectFirst(searchText);
 }
 
 async waitForReviewResults(): Promise<void> {
-  await expect(this.loadingSpinner).toBeHidden({
-    timeout: 30_000,
-  });
-
-  await expect.poll(
-    async () =>
-      (await this.reviewRows.count()) > 0 ||
-      await this.noRecordsFound.isVisible(),
-    {
-      timeout: 20_000,
-      message: 'Expected review rows or No Records Found',
-    }
-  ).toBe(true);
+  await waitForListResult(
+    this.loadingSpinner,
+    this.reviewRows,
+    this.noRecordsFound,
+  );
 }
 }
