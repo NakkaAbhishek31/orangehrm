@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { test } from "../fixtures/baseTest";
+import { unauthenticatedTest as test } from "../fixtures/baseTest";
 import loginData from "../test-data/login.data.json";
 
 test.use({ storageState: { cookies: [], origins: [] } });

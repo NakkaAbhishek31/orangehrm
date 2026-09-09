@@ -4,6 +4,8 @@ import path from "node:path";
 import loginData from "../../test-data/login.data.json";
 import pimData from "../../test-data/pimEmployee.data.json";
 import { routes } from "../../utils/routes";
+import { environment } from "../../config/environment";
+import { LoginPage } from "../../pages/LoginPage";
 import {
   createUniqueEmployee as employeeFrom,
   generateUniqueId as unique,
@@ -260,10 +262,9 @@ test.describe("PIM Employee", () => {
   }
 
   test("TC_PIM_035 - Disabled employee account should not login @negative @security @account @regression", async ({
+    browser,
     page,
-    loginPage,
     navigationPage,
-    dashboardPage,
     pimPage,
   }) => {
     const data = pimData.TC_PIM_035;
@@ -277,13 +278,18 @@ test.describe("PIM Employee", () => {
       password: data.login.password,
       status: data.login.status as "Disabled",
     });
-    await dashboardPage.clickOnLogout();
-    await loginPage.login(username, data.login.password);
-    await expect(loginPage.errorMessage).toHaveText(data.expectedError);
-    await loginPage.login(
-      loginData.validAdmin.username,
-      loginData.validAdmin.password,
-    );
+    const employeeContext = await browser.newContext({
+      baseURL: environment.baseUrl,
+      storageState: { cookies: [], origins: [] },
+    });
+    const employeePage = await employeeContext.newPage();
+    const employeeLoginPage = new LoginPage(employeePage);
+
+    await employeeLoginPage.visitPage();
+    await employeeLoginPage.login(username, data.login.password);
+    await expect(employeeLoginPage.errorMessage).toHaveText(data.expectedError);
+    await employeeContext.close();
+
     await navigationPage.gotoPIM();
     await pimPage.gotoEmployeeList();
     await pimPage.filterEmployeeList({ employeeId });
@@ -292,9 +298,8 @@ test.describe("PIM Employee", () => {
   });
 
   test("TC_PIM_036 - Enabled employee account should login successfully @positive @security @account @regression", async ({
-    loginPage,
+    browser,
     navigationPage,
-    dashboardPage,
     pimPage,
   }) => {
     const data = pimData.TC_PIM_036;
@@ -302,14 +307,28 @@ test.describe("PIM Employee", () => {
     const username = `${data.login.usernamePrefix}${unique()}`;
     await navigationPage.gotoPIM();
     await pimPage.gotoAddEmployee();
-    await pimPage.addEmployeeWithLoginDetails({
+    const employeeId = await pimPage.addEmployeeWithLoginDetails({
       ...employee,
       username,
       password: data.login.password,
       status: data.login.status as "Enabled",
     });
-    await dashboardPage.clickOnLogout();
-    await loginPage.login(username, data.login.password);
-    await loginPage.verifyLoginSuccessful();
+    const employeeContext = await browser.newContext({
+      baseURL: environment.baseUrl,
+      storageState: { cookies: [], origins: [] },
+    });
+    const employeePage = await employeeContext.newPage();
+    const employeeLoginPage = new LoginPage(employeePage);
+
+    await employeeLoginPage.visitPage();
+    await employeeLoginPage.login(username, data.login.password);
+    await employeeLoginPage.verifyLoginSuccessful();
+    await employeeContext.close();
+
+    await navigationPage.gotoPIM();
+    await pimPage.gotoEmployeeList();
+    await pimPage.filterEmployeeList({ employeeId });
+    await pimPage.clickOnFilterSearch();
+    await pimPage.deleteEmployeeById(employeeId);
   });
 });

@@ -1,4 +1,4 @@
-import { test as base } from "@playwright/test";
+import { expect, test as base } from "@playwright/test";
 import { AdminPage } from "../pages/Admin";
 import { DashboardPage } from "../pages/DashboardPage";
 import { DirectoryPage } from "../pages/DirectoryPage";
@@ -11,6 +11,8 @@ import { PerformancePage } from "../pages/PerformancePage";
 import { PIMPage } from "../pages/PimPage";
 import { RecruitmentPage } from "../pages/RecruitmentPage";
 import { TimePage } from "../pages/TimePage";
+import { environment } from "../config/environment";
+import { routes } from "../utils/routes";
 
 export type AppFixtures = {
   loginPage: LoginPage;
@@ -27,7 +29,7 @@ export type AppFixtures = {
   directoryPage: DirectoryPage;
 };
 
-export const test = base.extend<AppFixtures>({
+const appTest = base.extend<AppFixtures>({
   loginPage: async ({ page }, use) => {
     await use(new LoginPage(page));
   },
@@ -64,6 +66,31 @@ export const test = base.extend<AppFixtures>({
   directoryPage: async ({ page }, use) => {
     await use(new DirectoryPage(page));
   },
+});
+
+/** Use only for login, access-control, and other deliberately anonymous tests. */
+export const unauthenticatedTest = appTest;
+
+/** Default test fixture. It repairs expired demo sessions per browser context. */
+export const test = appTest.extend<{ authenticatedSession: void }>({
+  authenticatedSession: [
+    async ({ page }, use) => {
+      await page.goto(routes.dashboard, { waitUntil: "domcontentloaded" });
+
+      if (/\/auth\/login$/.test(page.url())) {
+        await page.getByPlaceholder("Username").fill(environment.adminUsername);
+        await page.getByPlaceholder("Password").fill(environment.adminPassword);
+        await page.getByRole("button", { name: "Login" }).click();
+      }
+
+      await expect(page).toHaveURL(/\/dashboard\/index$/, {
+        timeout: 30_000,
+      });
+      await expect(page.locator("li.oxd-userdropdown")).toBeVisible();
+      await use();
+    },
+    { auto: true },
+  ],
 });
 
 export { expect } from "@playwright/test";

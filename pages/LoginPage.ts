@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
+import { routes } from "../utils/routes";
 
 export class LoginPage {
   readonly page: Page;
@@ -28,7 +29,7 @@ export class LoginPage {
   async visitPage(): Promise<void> {
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
-        await this.page.goto("/", {
+        await this.page.goto(routes.login, {
           waitUntil: "domcontentloaded",
           timeout: 60_000,
         });
