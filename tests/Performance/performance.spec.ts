@@ -1315,4 +1315,125 @@ test.describe("Performance - Employee Reviews", () => {
       data.pageHeading,
     );
   });
+
+  test("TC_PERFORMANCE_266 - Include Past Employees should be unchecked by default @smoke @filter @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+  });
+
+  test("TC_PERFORMANCE_267 - Admin should select Include Past Employees @positive @filter @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.includePastEmployeesLabel.click();
+    await expect(performancePage.includePastEmployeesCheckbox).toBeChecked();
+  });
+
+  test("TC_PERFORMANCE_268 - Admin should clear Include Past Employees selection @positive @filter @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.includePastEmployeesLabel.click();
+    await performancePage.includePastEmployeesLabel.click();
+    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+  });
+
+  test("TC_PERFORMANCE_269 - Reset should clear Include Past Employees @positive @reset @filter @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.includePastEmployeesLabel.click();
+    await performancePage.resetButton.click();
+    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+  });
+
+  test("TC_PERFORMANCE_270 - Include Past Employees should persist after search @positive @search @filter @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.includePastEmployeesLabel.click();
+    await performancePage.searchButton.click();
+    await performancePage.waitForReviewResults();
+    await expect(performancePage.includePastEmployeesCheckbox).toBeChecked();
+  });
+
+  test("TC_PERFORMANCE_271 - Reload should restore Include Past Employees default @positive @navigation @filter @regression", async ({
+    page,
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.includePastEmployeesLabel.click();
+    await page.reload();
+    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+  });
+
+  test("TC_PERFORMANCE_272 - Employee Reviews action buttons should be visible @smoke @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await expect(performancePage.searchButton).toBeVisible();
+    await expect(performancePage.resetButton).toBeVisible();
+  });
+
+  test("TC_PERFORMANCE_273 - Employee Reviews action buttons should be enabled @smoke @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await expect(performancePage.searchButton).toBeEnabled();
+    await expect(performancePage.resetButton).toBeEnabled();
+  });
+
+  test("TC_PERFORMANCE_274 - Unfiltered search should display a completed result state @positive @search @regression", async ({
+    navigationPage,
+    performancePage,
+  }) => {
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.searchButton.click();
+    await performancePage.waitForReviewResults();
+    await expect(performancePage.loadingSpinner).toBeHidden();
+  });
+
+  test("TC_PERFORMANCE_275 - Reset should preserve Employee Reviews page identity @positive @reset @navigation @regression", async ({
+    page,
+    navigationPage,
+    performancePage,
+  }) => {
+    const data = performanceData.TC_PERFORMANCE_275;
+    await navigationPage.gotoPerformance();
+    await performancePage.gotoEmployeeReviews();
+
+    await performancePage.resetButton.click();
+    await expect(page).toHaveURL(new RegExp(`${data.expectedUrlPath}$`));
+    await expect(performancePage.employeeReviewsHeading).toHaveText(
+      data.pageHeading,
+    );
+  });
 });
