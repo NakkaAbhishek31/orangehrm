@@ -105,6 +105,7 @@ pipeline {
                     if exist allure-report rmdir /s /q allure-report
                     if exist playwright-report rmdir /s /q playwright-report
                     if exist test-results rmdir /s /q test-results
+                    if exist ai-results rmdir /s /q ai-results
                 '''
             }
         }
@@ -241,7 +242,8 @@ pipeline {
                     'allure-results/**, ' +
                     'allure-report/**, ' +
                     'playwright-report/**, ' +
-                    'test-results/**',
+                    'test-results/**, ' +
+                    'ai-results/**',
                 allowEmptyArchive: true,
                 fingerprint: true
             )

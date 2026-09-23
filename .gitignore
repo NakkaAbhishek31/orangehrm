@@ -8,6 +8,7 @@ node_modules/
 /playwright/.auth/
 /allure-results/
 /allure-report/
+/ai-results/
 /.env
 /.env.*
 !/.env.example

@@ -9,6 +9,7 @@ export class NavigationPage {
   readonly timeLink: Locator;
   readonly performanceLink: Locator;
   readonly directoryLink: Locator;
+  readonly claimLink: Locator;
 
   constructor(private readonly page: Page) {
     this.pimLink = this.link("PIM");
@@ -17,6 +18,7 @@ export class NavigationPage {
     this.timeLink = this.link("Time");
     this.performanceLink = this.link("Performance");
     this.directoryLink = this.link("Directory");
+    this.claimLink = this.link("Claim");
   }
 
   /** @deprecated Use pimLink. Retained for existing tests. */
@@ -72,5 +74,9 @@ export class NavigationPage {
 
   async gotoDirectory(): Promise<void> {
     await this.navigate(this.directoryLink, routes.directory);
+  }
+
+  async gotoClaim(): Promise<void> {
+    await this.navigate(this.claimLink, routes.assignClaim);
   }
 }

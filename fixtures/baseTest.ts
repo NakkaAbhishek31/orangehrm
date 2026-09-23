@@ -11,6 +11,7 @@ import { PerformancePage } from "../pages/PerformancePage";
 import { PIMPage } from "../pages/PimPage";
 import { RecruitmentPage } from "../pages/RecruitmentPage";
 import { TimePage } from "../pages/TimePage";
+import { ClaimPage } from "../pages/ClaimPage";
 import { environment } from "../config/environment";
 import { routes } from "../utils/routes";
 
@@ -27,6 +28,7 @@ export type AppFixtures = {
   timePage: TimePage;
   performancePage: PerformancePage;
   directoryPage: DirectoryPage;
+  claimPage: ClaimPage;
 };
 
 const appTest = base.extend<AppFixtures>({
@@ -65,6 +67,9 @@ const appTest = base.extend<AppFixtures>({
   },
   directoryPage: async ({ page }, use) => {
     await use(new DirectoryPage(page));
+  },
+  claimPage: async ({ page }, use) => {
+    await use(new ClaimPage(page));
   },
 });
 

@@ -1316,7 +1316,7 @@ test.describe("Performance - Employee Reviews", () => {
     );
   });
 
-  test("TC_PERFORMANCE_266 - Include Past Employees should be unchecked by default @smoke @filter @regression", async ({
+  test("TC_PERFORMANCE_403 - Include Past Employees should be unchecked by default @smoke @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
@@ -1326,7 +1326,7 @@ test.describe("Performance - Employee Reviews", () => {
     await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
   });
 
-  test("TC_PERFORMANCE_267 - Admin should select Include Past Employees @positive @filter @regression", async ({
+  test("TC_PERFORMANCE_404 - Admin should select Include Past Employees @positive @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
@@ -1337,7 +1337,7 @@ test.describe("Performance - Employee Reviews", () => {
     await expect(performancePage.includePastEmployeesCheckbox).toBeChecked();
   });
 
-  test("TC_PERFORMANCE_268 - Admin should clear Include Past Employees selection @positive @filter @regression", async ({
+  test("TC_PERFORMANCE_405 - Admin should clear Include Past Employees selection @positive @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
@@ -1349,7 +1349,7 @@ test.describe("Performance - Employee Reviews", () => {
     await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
   });
 
-  test("TC_PERFORMANCE_269 - Reset should clear Include Past Employees @positive @reset @filter @regression", async ({
+  test("TC_PERFORMANCE_406 - Reset should clear Include Past Employees @positive @reset @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
@@ -1361,7 +1361,7 @@ test.describe("Performance - Employee Reviews", () => {
     await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
   });
 
-  test("TC_PERFORMANCE_270 - Include Past Employees should persist after search @positive @search @filter @regression", async ({
+  test("TC_PERFORMANCE_407 - Include Past Employees should persist after search @positive @search @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
@@ -1374,7 +1374,7 @@ test.describe("Performance - Employee Reviews", () => {
     await expect(performancePage.includePastEmployeesCheckbox).toBeChecked();
   });
 
-  test("TC_PERFORMANCE_271 - Reload should restore Include Past Employees default @positive @navigation @filter @regression", async ({
+  test("TC_PERFORMANCE_408 - Reload should restore Include Past Employees default @positive @navigation @filter @regression", async ({
     page,
     navigationPage,
     performancePage,
@@ -1387,7 +1387,7 @@ test.describe("Performance - Employee Reviews", () => {
     await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
   });
 
-  test("TC_PERFORMANCE_272 - Employee Reviews action buttons should be visible @smoke @regression", async ({
+  test("TC_PERFORMANCE_409 - Employee Reviews action buttons should be visible @smoke @regression", async ({
     navigationPage,
     performancePage,
   }) => {
@@ -1398,7 +1398,7 @@ test.describe("Performance - Employee Reviews", () => {
     await expect(performancePage.resetButton).toBeVisible();
   });
 
-  test("TC_PERFORMANCE_273 - Employee Reviews action buttons should be enabled @smoke @regression", async ({
+  test("TC_PERFORMANCE_410 - Employee Reviews action buttons should be enabled @smoke @regression", async ({
     navigationPage,
     performancePage,
   }) => {
@@ -1409,7 +1409,7 @@ test.describe("Performance - Employee Reviews", () => {
     await expect(performancePage.resetButton).toBeEnabled();
   });
 
-  test("TC_PERFORMANCE_274 - Unfiltered search should display a completed result state @positive @search @regression", async ({
+  test("TC_PERFORMANCE_411 - Unfiltered search should display a completed result state @positive @search @regression", async ({
     navigationPage,
     performancePage,
   }) => {
@@ -1421,12 +1421,12 @@ test.describe("Performance - Employee Reviews", () => {
     await expect(performancePage.loadingSpinner).toBeHidden();
   });
 
-  test("TC_PERFORMANCE_275 - Reset should preserve Employee Reviews page identity @positive @reset @navigation @regression", async ({
+  test("TC_PERFORMANCE_412 - Reset should preserve Employee Reviews page identity @positive @reset @navigation @regression", async ({
     page,
     navigationPage,
     performancePage,
   }) => {
-    const data = performanceData.TC_PERFORMANCE_275;
+    const data = performanceData.TC_PERFORMANCE_412;
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 

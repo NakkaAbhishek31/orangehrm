@@ -9,4 +9,5 @@ export const routes = {
   performanceReviews:
     '/web/index.php/performance/searchEvaluatePerformanceReview',
   directory: '/web/index.php/directory/viewDirectory',
+  assignClaim: '/web/index.php/claim/viewAssignClaim',
 } as const;
