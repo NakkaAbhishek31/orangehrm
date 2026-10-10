@@ -82,16 +82,28 @@ export const test = appTest.extend<{ authenticatedSession: void }>({
     async ({ page }, use) => {
       await page.goto(routes.dashboard, { waitUntil: "domcontentloaded" });
 
-      if (/\/auth\/login$/.test(page.url())) {
+      const dashboardReady = page.locator("li.oxd-userdropdown");
+      const loginReady = page.getByPlaceholder("Username");
+
+      // A stale storage state can redirect through /auth/validate after the
+      // dashboard navigation has resolved. Wait for the rendered final state
+      // instead of making a one-time URL check while that redirect is pending.
+      await expect(dashboardReady.or(loginReady)).toBeVisible({
+        timeout: 30_000,
+      });
+
+      if (await loginReady.isVisible()) {
         await page.getByPlaceholder("Username").fill(environment.adminUsername);
         await page.getByPlaceholder("Password").fill(environment.adminPassword);
         await page.getByRole("button", { name: "Login" }).click();
       }
 
+      await expect(dashboardReady).toBeVisible({
+        timeout: 30_000,
+      });
       await expect(page).toHaveURL(/\/dashboard\/index$/, {
         timeout: 30_000,
       });
-      await expect(page.locator("li.oxd-userdropdown")).toBeVisible();
       await use();
     },
     { auto: true },
