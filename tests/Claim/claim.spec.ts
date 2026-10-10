@@ -460,4 +460,269 @@ test.describe("Claim - Assign Claim", () => {
     await expect(claimPage.createButton).toBeEnabled();
     await expect(claimPage.cancelButton).toBeEnabled();
   });
+
+  test("TC_CLAIM_473 - Event selector should open its option menu @positive @filter @regression", async ({ claimPage }) => {
+    await claimPage.eventDropdown.click();
+    await expect(claimPage.selectDropdownMenu).toBeVisible();
+  });
+
+  test("TC_CLAIM_474 - Escape should close the Event option menu @positive @filter @keyboard @regression", async ({ page, claimPage }) => {
+    const data = claimData.TC_CLAIM_474;
+    await claimPage.eventDropdown.click();
+    await expect(claimPage.selectDropdownMenu).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(claimPage.selectDropdownMenu).toBeHidden();
+    await expect(claimPage.eventDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+  });
+
+  test("TC_CLAIM_475 - Currency selector should open its option menu @positive @filter @regression", async ({ claimPage }) => {
+    await claimPage.currencyDropdown.click();
+    await expect(claimPage.selectDropdownMenu).toBeVisible();
+  });
+
+  test("TC_CLAIM_476 - Escape should close the Currency option menu @positive @filter @keyboard @regression", async ({ page, claimPage }) => {
+    const data = claimData.TC_CLAIM_476;
+    await claimPage.currencyDropdown.click();
+    await expect(claimPage.selectDropdownMenu).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(claimPage.selectDropdownMenu).toBeHidden();
+    await expect(claimPage.currencyDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+  });
+
+  test("TC_CLAIM_477 - Reload should restore the default Event option @positive @filter @navigation @regression", async ({ page, claimPage }) => {
+    const data = claimData.TC_CLAIM_477;
+    await claimPage.selectFirstEvent();
+    await page.reload();
+    await claimPage.verifyLoaded();
+    await expect(claimPage.eventDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+  });
+
+  test("TC_CLAIM_478 - Reload should restore the default Currency option @positive @filter @navigation @regression", async ({ page, claimPage }) => {
+    const data = claimData.TC_CLAIM_478;
+    await claimPage.selectFirstCurrency();
+    await page.reload();
+    await claimPage.verifyLoaded();
+    await expect(claimPage.currencyDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+  });
+
+  test("TC_CLAIM_479 - Reload should clear unsaved Remarks @positive @form @navigation @regression", async ({ page, claimPage }) => {
+    await claimPage.remarksInput.fill(claimData.TC_CLAIM_479.remarks);
+    await page.reload();
+    await claimPage.verifyLoaded();
+    await expect(claimPage.remarksInput).toHaveValue("");
+  });
+
+  test("TC_CLAIM_480 - Reload should clear unknown Employee text @negative @autocomplete @navigation @regression", async ({ page, claimPage }) => {
+    const data = claimData.TC_CLAIM_480;
+    await claimPage.employeeNameInput.fill(
+      `${data.employeeNamePrefix}${Date.now()}`,
+    );
+    await expect(claimPage.autocompleteNoRecords).toBeVisible();
+    await page.reload();
+    await claimPage.verifyLoaded();
+    await expect(claimPage.employeeNameInput).toHaveValue("");
+  });
+
+  test("TC_CLAIM_481 - Reload should clear required-field validation @negative @validation @navigation @regression", async ({ page, claimPage }) => {
+    await claimPage.createButton.click();
+    await expect(claimPage.validationMessages.first()).toBeVisible();
+    await page.reload();
+    await claimPage.verifyLoaded();
+    await expect(claimPage.validationMessages).toHaveCount(0);
+  });
+
+  test("TC_CLAIM_482 - Repeated empty submissions should not duplicate validation messages @negative @validation @regression", async ({ claimPage }) => {
+    const data = claimData.TC_CLAIM_482;
+    await claimPage.createButton.click();
+    await expect(claimPage.validationMessages).toHaveCount(
+      data.expectedValidationCount,
+    );
+    await claimPage.createButton.click();
+    await expect(claimPage.validationMessages).toHaveCount(
+      data.expectedValidationCount,
+    );
+  });
+
+  test("TC_CLAIM_483 - Remarks should accept Unicode characters @positive @form @regression", async ({ claimPage }) => {
+    const data = claimData.TC_CLAIM_483;
+    await claimPage.remarksInput.fill(data.remarks);
+    await expect(claimPage.remarksInput).toHaveValue(data.remarks);
+  });
+
+  test("TC_CLAIM_484 - Remarks should accept multiple lines @positive @form @regression", async ({ claimPage }) => {
+    const data = claimData.TC_CLAIM_484;
+    await claimPage.remarksInput.fill(data.remarks);
+    await expect(claimPage.remarksInput).toHaveValue(data.remarks);
+  });
+
+  test("TC_CLAIM_485 - Multiline Remarks should be clearable @positive @form @regression", async ({ claimPage }) => {
+    await claimPage.remarksInput.fill(claimData.TC_CLAIM_485.remarks);
+    await claimPage.remarksInput.clear();
+    await expect(claimPage.remarksInput).toHaveValue("");
+  });
+
+  test("TC_CLAIM_486 - Unknown employee text should be replaceable with a valid employee @positive @autocomplete @regression", async ({ claimPage }) => {
+    const data = claimData.TC_CLAIM_486;
+    await claimPage.employeeNameInput.fill(
+      `${data.employeeNamePrefix}${Date.now()}`,
+    );
+    await expect(claimPage.autocompleteNoRecords).toBeVisible();
+    await claimPage.employeeNameInput.clear();
+    const selectedEmployee = await claimPage.selectEmployee(
+      data.employeeSearch,
+    );
+    await expect(claimPage.employeeNameInput).toHaveValue(selectedEmployee);
+  });
+
+  test("TC_CLAIM_487 - Clearing unknown employee text should restore an empty field @negative @autocomplete @regression", async ({ page, claimPage }) => {
+    const data = claimData.TC_CLAIM_487;
+    await claimPage.employeeNameInput.fill(
+      `${data.employeeNamePrefix}${Date.now()}`,
+    );
+    await expect(claimPage.autocompleteNoRecords).toBeVisible();
+    await claimPage.employeeNameInput.clear();
+    await page.keyboard.press("Escape");
+    await expect(claimPage.employeeNameInput).toHaveValue("");
+    await expect(claimPage.autocompleteDropdown).toBeHidden();
+  });
+
+  test("TC_CLAIM_488 - Selected employee should persist while Remarks are edited @positive @autocomplete @form @regression", async ({ claimPage }) => {
+    const data = claimData.TC_CLAIM_488;
+    const selectedEmployee = await claimPage.selectEmployee(
+      data.employeeSearch,
+    );
+    await claimPage.remarksInput.fill(data.remarks);
+    await expect(claimPage.employeeNameInput).toHaveValue(selectedEmployee);
+    await expect(claimPage.remarksInput).toHaveValue(data.remarks);
+  });
+
+  test("TC_CLAIM_489 - Selected employee should persist with Event and Currency selections @positive @autocomplete @filter @regression", async ({ claimPage }) => {
+    const selectedEmployee = await claimPage.selectEmployee(
+      claimData.TC_CLAIM_489.employeeSearch,
+    );
+    const selectedEvent = await claimPage.selectFirstEvent();
+    const selectedCurrency = await claimPage.selectFirstCurrency();
+    await expect(claimPage.employeeNameInput).toHaveValue(selectedEmployee);
+    await expect(claimPage.eventDropdown).toContainText(selectedEvent);
+    await expect(claimPage.currencyDropdown).toContainText(selectedCurrency);
+  });
+
+  test("TC_CLAIM_490 - Cancel should discard unsaved Unicode Remarks @positive @form @cancel @regression", async ({ page, claimPage }) => {
+    const data = claimData.TC_CLAIM_490;
+    await claimPage.remarksInput.fill(data.remarks);
+    await claimPage.cancelButton.click();
+    await expect(page.getByRole("heading", {
+      name: data.pageHeading,
+    })).toBeVisible();
+  });
+
+  test("TC_CLAIM_491 - Reopened form should clear unsaved multiline Remarks @positive @form @navigation @regression", async ({ claimPage }) => {
+    await claimPage.remarksInput.fill(claimData.TC_CLAIM_491.remarks);
+    await claimPage.cancelButton.click();
+    await claimPage.gotoAssignClaim();
+    await expect(claimPage.remarksInput).toHaveValue("");
+  });
+
+  test("TC_CLAIM_492 - Form should remain usable after repeated browser reloads @positive @navigation @regression", async ({ page, claimPage }) => {
+    const data = claimData.TC_CLAIM_492;
+    await page.reload();
+    await claimPage.verifyLoaded();
+    await page.reload();
+    await claimPage.verifyLoaded();
+    await expect(claimPage.heading).toHaveText(data.pageHeading);
+    await expect(claimPage.employeeNameInput).toHaveValue("");
+    await expect(claimPage.createButton).toBeEnabled();
+  });
+
+  test("TC_CLAIM_493 - Employee Name should display its autocomplete hint @smoke @autocomplete @regression", async ({ claimPage }) => {
+    await expect(claimPage.employeeNameInput).toHaveAttribute(
+      "placeholder",
+      claimData.TC_CLAIM_493.placeholder,
+    );
+  });
+
+  test("TC_CLAIM_494 - Remarks should accept numbers and punctuation @positive @form @regression", async ({ claimPage }) => {
+    const data = claimData.TC_CLAIM_494;
+    await claimPage.remarksInput.fill(data.remarks);
+    await expect(claimPage.remarksInput).toHaveValue(data.remarks);
+  });
+
+  test("TC_CLAIM_495 - Remarks should accept whitespace-only input while editing @positive @form @regression", async ({ claimPage }) => {
+    const data = claimData.TC_CLAIM_495;
+    await claimPage.remarksInput.fill(data.remarks);
+    await expect(claimPage.remarksInput).toHaveValue(data.remarks);
+  });
+
+  test("TC_CLAIM_496 - Event menu should contain a selectable option @smoke @filter @regression", async ({ claimPage }) => {
+    await claimPage.eventDropdown.click();
+    await expect(claimPage.selectableDropdownOptions.first()).toBeVisible();
+    expect(await claimPage.selectableDropdownOptions.count()).toBeGreaterThan(0);
+  });
+
+  test("TC_CLAIM_497 - Currency menu should contain a selectable option @smoke @filter @regression", async ({ claimPage }) => {
+    await claimPage.currencyDropdown.click();
+    await expect(claimPage.selectableDropdownOptions.first()).toBeVisible();
+    expect(await claimPage.selectableDropdownOptions.count()).toBeGreaterThan(0);
+  });
+
+  test("TC_CLAIM_498 - Selecting Event should clear its existing required validation @negative @validation @filter @regression", async ({ claimPage }) => {
+    await claimPage.createButton.click();
+    await expect(claimPage.eventValidation).toHaveText(
+      claimData.TC_CLAIM_498.requiredMessage,
+    );
+    await claimPage.selectFirstEvent();
+    await expect(claimPage.eventValidation).toHaveCount(0);
+  });
+
+  test("TC_CLAIM_499 - Selecting Currency should clear its existing required validation @negative @validation @filter @regression", async ({ claimPage }) => {
+    await claimPage.createButton.click();
+    await expect(claimPage.currencyValidation).toHaveText(
+      claimData.TC_CLAIM_499.requiredMessage,
+    );
+    await claimPage.selectFirstCurrency();
+    await expect(claimPage.currencyValidation).toHaveCount(0);
+  });
+
+  test("TC_CLAIM_500 - Selecting Employee should clear its existing required validation @negative @validation @autocomplete @regression", async ({ claimPage }) => {
+    await claimPage.createButton.click();
+    await expect(claimPage.employeeNameValidation).toHaveText(
+      claimData.TC_CLAIM_500.requiredMessage,
+    );
+    await claimPage.selectEmployee(claimData.TC_CLAIM_500.employeeSearch);
+    await expect(claimPage.employeeNameValidation).toHaveCount(0);
+  });
+
+  test("TC_CLAIM_501 - Required validation should remain while optional Remarks are edited @negative @validation @form @regression", async ({ claimPage }) => {
+    const data = claimData.TC_CLAIM_501;
+    await claimPage.createButton.click();
+    await expect(claimPage.validationMessages).toHaveCount(
+      data.expectedValidationCount,
+    );
+    await claimPage.remarksInput.fill(data.remarks);
+    await expect(claimPage.validationMessages).toHaveCount(
+      data.expectedValidationCount,
+    );
+  });
+
+  test("TC_CLAIM_502 - Clean form should reopen after cancellation @positive @cancel @navigation @regression", async ({ claimPage }) => {
+    const data = claimData.TC_CLAIM_502;
+    await claimPage.cancelButton.click();
+    await claimPage.gotoAssignClaim();
+    await expect(claimPage.heading).toHaveText(data.pageHeading);
+    await expect(claimPage.employeeNameInput).toHaveValue("");
+    await expect(claimPage.eventDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+    await expect(claimPage.currencyDropdown).toContainText(
+      data.defaultDropdownValue,
+    );
+  });
 });

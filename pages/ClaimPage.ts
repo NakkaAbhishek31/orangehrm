@@ -19,6 +19,8 @@ export class ClaimPage {
   readonly currencyValidation: Locator;
   readonly remarksValidation: Locator;
   readonly requiredFieldsHint: Locator;
+  readonly selectDropdownMenu: Locator;
+  readonly selectableDropdownOptions: Locator;
 
   private readonly employeeAutocomplete: Autocomplete;
   private readonly selectDropdown: SelectDropdown;
@@ -62,6 +64,12 @@ export class ClaimPage {
       ".oxd-input-field-error-message",
     );
     this.requiredFieldsHint = form.getByText("* Required", { exact: true });
+    this.selectDropdownMenu = page.locator(".oxd-select-dropdown:visible");
+    this.selectableDropdownOptions = this.selectDropdownMenu
+      .locator(".oxd-select-option")
+      .filter({
+        hasNotText: /^(-- Select --|No Records Found|Searching\.\.\.)$/i,
+      });
     this.employeeAutocomplete = new Autocomplete(
       this.employeeNameInput,
       this.autocompleteDropdown,
