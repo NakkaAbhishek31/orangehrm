@@ -16,8 +16,7 @@ export class PerformancePage {
   readonly employeeNameInput: Locator;
   readonly jobTitleDropdown: Locator;
   readonly subUnitDropdown: Locator;
-  readonly includePastEmployeesCheckbox: Locator;
-  readonly includePastEmployeesLabel: Locator;
+  readonly includeFilterDropdown: Locator;
   readonly reviewStatusDropdown: Locator;
   readonly fromDateInput: Locator;
   readonly toDateInput: Locator;
@@ -91,17 +90,12 @@ private readonly employeeAutocomplete: Autocomplete;
       })
       .locator('.oxd-select-text');
 
-    this.includePastEmployeesLabel =
-      searchForm
-        .locator('label')
-        .filter({
-          hasText: 'Include Past Employees',
-        });
-
-    this.includePastEmployeesCheckbox =
-      this.includePastEmployeesLabel.locator(
-        'input[type="checkbox"]'
-      );
+    this.includeFilterDropdown = searchForm
+      .locator('.oxd-input-group')
+      .filter({
+        has: page.getByText('Include', { exact: true }),
+      })
+      .locator('.oxd-select-text');
 
     this.reviewStatusDropdown = searchForm
       .locator('.oxd-input-group')

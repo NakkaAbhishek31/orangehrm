@@ -1,16 +1,9 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import directoryData from "../../test-data/directory.data.json";
-import loginData from "../../test-data/login.data.json";
 
 test.describe("Directory - Employee Search", () => {
-  test.beforeEach(async ({ loginPage, navigationPage }) => {
-    await loginPage.visitPage();
-    await loginPage.login(
-      loginData.validAdmin.username,
-      loginData.validAdmin.password,
-    );
-    await loginPage.verifyLoginSuccessful();
+  test.beforeEach(async ({ navigationPage }) => {
     await navigationPage.gotoDirectory();
   });
  

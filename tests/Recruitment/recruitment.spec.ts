@@ -1668,62 +1668,37 @@ test.describe("Recruitment - Candidates", () => {
       data.shortlistNotes,
     );
 
-   const submitShortlist = async () => {
-  const responsePromise = page.waitForResponse(
-    response =>
-      response.url().includes(
-        "/api/v2/recruitment/candidates"
-      ) &&
-      response.url().includes("shortlist") &&
-      ["POST", "PUT"].includes(
-        response.request().method()
-      ),
-    {
+    const submitShortlist = async () => {
+      const responsePromise = page.waitForResponse(
+        (response) =>
+          response.url().includes("/api/v2/recruitment/candidates") &&
+          response.url().includes("shortlist") &&
+          ["POST", "PUT"].includes(response.request().method()),
+        { timeout: 30_000 },
+      );
+
+      await recruitmentPage.shortlistSaveButton.click();
+
+      return responsePromise;
+    };
+
+  const shortlistResponse = await submitShortlist();
+
+    const responseBody = await shortlistResponse.text();
+
+    expect(
+      shortlistResponse.ok(),
+      `Shortlist API failed with ${shortlistResponse.status()}: ${responseBody}`,
+    ).toBeTruthy();
+
+    await expect(recruitmentPage.loadingSpinner).toBeHidden({
       timeout: 30_000,
-    }
-  );
+    });
 
-  await recruitmentPage.shortlistSaveButton.click();
-
-  return responsePromise;
-};
-
-let shortlistResponse = await submitShortlist();
-
-if (
-  !shortlistResponse.ok() &&
-  shortlistResponse.status() >= 500
-) {
-  await expect(
-    recruitmentPage.loadingSpinner
-  ).toBeHidden({
-    timeout: 30_000,
-  });
-
-  await page.waitForTimeout(1_500);
-
-  shortlistResponse = await submitShortlist();
-}
-
-const responseBody =
-  await shortlistResponse.text();
-
-expect(
-  shortlistResponse.ok(),
-  `Shortlist API failed with ${shortlistResponse.status()}: ${responseBody}`
-).toBeTruthy();
-
-await expect(
-  recruitmentPage.loadingSpinner
-).toBeHidden({
-  timeout: 30_000,
-});
-
-await expect(
-  recruitmentPage.candidateStatusText
-).toContainText(data.expectedStatus, {
-  timeout: 30_000,
-});
+    await expect(recruitmentPage.candidateStatusText).toContainText(
+      data.expectedStatus,
+      { timeout: 30_000 },
+    );
     // Verify status from Candidates List.
     await navigationPage.gotoRecruitment();
 

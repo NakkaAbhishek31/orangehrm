@@ -737,17 +737,22 @@ export class PIMPage {
 
     await expect(this.confirmPasswordInput).toHaveValue(details.password);
 
-    const createEmployeeResponse = this.page.waitForResponse(
+    const createEmployeeResponsePromise = this.page.waitForResponse(
       (response) =>
         response.url().includes("/api/v2/pim/employees") &&
-        response.request().method() === "POST" &&
-        response.ok(),
+        response.request().method() === "POST",
       { timeout: 20_000 },
     );
 
     await this.SaveEmployeeButton.click();
 
-    await createEmployeeResponse;
+    const createEmployeeResponse = await createEmployeeResponsePromise;
+    if (!createEmployeeResponse.ok()) {
+      const responseBody = await createEmployeeResponse.text();
+      throw new Error(
+        `Create employee failed with ${createEmployeeResponse.status()}: ${responseBody}`,
+      );
+    }
 
     await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
       timeout: 20_000,

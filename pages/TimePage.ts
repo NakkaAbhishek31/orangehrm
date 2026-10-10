@@ -1062,6 +1062,7 @@ async gotoPunchInOut(): Promise<void> {
     /\/attendance\/punchIn$/,
     {
       timeout: 30_000,
+      waitUntil: "domcontentloaded",
     }
   );
 

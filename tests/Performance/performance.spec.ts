@@ -1316,65 +1316,90 @@ test.describe("Performance - Employee Reviews", () => {
     );
   });
 
-  test("TC_PERFORMANCE_403 - Include Past Employees should be unchecked by default @smoke @filter @regression", async ({
+  test("TC_PERFORMANCE_403 - Include filter should default to current employees @smoke @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+    await expect(performancePage.includeFilterDropdown).toContainText(
+      "Current Employees Only",
+    );
   });
 
-  test("TC_PERFORMANCE_404 - Admin should select Include Past Employees @positive @filter @regression", async ({
+  test("TC_PERFORMANCE_404 - Admin should include current and past employees @positive @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await performancePage.includePastEmployeesLabel.click();
-    await expect(performancePage.includePastEmployeesCheckbox).toBeChecked();
+    await performancePage.selectDropdownOption(
+      performancePage.includeFilterDropdown,
+      "Current and Past Employees",
+    );
+    await expect(performancePage.includeFilterDropdown).toContainText(
+      "Current and Past Employees",
+    );
   });
 
-  test("TC_PERFORMANCE_405 - Admin should clear Include Past Employees selection @positive @filter @regression", async ({
+  test("TC_PERFORMANCE_405 - Admin should restore current employees only @positive @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await performancePage.includePastEmployeesLabel.click();
-    await performancePage.includePastEmployeesLabel.click();
-    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+    await performancePage.selectDropdownOption(
+      performancePage.includeFilterDropdown,
+      "Current and Past Employees",
+    );
+    await performancePage.selectDropdownOption(
+      performancePage.includeFilterDropdown,
+      "Current Employees Only",
+    );
+    await expect(performancePage.includeFilterDropdown).toContainText(
+      "Current Employees Only",
+    );
   });
 
-  test("TC_PERFORMANCE_406 - Reset should clear Include Past Employees @positive @reset @filter @regression", async ({
+  test("TC_PERFORMANCE_406 - Reset should restore the default Include filter @positive @reset @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await performancePage.includePastEmployeesLabel.click();
+    await performancePage.selectDropdownOption(
+      performancePage.includeFilterDropdown,
+      "Current and Past Employees",
+    );
     await performancePage.resetButton.click();
-    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+    await expect(performancePage.includeFilterDropdown).toContainText(
+      "Current Employees Only",
+    );
   });
 
-  test("TC_PERFORMANCE_407 - Include Past Employees should persist after search @positive @search @filter @regression", async ({
+  test("TC_PERFORMANCE_407 - Include filter should persist after search @positive @search @filter @regression", async ({
     navigationPage,
     performancePage,
   }) => {
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await performancePage.includePastEmployeesLabel.click();
+    await performancePage.selectDropdownOption(
+      performancePage.includeFilterDropdown,
+      "Current and Past Employees",
+    );
     await performancePage.searchButton.click();
     await performancePage.waitForReviewResults();
-    await expect(performancePage.includePastEmployeesCheckbox).toBeChecked();
+    await expect(performancePage.includeFilterDropdown).toContainText(
+      "Current and Past Employees",
+    );
   });
 
-  test("TC_PERFORMANCE_408 - Reload should restore Include Past Employees default @positive @navigation @filter @regression", async ({
+  test("TC_PERFORMANCE_408 - Reload should restore the default Include filter @positive @navigation @filter @regression", async ({
     page,
     navigationPage,
     performancePage,
@@ -1382,9 +1407,14 @@ test.describe("Performance - Employee Reviews", () => {
     await navigationPage.gotoPerformance();
     await performancePage.gotoEmployeeReviews();
 
-    await performancePage.includePastEmployeesLabel.click();
+    await performancePage.selectDropdownOption(
+      performancePage.includeFilterDropdown,
+      "Current and Past Employees",
+    );
     await page.reload();
-    await expect(performancePage.includePastEmployeesCheckbox).not.toBeChecked();
+    await expect(performancePage.includeFilterDropdown).toContainText(
+      "Current Employees Only",
+    );
   });
 
   test("TC_PERFORMANCE_409 - Employee Reviews action buttons should be visible @smoke @regression", async ({
