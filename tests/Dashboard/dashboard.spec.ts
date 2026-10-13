@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import dashboardData from "../../test-data/dashboard.data.json";
 import { routes } from "../../utils/routes";
+import { quickLaunchCards } from "../../locators/test/dashboardTestLocators";
 
 test.describe("Dashboard - Quick Launch", () => {
   test.beforeEach(async ({ page }) => {
@@ -395,7 +396,7 @@ test.describe("Dashboard - Quick Launch", () => {
     const data = dashboardData.TC_DASHBOARD_369;
 
     await expect(
-      dashboardPage.quickLaunchWidget.locator(".orangehrm-quick-launch-card"),
+      quickLaunchCards(dashboardPage.quickLaunchWidget),
     ).toHaveCount(data.expectedActionCount);
   });
 

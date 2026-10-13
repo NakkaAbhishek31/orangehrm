@@ -1,213 +1,41 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { createLeaveLocators } from "../locators/leaveLocators";
 
 export class LeavePage {
   readonly page: Page;
   private leaveStatusSelectionInitialized = false;
 
-  readonly leaveListHeading: Locator;
-  readonly fromDateInput: Locator;
-  readonly toDateInput: Locator;
-  readonly leaveStatusDropdown: Locator;
-  readonly employeeNameInput: Locator;
-  readonly leaveTypeDropdown: Locator;
-  readonly includePastEmployeesCheckbox: Locator;
-  readonly searchButton: Locator;
-  readonly resetButton: Locator;
-  readonly leaveTable: Locator;
-  readonly leaveRows: Locator;
-  readonly loadingSpinner: Locator;
-  readonly noRecordsFound: Locator;
-  readonly dateValidationMessages: Locator;
-  readonly toDateValidation: Locator;
-  readonly dropdownOptions: Locator;
-  readonly includePastEmployeesLabel: Locator;
-  readonly autocompleteOptions: Locator;
-  readonly employeeNameValidation: Locator;
-  readonly fromDateValidation: Locator;
-  readonly nextPageButton: Locator;
-readonly previousPageButton: Locator;
-readonly selectedLeaveStatuses: Locator;
-readonly leaveStatusField: Locator;
+  readonly leaveListHeading!: Locator;
+  readonly fromDateInput!: Locator;
+  readonly toDateInput!: Locator;
+  readonly leaveStatusDropdown!: Locator;
+  readonly employeeNameInput!: Locator;
+  readonly leaveTypeDropdown!: Locator;
+  readonly includePastEmployeesCheckbox!: Locator;
+  readonly searchButton!: Locator;
+  readonly resetButton!: Locator;
+  readonly leaveTable!: Locator;
+  readonly leaveRows!: Locator;
+  readonly loadingSpinner!: Locator;
+  readonly noRecordsFound!: Locator;
+  readonly dateValidationMessages!: Locator;
+  readonly toDateValidation!: Locator;
+  readonly dropdownOptions!: Locator;
+  readonly includePastEmployeesLabel!: Locator;
+  readonly autocompleteOptions!: Locator;
+  readonly employeeNameValidation!: Locator;
+  readonly fromDateValidation!: Locator;
+  readonly nextPageButton!: Locator;
+  readonly previousPageButton!: Locator;
+  readonly selectedLeaveStatuses!: Locator;
+  readonly leaveStatusField!: Locator;
+  private readonly locators: ReturnType<typeof createLeaveLocators>;
 
   constructor(page: Page) {
     this.page = page;
-
-    this.leaveListHeading = page.getByRole("heading", {
-      name: "Leave List",
-      exact: true,
-    });
-
-    this.fromDateInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.locator("label").getByText("From Date", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.toDateInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.locator("label").getByText("To Date", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.leaveStatusDropdown = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.locator("label").getByText("Show Leave with Status", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-select-text");
-
-    this.employeeNameInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.locator("label").getByText("Employee Name", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.leaveTypeDropdown = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.locator("label").getByText("Leave Type", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-select-text");
-
-    const includePastEmployeesContainer = page
-      .getByText("Include Past Employees", { exact: true })
-      .locator(
-        "xpath=ancestor::*[.//input[@type='checkbox']][1]",
-      );
-
-    this.includePastEmployeesCheckbox =
-      includePastEmployeesContainer.getByRole("checkbox");
-
-    this.searchButton = page.getByRole("button", {
-      name: "Search",
-      exact: true,
-    });
-
-    this.resetButton = page.getByRole("button", {
-      name: "Reset",
-      exact: true,
-    });
-
-    this.leaveTable = page.locator(".oxd-table");
-
-    this.leaveRows = page.locator(".oxd-table-body .oxd-table-card");
-
-    this.loadingSpinner = page.locator(".oxd-loading-spinner");
-
-    this.noRecordsFound = page
-      .locator(".orangehrm-container span.oxd-text--span")
-      .filter({
-        hasText: /^No Records Found$/,
-        visible: true,
-      })
-      .first();
-
-      this.selectedLeaveStatuses = page
-        .locator(".oxd-input-group")
-        .filter({
-          has: page.locator("label").getByText("Show Leave with Status", {
-            exact: true,
-          }),
-        });
-
-    this.dateValidationMessages = page
-      .locator("form")
-      .locator(".oxd-input-field-error-message");
-
-    this.toDateValidation = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.locator("label").getByText("To Date", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-input-field-error-message");
-
-    this.dropdownOptions = page.locator(
-      ".oxd-select-dropdown:visible " + ".oxd-select-option",
-    );
-
-    this.includePastEmployeesLabel = includePastEmployeesContainer.locator(
-      "label",
-    );
-
-    this.autocompleteOptions = page.locator(
-      ".oxd-autocomplete-dropdown:visible " + ".oxd-autocomplete-option",
-    );
-
-    this.employeeNameValidation = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.locator("label").getByText("Employee Name", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-input-field-error-message");
-      this.fromDateValidation = page
-  .locator('.oxd-input-group')
-  .filter({
-    has: page
-      .locator('label')
-      .getByText('From Date', {
-        exact: true,
-      }),
-  })
-  .locator(
-    '.oxd-input-field-error-message'
-  );
-
- this.nextPageButton = page
-  .locator(
-    'button.oxd-pagination-page-item--previous-next'
-  )
-  .filter({
-    has: page.locator(
-      'i.bi-chevron-right'
-    ),
-  });
-
-
-  this.leaveStatusField = page
-  .locator('.oxd-input-group')
-  .filter({
-    has: page
-      .locator('label')
-      .getByText(
-        'Show Leave with Status',
-        { exact: true }
-      ),
-  });
-
-this.leaveStatusDropdown =
-  this.leaveStatusField.locator(
-    '.oxd-select-text'
-  );
-
-this.previousPageButton = page
-  .locator(
-    'button.oxd-pagination-page-item--previous-next'
-  )
-  .filter({
-    has: page.locator(
-      'i.bi-chevron-left'
-    ),
-  });
-
+    this.locators = createLeaveLocators(page);
+    Object.assign(this, this.locators);
   }
-
   async verifyLeaveListPage(): Promise<void> {
     await expect(this.leaveListHeading).toBeVisible();
 
@@ -234,9 +62,8 @@ async selectLeaveStatus(
   status: string
 ): Promise<void> {
   if (!this.leaveStatusSelectionInitialized) {
-    const selectedStatusRemoveButtons = this.leaveStatusField.locator(
-      "i.bi-x.--clear",
-    );
+    const selectedStatusRemoveButtons =
+      this.locators.selectedStatusRemoveButtons(this.leaveStatusField);
 
     while ((await selectedStatusRemoveButtons.count()) > 0) {
       await selectedStatusRemoveButtons.first().click();
@@ -247,22 +74,11 @@ async selectLeaveStatus(
 
   await this.leaveStatusDropdown.click();
 
-  const dropdown =
-    this.page.locator(
-      '.oxd-select-dropdown:visible'
-    );
+  const dropdown = this.locators.visibleDropdown();
 
   await expect(dropdown).toBeVisible();
 
-  const option = dropdown
-    .locator('.oxd-select-option')
-    .filter({
-      hasText: new RegExp(
-        `^\\s*${status}\\s*$`,
-        'i'
-      ),
-    })
-    .first();
+  const option = this.locators.leaveStatusOption(dropdown, status);
 
   await expect(option).toBeVisible();
 
@@ -270,10 +86,7 @@ async selectLeaveStatus(
   await this.page.keyboard.press("Escape");
 
   await expect(
-    this.leaveStatusField.getByText(
-      status,
-      { exact: true }
-    )
+    this.locators.selectedStatus(this.leaveStatusField, status)
   ).toBeVisible({
     timeout: 10_000,
   });
@@ -432,19 +245,15 @@ async waitForDefaultDateRange(): Promise<{
 async removeSelectedLeaveStatus(
   status: string
 ): Promise<void> {
-  const statusElement = this.leaveStatusField.getByText(status, {
-    exact: true,
-  });
+  const statusElement = this.locators.selectedStatus(this.leaveStatusField, status);
   await expect(statusElement).toBeVisible();
 
-  const removeButton = statusElement.locator(
-    "xpath=following::i[contains(@class,'bi-x')][1]",
-  );
+  const removeButton = this.locators.statusRemoveButton(statusElement);
   await expect(removeButton).toBeVisible();
   await removeButton.click();
 
   await expect(
-    this.leaveStatusField.getByText(status, { exact: true }),
+    this.locators.selectedStatus(this.leaveStatusField, status),
   ).toHaveCount(0);
 }
 

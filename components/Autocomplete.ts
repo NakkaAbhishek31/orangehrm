@@ -1,4 +1,5 @@
 import { expect, type Locator } from "@playwright/test";
+import { autocompleteLocators } from "../locators/autocompleteLocators";
 
 /** Shared operations for OrangeHRM autocomplete fields. */
 export class Autocomplete {
@@ -12,7 +13,7 @@ export class Autocomplete {
     await expect(this.dropdown).toBeVisible();
 
     const option = this.dropdown
-      .locator(".oxd-autocomplete-option")
+      .locator(autocompleteLocators.option)
       .filter({ hasNotText: /Searching|No Records Found/i })
       .first();
     await expect(option).toBeVisible();

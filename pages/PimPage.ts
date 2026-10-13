@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
 import { generateEmployeeId } from "../utils/testData";
+import { createPimLocators } from "../locators/pimLocators";
 
 type EmployeeFilters = {
   employeeId?: string;
@@ -40,219 +41,56 @@ export interface EmployeeData {
 export class PIMPage {
   readonly page: Page;
   readonly confirmationDialog: ConfirmationDialog;
-  readonly AddEmployeeLink: Locator;
-  readonly firstnameInput: Locator;
-  readonly middlenameInput: Locator;
-  readonly lastnameInput: Locator;
-  readonly employeeID: Locator;
-  readonly SaveEmployeeButton: Locator;
-  readonly personalDetailsHeading: Locator;
-  readonly employeeListLink: Locator;
-  readonly employeeIdFilterInput: Locator;
-  readonly filterSearchButton: Locator;
-  readonly loadingSpinner: Locator;
-  readonly employeeRows: Locator;
-  readonly noRecordsFound: Locator;
-  readonly employeeNameFilterInput: Locator;
-  readonly autocompleteOptions: Locator;
-  readonly middlenameUpateInput: Locator;
-  readonly lastnameUpadteInput: Locator;
-  readonly personalDetailsSaveButton: Locator;
-  readonly successToast: Locator;
-  readonly employeeIdValidation: Locator;
-  //readonly deleteEmployee:Locator;
-  readonly profilePictureInput: Locator;
-  readonly profilePicturePreview: Locator;
-  readonly profilePictureValidation: Locator;
-  readonly nextPageButton: Locator;
-  readonly previousPageButton: Locator;
-  readonly activePageButton: Locator;
-  readonly employeeIdCells: Locator;
-  readonly cancelProfilepageButton: Locator;
-  readonly requiredValidationMessages: Locator;
-  readonly createLoginDetailsSwitch: Locator;
-  readonly employeeUsernameInput: Locator;
-  readonly employeePasswordInput: Locator;
-  readonly confirmPasswordInput: Locator;
-  readonly enabledStatusRadio: Locator;
-  readonly disabledStatusRadio: Locator;
-  readonly confirmPasswordValidation: Locator;
-  readonly passwordValidation: Locator;
-  readonly passwordStrengthIndicator: Locator;
-  readonly createLoginDetailsCheckbox: Locator;
-  readonly usernameValidation: Locator;
-  readonly addEmployeeIdInput: Locator;
+  readonly AddEmployeeLink!: Locator;
+  readonly firstnameInput!: Locator;
+  readonly middlenameInput!: Locator;
+  readonly lastnameInput!: Locator;
+  readonly employeeID!: Locator;
+  readonly SaveEmployeeButton!: Locator;
+  readonly personalDetailsHeading!: Locator;
+  readonly employeeListLink!: Locator;
+  readonly employeeIdFilterInput!: Locator;
+  readonly filterSearchButton!: Locator;
+  readonly loadingSpinner!: Locator;
+  readonly employeeRows!: Locator;
+  readonly noRecordsFound!: Locator;
+  readonly employeeNameFilterInput!: Locator;
+  readonly autocompleteOptions!: Locator;
+  readonly middlenameUpateInput!: Locator;
+  readonly lastnameUpadteInput!: Locator;
+  readonly personalDetailsSaveButton!: Locator;
+  readonly successToast!: Locator;
+  readonly employeeIdValidation!: Locator;
+  //readonly deleteEmployee!:Locator;
+  readonly profilePictureInput!: Locator;
+  readonly profilePicturePreview!: Locator;
+  readonly profilePictureValidation!: Locator;
+  readonly nextPageButton!: Locator;
+  readonly previousPageButton!: Locator;
+  readonly activePageButton!: Locator;
+  readonly employeeIdCells!: Locator;
+  readonly cancelProfilepageButton!: Locator;
+  readonly requiredValidationMessages!: Locator;
+  readonly createLoginDetailsSwitch!: Locator;
+  readonly employeeUsernameInput!: Locator;
+  readonly employeePasswordInput!: Locator;
+  readonly confirmPasswordInput!: Locator;
+  readonly enabledStatusRadio!: Locator;
+  readonly disabledStatusRadio!: Locator;
+  readonly confirmPasswordValidation!: Locator;
+  readonly passwordValidation!: Locator;
+  readonly passwordStrengthIndicator!: Locator;
+  readonly createLoginDetailsCheckbox!: Locator;
+  readonly usernameValidation!: Locator;
+  readonly addEmployeeIdInput!: Locator;
+  private readonly locators: ReturnType<typeof createPimLocators>;
 
   constructor(page: Page) {
     this.page = page;
     this.confirmationDialog = new ConfirmationDialog(page);
-    this.AddEmployeeLink = page.getByRole("link", { name: /Add Employee/i });
-    this.firstnameInput = page.getByRole("textbox", { name: "First Name" });
-    this.middlenameInput = page.getByRole("textbox", { name: "Middle Name" });
-    this.lastnameInput = page.getByRole("textbox", { name: "Last Name" });
-    // this.employeeID=page.locator("div[class='oxd-input-group oxd-input-field-bottom-space'] div input[class='oxd-input oxd-input--active']");
-    this.SaveEmployeeButton = page.getByRole("button", { name: "Save" });
-    this.personalDetailsHeading = page.getByRole("heading", {
-      name: "Personal Details",
-    });
-    this.employeeListLink = page.getByRole("link", { name: "Employee List" });
-    // this.employeeIdFilterInput=page.locator("div[class='oxd-input-group oxd-input-field-bottom-space'] div input[class='oxd-input oxd-input--active']");
-    this.filterSearchButton = page.getByRole("button", { name: /Search/i });
-    this.loadingSpinner = this.loadingSpinner = page
-      .locator(".oxd-loading-spinner")
-      .first();
-    this.employeeRows = page.locator(".oxd-table-body .oxd-table-card");
-    this.noRecordsFound = page
-      .locator(".oxd-toast-container")
-      .getByText("No Records Found", { exact: true });
-    this.employeeNameFilterInput = page.locator(
-      "//div[@class='oxd-grid-4 orangehrm-full-width-grid']//div[1]//div[1]//div[2]//div[1]//div[1]//input[1]",
-    );
-    this.autocompleteOptions = page.locator(".oxd-autocomplete-option");
-    this.middlenameUpateInput = page.getByRole("textbox", {
-      name: "Middle Name",
-    });
-    this.lastnameUpadteInput = page.getByRole("textbox", { name: "Last Name" });
-    this.personalDetailsSaveButton = this.personalDetailsSaveButton = page
-      .locator("form")
-      .filter({ has: page.locator('input[name="firstName"]') })
-      .getByRole("button", { name: "Save", exact: true });
-    this.successToast = page.locator(
-      "div.oxd-toast-container.oxd-toast-container--bottom",
-    );
-    this.employeeIdValidation = page.getByText("Employee Id already exists", {
-      exact: true,
-    });
-    this.employeeID = page
-      .locator("form")
-      .filter({ has: page.locator('input[name="firstName"]') })
-      .locator(".oxd-input-group")
-      .filter({ hasText: "Employee Id" })
-      .locator("input");
-    this.employeeIdFilterInput = page
-      .locator(".oxd-table-filter")
-      .locator(".oxd-input-group")
-      .filter({ hasText: "Employee Id" })
-      .locator("input");
-    this.profilePictureInput = page.locator('input[type="file"]');
-    this.profilePicturePreview = page.locator("img.employee-image");
-    this.profilePictureValidation = page.getByText("File type not allowed", {
-      exact: true,
-    });
-
-    this.nextPageButton = page
-      .locator("button.oxd-pagination-page-item--previous-next")
-      .filter({
-        has: page.locator("i.bi-chevron-right"),
-      });
-
-    this.previousPageButton = page
-      .locator("button.oxd-pagination-page-item--previous-next")
-      .filter({
-        has: page.locator("i.bi-chevron-left"),
-      });
-
-    this.activePageButton = page.locator(".oxd-pagination-page-item--active");
-
-    this.employeeIdCells = page.locator(
-      '.oxd-table-body [role="row"] [role="cell"]:nth-child(2)',
-    );
-
-    this.cancelProfilepageButton = page.getByRole("button", {
-      name: /Cancel/i,
-    });
-
-    this.requiredValidationMessages = page.locator(
-      ".oxd-input-field-error-message",
-    );
-    this.createLoginDetailsSwitch = page
-      .locator(".oxd-form-row")
-      .filter({ hasText: "Create Login Details" })
-      .locator(".oxd-switch-input");
-    this.employeeUsernameInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Username", { exact: true }),
-      })
-      .locator("input");
-
-    this.employeePasswordInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Password", { exact: true }),
-      })
-      .locator("input");
-
-    this.confirmPasswordInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Confirm Password", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.enabledStatusRadio = page
-      .getByText("Enabled", { exact: true })
-      .locator("..")
-      .locator('input[type="radio"]');
-
-    this.disabledStatusRadio = page
-      .getByText("Disabled", { exact: true })
-      .locator("..")
-      .locator('input[type="radio"]');
-
-    this.confirmPasswordValidation = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Confirm Password", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-input-field-error-message");
-
-    this.passwordValidation = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Password", { exact: true }),
-      })
-      .locator(".oxd-input-field-error-message");
-
-    this.passwordStrengthIndicator = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Password", { exact: true }),
-      })
-      .locator("span")
-      .filter({
-        hasText: /Weak|Better|Medium|Strong/i,
-      });
-
-    const createLoginDetailsRow = page
-      .locator(".oxd-form-row")
-      .filter({ hasText: "Create Login Details" });
-
-    this.createLoginDetailsCheckbox = createLoginDetailsRow.locator(
-      'input[type="checkbox"]',
-    );
-
-    this.createLoginDetailsSwitch = createLoginDetailsRow.locator(
-      "span.oxd-switch-input",
-    );
-
-    this.usernameValidation = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Username", { exact: true }),
-      })
-      .locator(".oxd-input-field-error-message");
-
-    this.addEmployeeIdInput = page
-      .locator(".oxd-input-group")
-      .filter({ hasText: "Employee Id" })
-      .locator("input");
+    this.locators = createPimLocators(page);
+    Object.assign(this, this.locators);
   }
-
   async gotoAddEmployee(): Promise<void> {
     await this.AddEmployeeLink.click();
   }
@@ -442,8 +280,8 @@ export class PIMPage {
     lastName: string,
   ): Promise<void> {
     await expect(this.loadingSpinner).toBeHidden();
-    const matchingRow = this.employeeRows.filter({ hasText: employeeId });
-    const cells = matchingRow.locator(".oxd-table-cell");
+    const matchingRow = this.locators.employeeRow(employeeId);
+    const cells = this.locators.tableCells(matchingRow);
     const fullName = await cells.nth(2).innerText();
     const actualFirstName = fullName.trim().split(/\s+/)[0];
     await expect(cells.nth(1)).toHaveText(employeeId);
@@ -507,9 +345,7 @@ export class PIMPage {
     await expect(this.loadingSpinner).toBeHidden();
     const matchingRow = this.employeeRows.filter({ hasText: employeeId });
     await expect(matchingRow).toHaveCount(1);
-    const deleteButton = matchingRow.locator("button").filter({
-      has: this.page.locator("i.bi-trash"),
-    });
+    const deleteButton = this.locators.rowActionButton(matchingRow, "i.bi-trash");
     await deleteButton.click();
 
     const confirmationDilaog = this.confirmationDialog.root;
@@ -564,14 +400,7 @@ export class PIMPage {
   async goToPage(pageNumber: number): Promise<void> {
     const currentPageIds = await this.getVisibleEmployeeIds();
 
-    const pageButton = this.page
-      .getByRole("navigation", {
-        name: "Pagination Navigation",
-      })
-      .getByRole("button", {
-        name: String(pageNumber),
-        exact: true,
-      });
+    const pageButton = this.locators.employeeListPageButton(pageNumber);
 
     await expect(pageButton).toBeVisible();
 
@@ -592,16 +421,11 @@ export class PIMPage {
   }
 
   async openEmployeeById(employeeId: string): Promise<void> {
-    const employeeRow = this.employeeRows.filter({
-      has: this.page
-        .locator(".oxd-table-cell")
-        .nth(1)
-        .filter({ hasText: employeeId }),
-    });
+    const employeeRow = this.locators.employeeRow(employeeId);
 
     await expect(employeeRow).toHaveCount(1);
 
-    await employeeRow.locator(".oxd-table-cell").nth(1).click();
+    await this.locators.tableCells(employeeRow).nth(1).click();
 
     await this.page.waitForURL(/pim\/viewPersonalDetails\/empNumber\/\d+/, {
       timeout: 15_000,
@@ -669,7 +493,7 @@ export class PIMPage {
       { timeout: 15_000 },
     );
 
-    await this.page.getByRole("button", { name: "Reset", exact: true }).click();
+    await this.locators.resetButton.click();
 
     await employeeListResponse;
     await expect(this.loadingSpinner).toBeHidden();
@@ -681,9 +505,9 @@ export class PIMPage {
   ): Promise<void> {
     await this.employeeNameFilterInput.fill(partialName);
 
-    const matchingOption = this.page
-      .locator(".oxd-autocomplete-option")
-      .filter({ hasText: expectedFullName });
+    const matchingOption = this.autocompleteOptions.filter({
+      hasText: expectedFullName,
+    });
 
     await matchingOption.waitFor({ state: "visible" });
 
@@ -773,9 +597,7 @@ export class PIMPage {
     await expect(this.loadingSpinner).toBeHidden();
     const matchingRow = this.employeeRows.filter({ hasText: employeeId });
     await expect(matchingRow).toHaveCount(1);
-    const deleteButton = matchingRow.locator("button").filter({
-      has: this.page.locator("i.bi-trash"),
-    });
+    const deleteButton = this.locators.rowActionButton(matchingRow, "i.bi-trash");
     await deleteButton.click();
 
     const confirmationDilaog = this.confirmationDialog.root;
@@ -787,16 +609,11 @@ export class PIMPage {
   }
 
   async selectEmployeeById(employeeId: string): Promise<void> {
-    const employeeRow = this.employeeRows.filter({
-      has: this.page
-        .locator(".oxd-table-cell")
-        .nth(1)
-        .getByText(employeeId, { exact: true }),
-    });
+    const employeeRow = this.locators.employeeRow(employeeId);
 
     await expect(employeeRow).toHaveCount(1);
 
-    const rowCheckbox = employeeRow.locator('input[type="checkbox"]');
+    const rowCheckbox = this.locators.rowCheckbox(employeeRow);
 
     await rowCheckbox.check({
       force: true,
@@ -806,9 +623,7 @@ export class PIMPage {
   }
 
   async deleteSelectedEmployees(): Promise<void> {
-    const deleteSelectedButton = this.page.getByRole("button", {
-      name: /Delete Selected/i,
-    });
+    const deleteSelectedButton = this.locators.deleteSelectedButton();
 
     await expect(deleteSelectedButton).toBeVisible();
     await deleteSelectedButton.click();
@@ -845,11 +660,8 @@ export class PIMPage {
       timeout: 20_000,
     });
 
-    const headerCheckbox = this.page.locator(
-      '.oxd-table-header input[type="checkbox"]',
-    );
-
-    const rowCheckboxes = this.employeeRows.locator('input[type="checkbox"]');
+    const headerCheckbox = this.locators.headerCheckbox();
+    const rowCheckboxes = this.locators.rowCheckboxes();
 
     await expect
       .poll(async () => rowCheckboxes.count(), {
@@ -872,11 +684,8 @@ export class PIMPage {
   }
 
   async deselectAllVisibleEmployees(): Promise<void> {
-    const headerCheckbox = this.page.locator(
-      '.oxd-table-header input[type="checkbox"]',
-    );
-
-    const rowCheckboxes = this.employeeRows.locator('input[type="checkbox"]');
+    const headerCheckbox = this.locators.headerCheckbox();
+    const rowCheckboxes = this.locators.rowCheckboxes();
 
     const rowCount = await rowCheckboxes.count();
 
@@ -894,17 +703,11 @@ export class PIMPage {
   }
 
   async cancelEmployeeDeletion(employeeId: string): Promise<void> {
-    const employeeRow = this.employeeRows.filter({
-      has: this.page.locator(".oxd-table-cell").nth(1).getByText(employeeId, {
-        exact: true,
-      }),
-    });
+    const employeeRow = this.locators.employeeRow(employeeId);
 
     await expect(employeeRow).toHaveCount(1);
 
-    const deleteButton = employeeRow.locator("button").filter({
-      has: this.page.locator("i.bi-trash"),
-    });
+    const deleteButton = this.locators.rowActionButton(employeeRow, "i.bi-trash");
 
     await expect(deleteButton).toBeVisible();
     await deleteButton.click();
@@ -922,9 +725,7 @@ export class PIMPage {
     // Confirm the employee remains in the table.
     await expect(employeeRow).toHaveCount(1);
 
-    await expect(employeeRow.locator(".oxd-table-cell").nth(1)).toHaveText(
-      employeeId,
-    );
+    await expect(this.locators.tableCells(employeeRow).nth(1)).toHaveText(employeeId);
   }
 
   private generateUniqueEmployeeId(): string {

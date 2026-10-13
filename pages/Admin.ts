@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { createAdminLocators } from "../locators/adminLocators";
 
 export interface SystemUserFilters {
   username?: string;
@@ -19,274 +20,51 @@ export type AddSystemUserDetails = {
 export class AdminPage {
   readonly page: Page;
   readonly confirmationDialog: ConfirmationDialog;
-  readonly userManagementMenu: Locator;
-  readonly usersMenuItem: Locator;
-  readonly systemUsersHeading: Locator;
-  readonly usernameInput: Locator;
-  readonly userRoleDropdown: Locator;
-  readonly employeeNameInput: Locator;
-  readonly statusDropdown: Locator;
-  readonly searchButton: Locator;
-  readonly resetButton: Locator;
-  readonly addButton: Locator;
-  readonly systemUsersTable: Locator;
-  readonly userRows: Locator;
-  readonly loadingSpinner: Locator;
-  readonly noRecordsFound: Locator;
-  readonly addUserHeading: Locator;
-  readonly addUserRoleDropdown: Locator;
-  readonly addEmployeeNameInput: Locator;
-  readonly addStatusDropdown: Locator;
-  readonly addUsernameInput: Locator;
-  readonly addPasswordInput: Locator;
-  readonly addConfirmPasswordInput: Locator;
-  readonly addUserSaveButton: Locator;
-  readonly addUserCancelButton: Locator;
-  readonly autocompleteOptions: Locator;
-  readonly successToast: Locator;
-  readonly validationMessages: Locator;
-  readonly toastMessage: Locator;
-  readonly usernameValidation: Locator;
-  readonly confirmPasswordValidation: Locator;
-  readonly editUserHeading: Locator;
-  readonly editStatusDropdown: Locator;
-  readonly editUserSaveButton: Locator;
-  readonly deleteSelectedButton: Locator;
-  readonly nextPageButton: Locator;
-  readonly previousPageButton: Locator;
-  readonly passwordValidation: Locator;
-  readonly employeeNameValidation: Locator;
+  readonly userManagementMenu!: Locator;
+  readonly usersMenuItem!: Locator;
+  readonly systemUsersHeading!: Locator;
+  readonly usernameInput!: Locator;
+  readonly userRoleDropdown!: Locator;
+  readonly employeeNameInput!: Locator;
+  readonly statusDropdown!: Locator;
+  readonly searchButton!: Locator;
+  readonly resetButton!: Locator;
+  readonly addButton!: Locator;
+  readonly systemUsersTable!: Locator;
+  readonly userRows!: Locator;
+  readonly loadingSpinner!: Locator;
+  readonly noRecordsFound!: Locator;
+  readonly addUserHeading!: Locator;
+  readonly addUserRoleDropdown!: Locator;
+  readonly addEmployeeNameInput!: Locator;
+  readonly addStatusDropdown!: Locator;
+  readonly addUsernameInput!: Locator;
+  readonly addPasswordInput!: Locator;
+  readonly addConfirmPasswordInput!: Locator;
+  readonly addUserSaveButton!: Locator;
+  readonly addUserCancelButton!: Locator;
+  readonly autocompleteOptions!: Locator;
+  readonly successToast!: Locator;
+  readonly validationMessages!: Locator;
+  readonly toastMessage!: Locator;
+  readonly usernameValidation!: Locator;
+  readonly confirmPasswordValidation!: Locator;
+  readonly editUserHeading!: Locator;
+  readonly editStatusDropdown!: Locator;
+  readonly editUserSaveButton!: Locator;
+  readonly deleteSelectedButton!: Locator;
+  readonly nextPageButton!: Locator;
+  readonly previousPageButton!: Locator;
+  readonly passwordValidation!: Locator;
+  readonly employeeNameValidation!: Locator;
+  private readonly locators: ReturnType<typeof createAdminLocators>;
 
   constructor(page: Page) {
     this.page = page;
     this.confirmationDialog = new ConfirmationDialog(page);
-    this.userManagementMenu = page.locator(".oxd-topbar-body-nav-tab").filter({
-      hasText: "User Management",
-    });
-
-    this.usersMenuItem = page.locator(".oxd-topbar-body-nav-tab-link").filter({
-      hasText: "Users",
-    });
-
-    this.systemUsersHeading = page.getByRole("heading", {
-      name: "System Users",
-      exact: true,
-    });
-
-    this.usernameInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Username", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.userRoleDropdown = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("User Role", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-select-text");
-
-    this.employeeNameInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Employee Name", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.statusDropdown = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Status", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-select-text");
-
-    this.searchButton = page.getByRole("button", {
-      name: "Search",
-      exact: true,
-    });
-
-    this.resetButton = page.getByRole("button", {
-      name: "Reset",
-      exact: true,
-    });
-
-    this.addButton = page.getByRole("button", { name: /Add/i });
-
-    this.systemUsersTable = page.locator(".oxd-table");
-
-    this.userRows = page.locator(".oxd-table-body .oxd-table-card");
-
-    this.loadingSpinner = page.locator(".oxd-loading-spinner");
-
-    this.noRecordsFound = this.noRecordsFound = page
-      .locator(".orangehrm-paper-container")
-      .getByText("No Records Found", {
-        exact: true,
-      });
-
-    this.addUserHeading = page.getByRole("heading", {
-      name: "Add User",
-      exact: true,
-    });
-
-    this.addUserRoleDropdown = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("User Role", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-select-text");
-
-    this.addEmployeeNameInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Employee Name", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.addStatusDropdown = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Status", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-select-text");
-
-    this.addUsernameInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Username", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.addPasswordInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Password", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.addConfirmPasswordInput = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Confirm Password", {
-          exact: true,
-        }),
-      })
-      .locator("input");
-
-    this.addUserSaveButton = page.getByRole("button", {
-      name: "Save",
-      exact: true,
-    });
-
-    this.addUserCancelButton = page.getByRole("button", {
-      name: "Cancel",
-      exact: true,
-    });
-
-    this.autocompleteOptions = page.locator(".oxd-autocomplete-option");
-
-    this.successToast = page.locator(".oxd-toast-content-text").filter({
-      hasText: /Successfully Saved/i,
-    });
-
-    this.validationMessages = page.locator(".oxd-input-field-error-message");
-
-    this.toastMessage = page.locator(".oxd-toast-content-text");
-
-    this.usernameValidation = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Username", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-input-field-error-message");
-    this.confirmPasswordValidation = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Confirm Password", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-input-field-error-message");
-
-    this.editUserHeading = page.getByRole("heading", {
-      name: "Edit User",
-      exact: true,
-    });
-
-    this.editStatusDropdown = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Status", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-select-text");
-
-    this.editUserSaveButton = page.getByRole("button", {
-      name: "Save",
-      exact: true,
-    });
-
-    this.deleteSelectedButton = page
-      .locator(
-        ".orangehrm-horizontal-padding " + "button.oxd-button--label-danger",
-      )
-      .filter({
-        has: page.locator("i.bi-trash-fill"),
-      });
-
-    this.nextPageButton = page
-      .locator("button.oxd-pagination-page-item--previous-next")
-      .filter({
-        has: page.locator("i.bi-chevron-right"),
-      });
-
-    this.previousPageButton = page
-      .locator("button.oxd-pagination-page-item--previous-next")
-      .filter({
-        has: page.locator("i.bi-chevron-left"),
-      });
-
-    this.passwordValidation = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.getByText("Password", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-input-field-error-message");
-
-    this.employeeNameValidation = page
-      .locator(".oxd-input-group")
-      .filter({
-        has: page.locator("label").getByText("Employee Name", {
-          exact: true,
-        }),
-      })
-      .locator(".oxd-input-field-error-message");
+    this.locators = createAdminLocators(page);
+    Object.assign(this, this.locators);
   }
-
   async gotoUserManagementUsers(): Promise<void> {
     await this.userManagementMenu.click();
     await this.usersMenuItem.click();
@@ -298,11 +76,7 @@ export class AdminPage {
   ): Promise<void> {
     await dropdown.click();
 
-    const dropdownOption = this.page
-      .locator(".oxd-select-option")
-      .getByText(option, {
-        exact: true,
-      });
+    const dropdownOption = this.locators.selectOption(option);
 
     await expect(dropdownOption).toBeVisible();
     await dropdownOption.click();
@@ -320,12 +94,9 @@ export class AdminPage {
     if (filters.employeeName !== undefined) {
       await this.employeeNameInput.fill(filters.employeeName);
 
-      const employeeOption = this.page
-        .locator(".oxd-autocomplete-option")
-        .filter({
-          hasText: filters.employeeName,
-        })
-        .first();
+      const employeeOption = this.locators.employeeAutocompleteOption(
+        filters.employeeName,
+      );
 
       await expect(employeeOption).toBeVisible({
         timeout: 15_000,
@@ -359,18 +130,13 @@ export class AdminPage {
 
     const matchingRow = expected.username
       ? this.userRows.filter({
-          has: this.page
-            .locator(".oxd-table-cell")
-            .nth(1)
-            .getByText(expected.username, {
-              exact: true,
-            }),
+          has: this.locators.userRow(expected.username),
         })
       : this.userRows.first();
 
     await expect(matchingRow).toHaveCount(1);
 
-    const cells = matchingRow.locator(".oxd-table-cell");
+    const cells = this.locators.tableCells(matchingRow);
 
     if (expected.username !== undefined) {
       await expect(cells.nth(1)).toHaveText(expected.username);
@@ -477,19 +243,12 @@ export class AdminPage {
   }
 
   async deleteSystemUserByUsername(username: string): Promise<void> {
-    const matchingRow = this.userRows.filter({
-      has: this.page.locator(".oxd-table-cell").nth(1).getByText(username, {
-        exact: true,
-      }),
-    });
+    const matchingRow = this.locators.userRow(username);
 
     await expect(matchingRow).toHaveCount(1);
 
-    await matchingRow
-      .locator("button")
-      .filter({
-        has: this.page.locator("i.bi-trash, i.bi-trash-fill"),
-      })
+    await this.locators
+      .rowActionButton(matchingRow, "i.bi-trash, i.bi-trash-fill")
       .click();
 
     const confirmationDialog = this.confirmationDialog.root;
@@ -524,20 +283,11 @@ export class AdminPage {
   }
 
   async openSystemUserForEditing(username: string): Promise<void> {
-    const userRow = this.userRows.filter({
-      has: this.page.locator(".oxd-table-cell").nth(1).getByText(username, {
-        exact: true,
-      }),
-    });
+    const userRow = this.locators.userRow(username);
 
     await expect(userRow).toHaveCount(1);
 
-    await userRow
-      .getByRole("button")
-      .filter({
-        has: this.page.locator("i.bi-pencil-fill"),
-      })
-      .click();
+    await this.locators.rowActionButton(userRow, "i.bi-pencil-fill").click();
 
     await expect(this.page).toHaveURL(/admin\/saveSystemUser\/\d+/);
 
@@ -547,12 +297,7 @@ export class AdminPage {
   async updateSystemUserStatus(status: string): Promise<void> {
     await this.editStatusDropdown.click();
 
-    await this.page
-      .locator(".oxd-select-option")
-      .getByText(status, {
-        exact: true,
-      })
-      .click();
+    await this.locators.selectOption(status).click();
 
     await expect(this.editStatusDropdown).toContainText(status);
 
@@ -586,20 +331,11 @@ export class AdminPage {
   }
 
   async cancelSystemUserDeletion(username: string): Promise<void> {
-    const userRow = this.userRows.filter({
-      has: this.page.locator(".oxd-table-cell").nth(1).getByText(username, {
-        exact: true,
-      }),
-    });
+    const userRow = this.locators.userRow(username);
 
     await expect(userRow).toHaveCount(1);
 
-    await userRow
-      .getByRole("button")
-      .filter({
-        has: this.page.locator("i.bi-trash"),
-      })
-      .click();
+    await this.locators.rowActionButton(userRow, "i.bi-trash").click();
 
     const confirmationDialog = this.confirmationDialog.root;
 
@@ -618,7 +354,7 @@ export class AdminPage {
       timeout: 15_000,
     });
 
-    return this.userRows.locator(".oxd-table-cell").nth(1).allInnerTexts();
+    return this.locators.usernamesColumn().allInnerTexts();
   }
 
   async goToNextSystemUsersPage(): Promise<void> {
@@ -643,16 +379,12 @@ export class AdminPage {
 
   async selectSystemUsers(usernames: string[]): Promise<void> {
     for (const username of usernames) {
-      const userRow = this.userRows.filter({
-        has: this.page.locator(".oxd-table-cell").nth(1).getByText(username, {
-          exact: true,
-        }),
-      });
+      const userRow = this.locators.userRow(username);
 
       await expect(userRow).toHaveCount(1);
 
-      const checkbox = userRow.locator('input[type="checkbox"]');
-      const checkboxLabel = userRow.locator(".oxd-checkbox-wrapper label");
+      const checkbox = this.locators.rowCheckbox(userRow);
+      const checkboxLabel = this.locators.rowCheckboxLabel(userRow);
 
       await expect(checkboxLabel).toBeVisible();
       await checkboxLabel.click();
@@ -667,24 +399,12 @@ export class AdminPage {
   async selectAllVisibleSystemUsers(): Promise<void> {
     await expect(this.loadingSpinner).toBeHidden();
 
-    const headerCheckboxLabel = this.page.locator(
-      ".oxd-table-header " + ".oxd-checkbox-wrapper label",
-    );
-
-    const headerCheckbox = this.page.locator(
-      ".oxd-table-header " + 'input[type="checkbox"]',
-    );
+    const headerCheckboxLabel = this.locators.headerCheckboxLabel();
+    const headerCheckbox = this.locators.headerCheckbox();
 
     // OrangeHRM protects the built-in logged-in Admin row, but its hidden
     // checkbox does not have a native disabled attribute.
-    const selectableRowCheckboxes = this.userRows
-      .filter({
-        hasNot: this.page
-          .locator(".oxd-table-cell")
-          .nth(1)
-          .getByText("Admin", { exact: true }),
-      })
-      .locator('input[type="checkbox"]');
+    const selectableRowCheckboxes = this.locators.selectableRowCheckboxes();
 
     const selectableRowCount = await selectableRowCheckboxes.count();
 
@@ -711,22 +431,9 @@ export class AdminPage {
   }
 
   async deselectAllVisibleSystemUsers(): Promise<void> {
-    const headerCheckboxLabel = this.page.locator(
-      ".oxd-table-header " + ".oxd-checkbox-wrapper label",
-    );
-
-    const headerCheckbox = this.page.locator(
-      ".oxd-table-header " + 'input[type="checkbox"]',
-    );
-
-    const selectableRowCheckboxes = this.userRows
-      .filter({
-        hasNot: this.page
-          .locator(".oxd-table-cell")
-          .nth(1)
-          .getByText("Admin", { exact: true }),
-      })
-      .locator('input[type="checkbox"]');
+    const headerCheckboxLabel = this.locators.headerCheckboxLabel();
+    const headerCheckbox = this.locators.headerCheckbox();
+    const selectableRowCheckboxes = this.locators.selectableRowCheckboxes();
 
     await headerCheckboxLabel.click();
 

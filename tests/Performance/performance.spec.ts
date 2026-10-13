@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import performanceData from "../../test-data/performance.data.json";
+import { performanceEmployeeCells } from "../../locators/test/performanceTestLocators";
 import { routes } from "../../utils/routes";
 
 test.describe("Performance - Employee Reviews", () => {
@@ -180,10 +181,9 @@ test.describe("Performance - Employee Reviews", () => {
     const reviewCount = await performancePage.reviewRows.count();
 
     if (reviewCount > 0) {
-      const employeeCellTexts = await performancePage.reviewRows
-        .locator(".oxd-table-cell")
-        .nth(1)
-        .allTextContents();
+      const employeeCellTexts = await performanceEmployeeCells(
+        performancePage.reviewRows,
+      ).allTextContents();
 
       expect(
         employeeCellTexts.every(

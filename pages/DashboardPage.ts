@@ -1,51 +1,61 @@
 import { Locator, Page, expect } from "@playwright/test";
+import { dashboardLocators } from "../locators/dashboardLocators";
 
 export class DashboardPage {
   readonly page: Page;
-  readonly profileMenu: Locator;
-  readonly logoutLink: Locator;
-  readonly heading: Locator;
-  readonly widgets: Locator;
-  readonly quickLaunchWidget: Locator;
-  readonly quickLaunchHeading: Locator;
-  readonly sidebarSearchInput: Locator;
-  readonly sidebarMenuLinks: Locator;
-  readonly activeSidebarLink: Locator;
-  readonly brandLogo: Locator;
-  readonly profileImage: Locator;
-  readonly profileName: Locator;
-  readonly topbarHeader: Locator;
-  readonly sidebarToggleButton: Locator;
-  readonly aboutDialog: Locator;
-  readonly aboutDialogCloseButton: Locator;
+  readonly profileMenu!: Locator;
+  readonly logoutLink!: Locator;
+  readonly heading!: Locator;
+  readonly widgets!: Locator;
+  readonly quickLaunchWidget!: Locator;
+  readonly quickLaunchHeading!: Locator;
+  readonly sidebarSearchInput!: Locator;
+  readonly sidebarMenuLinks!: Locator;
+  readonly activeSidebarLink!: Locator;
+  readonly brandLogo!: Locator;
+  readonly profileImage!: Locator;
+  readonly profileName!: Locator;
+  readonly topbarHeader!: Locator;
+  readonly sidebarToggleButton!: Locator;
+  readonly aboutDialog!: Locator;
+  readonly aboutDialogCloseButton!: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.profileMenu = page.locator("li.oxd-userdropdown");
-    this.logoutLink = page.getByText("Logout", { exact: true });
-    this.heading = page.getByRole("heading", {
-      name: "Dashboard",
-      exact: true,
+    this.profileMenu = page.locator(dashboardLocators.profileMenu);
+    this.logoutLink = page.getByText(
+      dashboardLocators.logoutLink.text,
+      { exact: dashboardLocators.logoutLink.exact },
+    );
+    this.heading = page.getByRole(dashboardLocators.heading.role, {
+      name: dashboardLocators.heading.name,
+      exact: dashboardLocators.heading.exact,
     });
-    this.widgets = page.locator(".orangehrm-dashboard-widget");
+    this.widgets = page.locator(dashboardLocators.widgets);
     this.quickLaunchWidget = this.widgets.filter({
-      has: page.getByText("Quick Launch", { exact: true }),
+      has: page.getByText(dashboardLocators.quickLaunchText.text, {
+        exact: dashboardLocators.quickLaunchText.exact,
+      }),
     });
     this.quickLaunchHeading = this.quickLaunchWidget.getByText(
-      "Quick Launch",
-      { exact: true },
+      dashboardLocators.quickLaunchText.text,
+      { exact: dashboardLocators.quickLaunchText.exact },
     );
-    this.sidebarSearchInput = page.getByPlaceholder("Search");
-    this.sidebarMenuLinks = page.locator(".oxd-main-menu-item");
-    this.activeSidebarLink = page.locator(".oxd-main-menu-item.active");
-    this.brandLogo = page.locator(".oxd-brand-banner img");
-    this.profileImage = page.locator(".oxd-userdropdown-img");
-    this.profileName = page.locator(".oxd-userdropdown-name");
-    this.topbarHeader = page.locator(".oxd-topbar-header-breadcrumb");
-    this.sidebarToggleButton = page.locator(".oxd-main-menu-button");
-    this.aboutDialog = page.getByRole("dialog");
+    this.sidebarSearchInput = page.getByPlaceholder(
+      dashboardLocators.sidebarSearchPlaceholder,
+    );
+    this.sidebarMenuLinks = page.locator(dashboardLocators.sidebarMenuLinks);
+    this.activeSidebarLink = page.locator(dashboardLocators.activeSidebarLink);
+    this.brandLogo = page.locator(dashboardLocators.brandLogo);
+    this.profileImage = page.locator(dashboardLocators.profileImage);
+    this.profileName = page.locator(dashboardLocators.profileName);
+    this.topbarHeader = page.locator(dashboardLocators.topbarHeader);
+    this.sidebarToggleButton = page.locator(
+      dashboardLocators.sidebarToggleButton,
+    );
+    this.aboutDialog = page.getByRole(dashboardLocators.aboutDialogRole);
     this.aboutDialogCloseButton = this.aboutDialog.locator(
-      ".oxd-dialog-close-button",
+      dashboardLocators.aboutDialogCloseButton,
     );
   }
 
@@ -54,7 +64,10 @@ export class DashboardPage {
   }
 
   sidebarLink(name: string): Locator {
-    return this.page.getByRole("link", { name, exact: true });
+    return this.page.getByRole(dashboardLocators.linkRole, {
+      name,
+      exact: dashboardLocators.exact,
+    });
   }
 
   userMenuItem(name: string): Locator {

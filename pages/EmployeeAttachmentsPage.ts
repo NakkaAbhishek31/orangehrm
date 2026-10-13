@@ -1,46 +1,42 @@
 import { Download, Locator, Page, expect } from "@playwright/test";
+import { employeeAttachmentsLocators } from "../locators/employeeAttachmentsLocators";
 
 export class EmployeeAttachmentsPage {
   readonly page: Page;
-  readonly attachmentsSection: Locator;
-  readonly attachmentsHeading: Locator;
-  readonly addAttachmentButton: Locator;
-  readonly attachmentFileInput: Locator;
-  readonly attachmentCommentInput: Locator;
-  readonly attachmentSaveButton: Locator;
-  readonly attachmentRows: Locator;
-  readonly successToast: Locator;
+  readonly attachmentsSection!: Locator;
+  readonly attachmentsHeading!: Locator;
+  readonly addAttachmentButton!: Locator;
+  readonly attachmentFileInput!: Locator;
+  readonly attachmentCommentInput!: Locator;
+  readonly attachmentSaveButton!: Locator;
+  readonly attachmentRows!: Locator;
+  readonly successToast!: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.attachmentsHeading = page.getByRole("heading", {
-      name: "Attachments",
-      exact: true,
+    const selectors = employeeAttachmentsLocators;
+    this.attachmentsHeading = page.getByRole(selectors.heading.role, {
+      name: selectors.heading.name,
+      exact: selectors.heading.exact,
     });
-
-    this.attachmentsSection = page.locator(".orangehrm-attachment");
-
+    this.attachmentsSection = page.locator(selectors.section);
     this.addAttachmentButton = this.attachmentsSection.locator(
-      'button:has-text("Add")',
+      selectors.addButton,
     );
-
-    this.attachmentFileInput =
-      this.attachmentsSection.locator('input[type="file"]');
-
-    this.attachmentCommentInput =
-      this.attachmentsSection.getByPlaceholder("Type comment here");
-
-    this.attachmentSaveButton = this.attachmentsSection.getByRole("button", {
-      name: "Save",
-      exact: true,
-    });
-
-    this.attachmentRows = this.attachmentsSection.locator(
-      ".oxd-table-body .oxd-table-card",
+    this.attachmentFileInput = this.attachmentsSection.locator(
+      selectors.fileInput,
     );
-    this.successToast = page.locator(".oxd-toast").filter({
-      hasText: /Successfully/i,
-    });
+    this.attachmentCommentInput = this.attachmentsSection.getByPlaceholder(
+      selectors.commentPlaceholder,
+    );
+    this.attachmentSaveButton = this.attachmentsSection.getByRole(
+      selectors.buttonRole,
+      { name: selectors.saveButtonName, exact: true },
+    );
+    this.attachmentRows = this.attachmentsSection.locator(selectors.tableRows);
+    this.successToast = page
+      .locator(selectors.successToast)
+      .filter({ hasText: /Successfully/i });
   }
 
   async clickonuploadtheAttachement(): Promise<void> {
@@ -84,8 +80,8 @@ export class EmployeeAttachmentsPage {
     await expect(attachmentRow).toHaveCount(1);
     const downloadPromise = this.page.waitForEvent("download");
     await attachmentRow
-      .locator("button")
-      .filter({ has: this.page.locator("i.bi-download") })
+      .locator(employeeAttachmentsLocators.downloadButton)
+      .filter({ has: this.page.locator(employeeAttachmentsLocators.downloadIcon) })
       .click();
     return await downloadPromise;
   }

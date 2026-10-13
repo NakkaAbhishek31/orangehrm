@@ -2,13 +2,14 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import apiData from "../../test-data/api.data.json";
 import { expectJsonCollection } from "../../support/api/collectionAssertions";
+import { authenticatedUserMenu } from "../../locators/test/apiTestLocators";
 
 test.describe("OrangeHRM - REST API", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/web/index.php/dashboard/index", {
       waitUntil: "domcontentloaded",
     });
-    await expect(page.locator("li.oxd-userdropdown")).toBeVisible();
+    await expect(authenticatedUserMenu(page)).toBeVisible();
   });
 
   test("TC_API_393 - Authenticated user should retrieve employees @api @smoke @positive @regression", async ({

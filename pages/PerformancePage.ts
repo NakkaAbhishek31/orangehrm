@@ -5,195 +5,45 @@ import {
 import { Autocomplete } from '../components/Autocomplete';
 import { SelectDropdown } from '../components/SelectDropdown';
 import { waitForListResult } from '../components/ListResult';
+import { createPerformanceLocators } from '../locators/performanceLocators';
 
 export class PerformancePage {
   readonly page: Page;
 
-  readonly manageReviewsMenu: Locator;
-  readonly employeeReviewsMenuItem: Locator;
+  readonly manageReviewsMenu!: Locator;
+  readonly employeeReviewsMenuItem!: Locator;
 
-  readonly employeeReviewsHeading: Locator;
-  readonly employeeNameInput: Locator;
-  readonly jobTitleDropdown: Locator;
-  readonly subUnitDropdown: Locator;
-  readonly includeFilterDropdown: Locator;
-  readonly reviewStatusDropdown: Locator;
-  readonly fromDateInput: Locator;
-  readonly toDateInput: Locator;
-  readonly searchButton: Locator;
-  readonly resetButton: Locator;
+  readonly employeeReviewsHeading!: Locator;
+  readonly employeeNameInput!: Locator;
+  readonly jobTitleDropdown!: Locator;
+  readonly subUnitDropdown!: Locator;
+  readonly includeFilterDropdown!: Locator;
+  readonly reviewStatusDropdown!: Locator;
+  readonly fromDateInput!: Locator;
+  readonly toDateInput!: Locator;
+  readonly searchButton!: Locator;
+  readonly resetButton!: Locator;
 
-  readonly reviewRows: Locator;
-  readonly noRecordsFound: Locator;
-  readonly loadingSpinner: Locator;
-  readonly autocompleteDropdown: Locator;
-readonly autocompleteOptions: Locator;
-readonly autocompleteNoRecords: Locator;
-readonly employeeNameValidation: Locator;
+  readonly reviewRows!: Locator;
+  readonly noRecordsFound!: Locator;
+  readonly loadingSpinner!: Locator;
+  readonly autocompleteDropdown!: Locator;
+readonly autocompleteOptions!: Locator;
+readonly autocompleteNoRecords!: Locator;
+readonly employeeNameValidation!: Locator;
+private readonly locators: ReturnType<typeof createPerformanceLocators>;
 private readonly selectDropdown: SelectDropdown;
 private readonly employeeAutocomplete: Autocomplete;
 
   constructor(page: Page) {
     this.page = page;
     this.selectDropdown = new SelectDropdown(page);
-
-    this.manageReviewsMenu = page
-      .getByLabel('Topbar Menu')
-      .getByText('Manage Reviews', {
-        exact: true,
-      });
-
-    this.employeeReviewsMenuItem = page
-      .locator('.oxd-dropdown-menu:visible')
-      .getByText('Employee Reviews', {
-        exact: true,
-      });
-
-    this.employeeReviewsHeading = page
-      .locator('.oxd-text--h5')
-      .filter({
-        hasText: 'Employee Reviews',
-      });
-
-    const searchForm = page.locator('form');
-
-    this.employeeNameInput = searchForm
-      .locator('.oxd-input-group')
-      .filter({
-        has: page
-          .locator('label')
-          .getByText('Employee Name', {
-            exact: true,
-          }),
-      })
-      .locator('input');
-
-    this.jobTitleDropdown = searchForm
-      .locator('.oxd-input-group')
-      .filter({
-        has: page
-          .locator('label')
-          .getByText('Job Title', {
-            exact: true,
-          }),
-      })
-      .locator('.oxd-select-text');
-
-    this.subUnitDropdown = searchForm
-      .locator('.oxd-input-group')
-      .filter({
-        has: page
-          .locator('label')
-          .getByText('Sub Unit', {
-            exact: true,
-          }),
-      })
-      .locator('.oxd-select-text');
-
-    this.includeFilterDropdown = searchForm
-      .locator('.oxd-input-group')
-      .filter({
-        has: page.getByText('Include', { exact: true }),
-      })
-      .locator('.oxd-select-text');
-
-    this.reviewStatusDropdown = searchForm
-      .locator('.oxd-input-group')
-      .filter({
-        has: page
-          .locator('label')
-          .getByText('Review Status', {
-            exact: true,
-          }),
-      })
-      .locator('.oxd-select-text');
-
-    const fromDateGroup = searchForm
-      .locator('.oxd-input-group')
-      .filter({
-        has: page
-          .locator('label')
-          .getByText('From Date', {
-            exact: true,
-          }),
-      });
-
-    this.fromDateInput =
-      fromDateGroup.locator('input');
-
-    const toDateGroup = searchForm
-      .locator('.oxd-input-group')
-      .filter({
-        has: page
-          .locator('label')
-          .getByText('To Date', {
-            exact: true,
-          }),
-      });
-
-    this.toDateInput =
-      toDateGroup.locator('input');
-
-    this.searchButton =
-      searchForm.getByRole('button', {
-        name: 'Search',
-        exact: true,
-      });
-
-    this.resetButton =
-      searchForm.getByRole('button', {
-        name: 'Reset',
-        exact: true,
-      });
-
-    this.reviewRows = page.locator(
-      '.oxd-table-body .oxd-table-card'
+    this.locators = createPerformanceLocators(page);
+    Object.assign(this, this.locators);
+    this.employeeAutocomplete = new Autocomplete(
+      this.employeeNameInput,
+      this.autocompleteDropdown,
     );
-
-    this.noRecordsFound = page
-      .getByText('No Records Found', {
-        exact: true,
-      })
-      .filter({ visible: true })
-      .first();
-
-    this.loadingSpinner = page.locator(
-      '.oxd-loading-spinner'
-    );
-
-    this.autocompleteDropdown = page.locator(
-  '.oxd-autocomplete-dropdown:visible'
-);
-
-this.autocompleteOptions =
-  this.autocompleteDropdown.locator(
-    '.oxd-autocomplete-option'
-  );
-
-this.autocompleteNoRecords =
-  this.autocompleteDropdown.getByText(
-    'No Records Found',
-    {
-      exact: true,
-    }
-  );
-
-this.employeeNameValidation = page
-  .locator('.oxd-input-group')
-  .filter({
-    has: page
-      .locator('label')
-      .getByText('Employee Name', {
-        exact: true,
-      }),
-  })
-  .locator(
-    '.oxd-input-field-error-message'
-  );
-this.employeeAutocomplete = new Autocomplete(
-  this.employeeNameInput,
-  this.autocompleteDropdown,
-);
   }
 
   async gotoEmployeeReviews(): Promise<void> {

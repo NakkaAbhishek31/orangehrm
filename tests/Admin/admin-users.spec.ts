@@ -3,6 +3,14 @@ import { test } from "../../fixtures/baseTest";
 import adminData from "../../test-data/admin.data.json";
 import { routes } from "../../utils/routes";
 import {
+  adminAutocompleteText,
+  adminRowCheckbox,
+  adminRowCheckboxLabel,
+  adminSelectOption,
+  adminTableCell,
+  adminUsernameCell,
+} from "../../locators/test/adminTestLocators";
+import {
   createUniqueEmployee as employeeFrom,
   generateUniqueId as unique,
 } from "../../utils/testData";
@@ -73,7 +81,7 @@ test.describe("Admin - System Users", () => {
     expect(count).toBeGreaterThan(0);
     for (let i = 0; i < count; i++)
       await expect(
-        adminPage.userRows.nth(i).locator(".oxd-table-cell").nth(2),
+        adminTableCell(adminPage.userRows.nth(i), 2),
       ).toHaveText(data.userRole);
     await adminPage.resetSystemUserFilters();
     await expect(adminPage.userRoleDropdown).toContainText(
@@ -93,7 +101,7 @@ test.describe("Admin - System Users", () => {
     expect(count).toBeGreaterThan(0);
     for (let i = 0; i < count; i++)
       await expect(
-        adminPage.userRows.nth(i).locator(".oxd-table-cell").nth(4),
+        adminTableCell(adminPage.userRows.nth(i), 4),
       ).toHaveText(data.status);
     await adminPage.resetSystemUserFilters();
     await expect(adminPage.statusDropdown).toContainText(
@@ -747,20 +755,12 @@ test.describe("Admin - System Users", () => {
     await adminPage.gotoUserManagementUsers();
     await adminPage.gotoAddSystemUser();
     await adminPage.addUserRoleDropdown.click();
-    await page
-      .locator(".oxd-select-dropdown:visible")
-      .getByText(data.userRole, { exact: true })
-      .click();
+    await adminSelectOption(page, data.userRole).click();
     await adminPage.addStatusDropdown.click();
-    await page
-      .locator(".oxd-select-dropdown:visible")
-      .getByText(data.status, { exact: true })
-      .click();
+    await adminSelectOption(page, data.status).click();
     await adminPage.addEmployeeNameInput.fill(invalidName);
     await expect(
-      page
-        .locator(".oxd-autocomplete-dropdown:visible")
-        .getByText(data.expectedAutocompleteMessage, { exact: true }),
+      adminAutocompleteText(page, data.expectedAutocompleteMessage),
     ).toBeVisible();
     await adminPage.addEmployeeNameInput.press("Escape");
     await adminPage.addUsernameInput.fill(`${data.usernamePrefix}${value}`);
@@ -837,13 +837,10 @@ test.describe("Admin - System Users", () => {
     await adminPage.searchSystemUsers({ username: data.username });
     await expect(adminPage.userRows).toHaveCount(1);
     const row = adminPage.userRows.filter({
-      has: page
-        .locator(".oxd-table-cell")
-        .nth(1)
-        .getByText(data.username, { exact: true }),
+      has: adminUsernameCell(page, data.username),
     });
-    const checkbox = row.locator('input[type="checkbox"]');
-    const label = row.locator(".oxd-checkbox-wrapper label");
+    const checkbox = adminRowCheckbox(row);
+    const label = adminRowCheckboxLabel(row);
     await label.click();
     await expect(checkbox).toBeChecked();
     await label.click();

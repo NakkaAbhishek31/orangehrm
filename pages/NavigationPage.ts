@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { routes } from "../utils/routes";
+import { navigationLocators } from "../locators/navigationLocators";
 
 /** Application-wide left-navigation component. */
 export class NavigationPage {
@@ -11,14 +12,17 @@ export class NavigationPage {
   readonly directoryLink: Locator;
   readonly claimLink: Locator;
 
-  constructor(private readonly page: Page) {
-    this.pimLink = this.link("PIM");
-    this.adminLink = this.link("Admin");
-    this.recruitmentLink = this.link("Recruitment");
-    this.timeLink = this.link("Time");
-    this.performanceLink = this.link("Performance");
-    this.directoryLink = this.link("Directory");
-    this.claimLink = this.link("Claim");
+  private readonly page: Page;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.pimLink = this.link(navigationLocators.links.pim);
+    this.adminLink = this.link(navigationLocators.links.admin);
+    this.recruitmentLink = this.link(navigationLocators.links.recruitment);
+    this.timeLink = this.link(navigationLocators.links.time);
+    this.performanceLink = this.link(navigationLocators.links.performance);
+    this.directoryLink = this.link(navigationLocators.links.directory);
+    this.claimLink = this.link(navigationLocators.links.claim);
   }
 
   /** @deprecated Use pimLink. Retained for existing tests. */
@@ -37,7 +41,10 @@ export class NavigationPage {
   }
 
   private link(name: string): Locator {
-    return this.page.getByRole("link", { name, exact: true });
+    return this.page.getByRole(navigationLocators.linkRole, {
+      name,
+      exact: navigationLocators.exact,
+    });
   }
 
   private async navigate(link: Locator, route: string): Promise<void> {

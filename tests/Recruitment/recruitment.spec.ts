@@ -3,6 +3,13 @@ import { test } from "../../fixtures/baseTest";
 import recruitmentData from "../../test-data/recruitment.data.json";
 import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
 import { routes } from "../../utils/routes";
+import {
+  interviewValue,
+  recruitmentTableCell,
+  recruitmentTableCells,
+  recruitmentTableColumn,
+  recruitmentViewButton,
+} from "../../locators/test/recruitmentTestLocators";
 
 test.describe("Recruitment - Candidates", () => {
   test.beforeEach(async ({ page }) => {
@@ -272,8 +279,7 @@ test.describe("Recruitment - Candidates", () => {
     ).toBeVisible({
       timeout: 15_000,
     });
-    const statusTexts = (await recruitmentPage.candidateRows
-      .locator(".oxd-table-cell:nth-child(6)")
+    const statusTexts = (await recruitmentTableColumn(recruitmentPage.candidateRows, ".oxd-table-cell:nth-child(6)")
       .allTextContents())
       .map(text => text.trim())
       .filter(Boolean);
@@ -313,8 +319,7 @@ test.describe("Recruitment - Candidates", () => {
       timeout: 20_000,
     });
 
-    const vacancyTexts = await recruitmentPage.candidateRows
-      .locator(".oxd-table-cell:nth-child(2)")
+    const vacancyTexts = await recruitmentTableColumn(recruitmentPage.candidateRows, ".oxd-table-cell:nth-child(2)")
       .allTextContents();
 
     if (vacancyTexts.length > 0) {
@@ -351,8 +356,7 @@ test.describe("Recruitment - Candidates", () => {
       timeout: 20_000,
     });
 
-    const managerTexts = await recruitmentPage.candidateRows
-      .locator(".oxd-table-cell:nth-child(4)")
+    const managerTexts = await recruitmentTableColumn(recruitmentPage.candidateRows, ".oxd-table-cell:nth-child(4)")
       .allTextContents();
 
     if (managerTexts.length > 0) {
@@ -407,10 +411,7 @@ test.describe("Recruitment - Candidates", () => {
 
     if (candidateCount > 0) {
       for (let index = 0; index < candidateCount; index++) {
-        const candidateNameCell = recruitmentPage.candidateRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(2);
+        const candidateNameCell = recruitmentTableCell(recruitmentPage.candidateRows.nth(index), 2);
 
         await expect(candidateNameCell).toContainText(selectedCandidate!);
       }
@@ -522,11 +523,9 @@ test.describe("Recruitment - Candidates", () => {
 
     await expect(recruitmentPage.toDateInput).toHaveValue(toDate);
 
-    const vacancyTexts = await recruitmentPage.candidateRows
-      .locator(".oxd-table-cell:nth-child(2)")
+    const vacancyTexts = await recruitmentTableColumn(recruitmentPage.candidateRows, ".oxd-table-cell:nth-child(2)")
       .allTextContents();
-    const statusTexts = (await recruitmentPage.candidateRows
-      .locator(".oxd-table-cell:nth-child(6)")
+    const statusTexts = (await recruitmentTableColumn(recruitmentPage.candidateRows, ".oxd-table-cell:nth-child(6)")
       .allTextContents())
       .map(text => text.trim())
       .filter(Boolean);
@@ -1229,7 +1228,7 @@ test.describe("Recruitment - Candidates", () => {
 
     const matchingRow = recruitmentPage.candidateRows.first();
 
-    const cells = matchingRow.locator(".oxd-table-cell");
+    const cells = recruitmentTableCells(matchingRow);
 
     // Vacancy is optional in the public demo environment.
     if (selectedVacancy) {
@@ -1312,7 +1311,7 @@ test.describe("Recruitment - Candidates", () => {
 
     const matchingRow = recruitmentPage.candidateRows.first();
 
-    const cells = matchingRow.locator(".oxd-table-cell");
+    const cells = recruitmentTableCells(matchingRow);
 
     if (selectedVacancy) {
       await expect(cells.nth(1)).toContainText(selectedVacancy);
@@ -1323,9 +1322,7 @@ test.describe("Recruitment - Candidates", () => {
     await expect(cells.nth(2)).toContainText(data.lastName);
 
     // Open Candidate Profile using the View action.
-    const viewCandidateButton = matchingRow.getByRole("button").filter({
-      has: page.locator("i.bi-eye-fill"),
-    });
+    const viewCandidateButton = recruitmentViewButton(matchingRow);
 
     await expect(viewCandidateButton).toBeVisible();
 
@@ -1496,10 +1493,7 @@ test.describe("Recruitment - Candidates", () => {
       timeout: 20_000,
     });
 
-    const candidateCell = recruitmentPage.candidateRows
-      .first()
-      .locator(".oxd-table-cell")
-      .nth(2);
+    const candidateCell = recruitmentTableCell(recruitmentPage.candidateRows.first(), 2);
 
     await expect(candidateCell).toContainText(firstName);
 
@@ -1721,7 +1715,7 @@ test.describe("Recruitment - Candidates", () => {
 
     const matchingRow = recruitmentPage.candidateRows.first();
 
-    const cells = matchingRow.locator(".oxd-table-cell");
+    const cells = recruitmentTableCells(matchingRow);
 
     await expect(cells.nth(2)).toContainText(firstName);
 
@@ -1969,17 +1963,11 @@ await recruitmentPage.navigateToCandidate();
 
     // Verify scheduled interview information.
     await expect(
-      page.getByText(
-        interviewTitle,
-        { exact: true }
-      )
+      interviewValue(page, interviewTitle)
     ).toBeVisible();
 
     await expect(
-      page.getByText(
-        selectedInterviewer,
-        { exact: true }
-      ).first()
+      interviewValue(page, selectedInterviewer).first()
     ).toBeVisible();
 
     // Verify status from Candidate List.
@@ -2010,10 +1998,7 @@ await recruitmentPage.navigateToCandidate();
     });
 
     const statusCell =
-      recruitmentPage.candidateRows
-        .first()
-        .locator('.oxd-table-cell')
-        .nth(5);
+      recruitmentTableCell(recruitmentPage.candidateRows.first(), 5);
 
     await expect(
       statusCell
@@ -2030,8 +2015,7 @@ await recruitmentPage.navigateToCandidate();
   }
 );
 
-test(
-  'TC_RECRUITMENT_158 - Required validation should appear when scheduling an empty interview @negative @validation @workflow @regression',
+test('TC_RECRUITMENT_158 - Required validation should appear when scheduling an empty interview @negative @validation @workflow @regression',
   async ({
     page,
     navigationPage,
@@ -2106,8 +2090,7 @@ test(
 );
 
 
-test(
-  'TC_RECRUITMENT_159 - Admin should cancel scheduling an interview @negative @cancel @workflow @regression',
+test('TC_RECRUITMENT_159 - Admin should cancel scheduling an interview @negative @cancel @workflow @regression',
   async ({
     page,
     navigationPage,
@@ -2173,8 +2156,7 @@ test(
 );
 
 
-test(
-  'TC_RECRUITMENT_160 - Admin should mark a candidate interview as passed @positive @workflow @regression',
+test('TC_RECRUITMENT_160 - Admin should mark a candidate interview as passed @positive @workflow @regression',
   async ({
     navigationPage,
     recruitmentPage,
@@ -2236,8 +2218,7 @@ test(
 );
 
 
-test(
-  'TC_RECRUITMENT_161 - Admin should mark a candidate interview as failed @negative @workflow @regression',
+test('TC_RECRUITMENT_161 - Admin should mark a candidate interview as failed @negative @workflow @regression',
   async ({
     navigationPage,
     recruitmentPage,
@@ -2299,8 +2280,7 @@ test(
   }
 );
 
-test(
-  'TC_RECRUITMENT_162 - Admin should offer a job to a candidate who passed the interview @positive @workflow @regression',
+test('TC_RECRUITMENT_162 - Admin should offer a job to a candidate who passed the interview @positive @workflow @regression',
   async ({
     navigationPage,
     recruitmentPage,
@@ -2365,8 +2345,7 @@ test(
   }
 );
 
-test(
-  'TC_RECRUITMENT_163 - Admin should hire a candidate after offering the job @positive @workflow @regression',
+test('TC_RECRUITMENT_163 - Admin should hire a candidate after offering the job @positive @workflow @regression',
   async ({
     navigationPage,
     recruitmentPage,
@@ -2443,10 +2422,7 @@ test(
     await recruitmentPage.searchButton.click();
 
     const statusCell =
-      recruitmentPage.candidateRows
-        .first()
-        .locator('.oxd-table-cell')
-        .nth(5);
+      recruitmentTableCell(recruitmentPage.candidateRows.first(), 5);
 
     await expect(statusCell).toContainText(
       data.expectedStatus
@@ -2460,8 +2436,7 @@ test(
   }
 );
 
-test(
-  'TC_RECRUITMENT_164 - Admin should reject an existing candidate successfully @negative @workflow @regression',
+test('TC_RECRUITMENT_164 - Admin should reject an existing candidate successfully @negative @workflow @regression',
   async ({
     navigationPage,
     recruitmentPage,
@@ -2537,10 +2512,7 @@ test(
     const candidateRow =
       recruitmentPage.candidateRows.first();
 
-    const statusCell =
-      candidateRow
-        .locator('.oxd-table-cell')
-        .nth(5);
+    const statusCell = recruitmentTableCell(candidateRow, 5);
 
     await expect(
       statusCell
@@ -2557,8 +2529,7 @@ test(
   }
 );
 
-test(
-  'TC_RECRUITMENT_165 - Admin should cancel rejecting a candidate @negative @cancel @workflow @regression',
+test('TC_RECRUITMENT_165 - Admin should cancel rejecting a candidate @negative @cancel @workflow @regression',
   async ({
     page,
     navigationPage,

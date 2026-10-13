@@ -3,6 +3,17 @@ import { test } from "../../fixtures/baseTest";
 import timeData from "../../test-data/time.data.json";
 import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
 import { routes } from "../../utils/routes";
+import {
+  editProjectHeading,
+  confirmDeleteButton,
+  timeConfirmationDialog,
+  timeActionButton,
+  timeDeleteIcon,
+  timeEditIcon,
+  timeTableCellText,
+  timeTableCells,
+  timeRowCell,
+} from "../../locators/test/timeTestLocators";
 
 test.describe("Time - Timesheets, Attendance and Reports", () => {
   test.beforeEach(async ({ page }) => {
@@ -947,9 +958,7 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
     // Verify the cancelled customer is not
     // present in the current customer list.
     const cancelledCustomerRow = timePage.customerRows.filter({
-      has: page.locator(".oxd-table-cell").nth(1).getByText(customerName, {
-        exact: true,
-      }),
+      has: timeTableCellText(page, customerName),
     });
 
     await expect(cancelledCustomerRow).toHaveCount(0);
@@ -1007,29 +1016,25 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
     await expect(page).toHaveURL(/\/time\/viewCustomers$/);
 
     const createdCustomerRow = timePage.customerRows.filter({
-      has: page.locator(".oxd-table-cell").nth(1).getByText(customerName, {
-        exact: true,
-      }),
+      has: timeTableCellText(page, customerName),
     });
 
     await expect(createdCustomerRow).toHaveCount(1, {
       timeout: 20_000,
     });
 
-    const cells = createdCustomerRow.locator(".oxd-table-cell");
+    const cells = timeTableCells(createdCustomerRow);
 
     await expect(cells.nth(1)).toHaveText(customerName);
 
     await expect(cells.nth(2)).toContainText(data.description);
 
     // Cleanup: delete the created customer.
-    const deleteButton = createdCustomerRow.getByRole("button").filter({
-      has: page.locator("i.bi-trash"),
-    });
+    const deleteButton = timeActionButton(createdCustomerRow, timeDeleteIcon(page));
 
     await deleteButton.click();
 
-    const confirmationDialog = page.getByRole("dialog");
+    const confirmationDialog = timeConfirmationDialog(page);
 
     await expect(confirmationDialog).toBeVisible();
 
@@ -1042,11 +1047,7 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
       },
     );
 
-    await confirmationDialog
-      .getByRole("button", {
-        name: /Yes, Delete$/,
-      })
-      .click();
+    await confirmDeleteButton(confirmationDialog).click();
 
     const deleteResponse = await deleteResponsePromise;
 
@@ -1311,10 +1312,7 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
     const rowCount = await timePage.projectRows.count();
 
     for (let index = 0; index < rowCount; index++) {
-      const customerCell = timePage.projectRows
-        .nth(index)
-        .locator(".oxd-table-cell")
-        .nth(1);
+      const customerCell = timeRowCell(timePage.projectRows, index, 1);
 
       await expect(customerCell).toContainText(customerName);
     }
@@ -1500,12 +1498,7 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
       });
 
     // Click Delete in the matching row.
-    const deleteButton =
-      projectRow.getByRole('button').filter({
-        has: timePage.page.locator(
-          'i.bi-trash'
-        ),
-      });
+    const deleteButton = timeActionButton(projectRow, timeDeleteIcon(timePage.page));
 
     await expect(deleteButton).toBeVisible();
     await deleteButton.click();
@@ -1591,10 +1584,7 @@ test('TC_TIME_199 - Admin should edit an existing project successfully @positive
       });
 
     // Open the project for editing.
-    const editButton =
-      projectRow.getByRole('button').filter({
-        has: page.locator('i.bi-pencil-fill'),
-      });
+    const editButton = timeActionButton(projectRow, timeEditIcon(page));
 
     await expect(editButton).toBeVisible();
     await editButton.click();
@@ -1604,10 +1594,7 @@ test('TC_TIME_199 - Admin should edit an existing project successfully @positive
     );
 
     await expect(
-      page.getByRole('heading', {
-        name: 'Edit Project',
-        exact: true,
-      })
+      editProjectHeading(page)
     ).toBeVisible();
 
     // Update the project.

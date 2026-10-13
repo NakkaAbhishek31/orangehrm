@@ -1,28 +1,35 @@
 import { Locator, Page, expect } from "@playwright/test";
+import { forgotPasswordLocators } from "../locators/forgotPasswordLocators";
 
 export class ForgotPage {
   readonly page: Page;
-  readonly usernameInput: Locator;
-  readonly resetPasswordButton: Locator;
-  readonly resetPasswordPageHeading: Locator;
-  readonly errorValidation: Locator;
-  readonly resetSuccessHeading: Locator;
+  readonly usernameInput!: Locator;
+  readonly resetPasswordButton!: Locator;
+  readonly resetPasswordPageHeading!: Locator;
+  readonly errorValidation!: Locator;
+  readonly resetSuccessHeading!: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameInput = page.getByRole("textbox", { name: "Username" });
-    this.resetPasswordButton = page.getByRole("button", {
-      name: "Reset Password",
-    });
-    this.resetPasswordPageHeading = page.getByRole("heading", {
-      name: "Reset Password",
-    });
-    this.errorValidation = page.locator(
-      "span.oxd-text.oxd-text--span.oxd-input-field-error-message.oxd-input-group__message",
+    this.usernameInput = page.getByRole(
+      forgotPasswordLocators.usernameInput.role,
+      { name: forgotPasswordLocators.usernameInput.name },
     );
-    this.resetSuccessHeading = page.getByRole("heading", {
-      name: /Reset Password link sent successfully/i,
-    });
+    this.resetPasswordButton = page.getByRole(
+      forgotPasswordLocators.resetPasswordButton.role,
+      { name: forgotPasswordLocators.resetPasswordButton.name },
+    );
+    this.resetPasswordPageHeading = page.getByRole(
+      forgotPasswordLocators.resetPasswordPageHeading.role,
+      { name: forgotPasswordLocators.resetPasswordPageHeading.name },
+    );
+    this.errorValidation = page.locator(
+      forgotPasswordLocators.errorValidation.css,
+    );
+    this.resetSuccessHeading = page.getByRole(
+      forgotPasswordLocators.resetSuccessHeading.role,
+      { name: forgotPasswordLocators.resetSuccessHeading.name },
+    );
   }
 
   async verifyResetRequestSuccessful(): Promise<void> {

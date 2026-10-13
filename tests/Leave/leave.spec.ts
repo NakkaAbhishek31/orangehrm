@@ -4,6 +4,13 @@ import leaveData from "../../test-data/leave.data.json";
 import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
 import { routes } from "../../utils/routes";
 import { createUniqueEmployee as employeeFrom } from "../../utils/testData";
+import {
+  leaveDropdownOption,
+  leaveRowCell,
+  leaveRowCells,
+  leaveSelectedStatus,
+  leaveStatusOptions,
+} from "../../locators/test/leaveTestLocators";
 
 test.describe("Leaves - leaves for  Users", () => {
   test.beforeEach(async ({ page }) => {
@@ -127,16 +134,11 @@ test.describe("Leaves - leaves for  Users", () => {
     // Select Rejected status.
     await leavePage.leaveStatusDropdown.click();
 
-    const statusOptions = page.locator(".oxd-select-dropdown:visible");
+    const statusOptions = leaveStatusOptions(page);
 
     await expect(statusOptions).toBeVisible();
 
-    await statusOptions
-      .locator(".oxd-select-option")
-      .filter({
-        hasText: /^Rejected$/,
-      })
-      .click();
+    await leaveDropdownOption(statusOptions, /^Rejected$/).click();
 
     // Verify filters were changed.
     await expect(leavePage.fromDateInput).toHaveValue(changedFromDate);
@@ -194,10 +196,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     if (rowCount > 0 && leaveType !== "-- Select --") {
       for (let index = 0; index < rowCount; index++) {
-        const leaveTypeCell = leavePage.leaveRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(2);
+        const leaveTypeCell = leaveRowCell(leavePage.leaveRows, index, 2);
 
         await expect(leaveTypeCell).toContainText(leaveType);
       }
@@ -241,10 +240,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const employeeNameCell = leavePage.leaveRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(1);
+        const employeeNameCell = leaveRowCell(leavePage.leaveRows, index, 1);
 
         await expect(employeeNameCell).toContainText(employeeName);
       }
@@ -427,10 +423,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavePage.leaveRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(6);
+        const statusCell = leaveRowCell(leavePage.leaveRows, index, 6);
 
         await expect(statusCell).toContainText(data.leaveStatus);
       }
@@ -503,7 +496,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const cells = leavePage.leaveRows.nth(index).locator(".oxd-table-cell");
+        const cells = leaveRowCells(leavePage.leaveRows.nth(index));
 
         await expect(cells.nth(1)).toContainText(employeeName);
 
@@ -644,10 +637,7 @@ test.describe("Leaves - leaves for  Users", () => {
       await leavePage.leaveStatusField.innerText()
     ).trim();
 
-    const scheduledStatus = leavePage.leaveStatusField.getByText(
-      data.leaveStatus,
-      { exact: true },
-    );
+    const scheduledStatus = leaveSelectedStatus(leavePage.leaveStatusField, data.leaveStatus);
 
     const alreadySelected = (await scheduledStatus.count()) > 0;
 
@@ -679,10 +669,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavePage.leaveRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(6);
+        const statusCell = leaveRowCell(leavePage.leaveRows, index, 6);
 
         await expect(statusCell).toContainText(data.leaveStatus);
       }
@@ -717,9 +704,7 @@ test.describe("Leaves - leaves for  Users", () => {
       await leavePage.leaveStatusField.innerText()
     ).trim();
 
-    const takenStatus = leavePage.leaveStatusField.getByText(data.leaveStatus, {
-      exact: true,
-    });
+    const takenStatus = leaveSelectedStatus(leavePage.leaveStatusField, data.leaveStatus);
 
     const alreadySelected = (await takenStatus.count()) > 0;
 
@@ -750,10 +735,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavePage.leaveRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(6);
+        const statusCell = leaveRowCell(leavePage.leaveRows, index, 6);
 
         await expect(statusCell).toContainText(data.leaveStatus);
       }
@@ -788,10 +770,7 @@ test.describe("Leaves - leaves for  Users", () => {
       await leavePage.leaveStatusField.innerText()
     ).trim();
 
-    const cancelledStatus = leavePage.leaveStatusField.getByText(
-      data.leaveStatus,
-      { exact: true },
-    );
+    const cancelledStatus = leaveSelectedStatus(leavePage.leaveStatusField, data.leaveStatus);
 
     if ((await cancelledStatus.count()) === 0) {
       await leavePage.selectLeaveStatus(data.leaveStatus);
@@ -819,10 +798,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavePage.leaveRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(6);
+        const statusCell = leaveRowCell(leavePage.leaveRows, index, 6);
 
         await expect(statusCell).toContainText(data.leaveStatus);
       }
@@ -849,14 +825,9 @@ test.describe("Leaves - leaves for  Users", () => {
 
     await leavePage.waitForDefaultDateRange();
 
-    const firstStatus = leavePage.leaveStatusField.getByText(data.firstStatus, {
-      exact: true,
-    });
+    const firstStatus = leaveSelectedStatus(leavePage.leaveStatusField, data.firstStatus);
 
-    const secondStatus = leavePage.leaveStatusField.getByText(
-      data.secondStatus,
-      { exact: true },
-    );
+    const secondStatus = leaveSelectedStatus(leavePage.leaveStatusField, data.secondStatus);
 
     if ((await firstStatus.count()) === 0) {
       await leavePage.selectLeaveStatus(data.firstStatus);
@@ -887,11 +858,7 @@ test.describe("Leaves - leaves for  Users", () => {
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
         const statusText = (
-          await leavePage.leaveRows
-            .nth(index)
-            .locator(".oxd-table-cell")
-            .nth(6)
-            .innerText()
+          await leaveRowCell(leavePage.leaveRows, index, 6).innerText()
         )
           .replace(/\s*\([^)]*\)\s*$/, "")
           .trim();
@@ -919,10 +886,7 @@ test.describe("Leaves - leaves for  Users", () => {
       await leavePage.leaveStatusField.innerText()
     ).trim();
 
-    const selectedStatus = leavePage.leaveStatusField.getByText(
-      data.leaveStatus,
-      { exact: true },
-    );
+    const selectedStatus = leaveSelectedStatus(leavePage.leaveStatusField, data.leaveStatus);
 
     if ((await selectedStatus.count()) === 0) {
       await leavePage.selectLeaveStatus(data.leaveStatus);
@@ -958,9 +922,7 @@ test.describe("Leaves - leaves for  Users", () => {
     await leavePage.waitForDefaultDateRange();
 
     for (const status of data.statuses) {
-      const selectedStatus = leavePage.leaveStatusField.getByText(status, {
-        exact: true,
-      });
+      const selectedStatus = leaveSelectedStatus(leavePage.leaveStatusField, status);
 
       if ((await selectedStatus.count()) === 0) {
         await leavePage.selectLeaveStatus(status);
@@ -975,7 +937,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     for (const status of data.statuses) {
       await expect(
-        leavePage.leaveStatusField.getByText(status, { exact: true }),
+        leaveSelectedStatus(leavePage.leaveStatusField, status),
       ).toBeVisible();
     }
 
@@ -990,11 +952,7 @@ test.describe("Leaves - leaves for  Users", () => {
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
         const statusText = (
-          await leavePage.leaveRows
-            .nth(index)
-            .locator(".oxd-table-cell")
-            .nth(6)
-            .innerText()
+          await leaveRowCell(leavePage.leaveRows, index, 6).innerText()
         ).trim();
 
         const matchesSelectedStatus = data.statuses.some((status) =>
@@ -1022,9 +980,7 @@ test.describe("Leaves - leaves for  Users", () => {
     await leavePage.waitForDefaultDateRange();
 
     for (const status of data.statuses) {
-      const selectedStatus = leavePage.leaveStatusField.getByText(status, {
-        exact: true,
-      });
+      const selectedStatus = leaveSelectedStatus(leavePage.leaveStatusField, status);
 
       if ((await selectedStatus.count()) === 0) {
         await leavePage.selectLeaveStatus(status);
@@ -1036,15 +992,11 @@ test.describe("Leaves - leaves for  Users", () => {
     await leavePage.removeSelectedLeaveStatus(data.statusToRemove);
 
     await expect(
-      leavePage.leaveStatusField.getByText(data.statusToRemove, {
-        exact: true,
-      }),
+      leaveSelectedStatus(leavePage.leaveStatusField, data.statusToRemove),
     ).toHaveCount(0);
 
     await expect(
-      leavePage.leaveStatusField.getByText(data.remainingStatus, {
-        exact: true,
-      }),
+      leaveSelectedStatus(leavePage.leaveStatusField, data.remainingStatus),
     ).toBeVisible();
 
     await leavePage.searchLeaveList();
@@ -1061,10 +1013,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavePage.leaveRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(6);
+        const statusCell = leaveRowCell(leavePage.leaveRows, index, 6);
 
         await expect(statusCell).toContainText(data.remainingStatus);
 
@@ -1087,10 +1036,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     const defaultDates = await leavePage.waitForDefaultDateRange();
 
-    const selectedStatus = leavePage.leaveStatusField.getByText(
-      data.leaveStatus,
-      { exact: true },
-    );
+    const selectedStatus = leaveSelectedStatus(leavePage.leaveStatusField, data.leaveStatus);
 
     if ((await selectedStatus.count()) === 0) {
       await leavePage.selectLeaveStatus(data.leaveStatus);
@@ -1118,10 +1064,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     if (rowCount > 0) {
       for (let index = 0; index < rowCount; index++) {
-        const statusCell = leavePage.leaveRows
-          .nth(index)
-          .locator(".oxd-table-cell")
-          .nth(6);
+        const statusCell = leaveRowCell(leavePage.leaveRows, index, 6);
 
         await expect(statusCell).toContainText(data.leaveStatus);
       }

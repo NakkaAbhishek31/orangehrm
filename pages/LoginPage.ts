@@ -1,29 +1,37 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { routes } from "../utils/routes";
+import { loginLocators } from "../locators/loginLocators";
 
 export class LoginPage {
   readonly page: Page;
-  readonly usernameInput: Locator;
-  readonly passwordInput: Locator;
-  readonly loginButton: Locator;
-  readonly profileMenu: Locator;
-  readonly errorMessage: Locator;
-  readonly validationMessages: Locator;
-  readonly forgotPasswordButton: Locator;
+  readonly usernameInput!: Locator;
+  readonly passwordInput!: Locator;
+  readonly loginButton!: Locator;
+  readonly profileMenu!: Locator;
+  readonly errorMessage!: Locator;
+  readonly validationMessages!: Locator;
+  readonly forgotPasswordButton!: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameInput = page.getByRole("textbox", { name: "Username" });
-    this.passwordInput = page.getByRole("textbox", { name: "Password" });
-    this.loginButton = page.getByRole("button", { name: "Login" });
-    this.profileMenu = page.locator("li.oxd-userdropdown");
-    this.errorMessage = page.getByText(
-      /^(Invalid credentials|Account disabled)$/,
-    );
-    this.validationMessages = page.locator(".oxd-input-field-error-message");
-    this.forgotPasswordButton = page.getByText("Forgot your password?", {
-      exact: true,
+    this.usernameInput = page.getByRole(loginLocators.usernameInput.role, {
+      name: loginLocators.usernameInput.name,
     });
+    this.passwordInput = page.getByRole(loginLocators.passwordInput.role, {
+      name: loginLocators.passwordInput.name,
+    });
+    this.loginButton = page.getByRole(loginLocators.loginButton.role, {
+      name: loginLocators.loginButton.name,
+    });
+    this.profileMenu = page.locator(loginLocators.profileMenu.css);
+    this.errorMessage = page.getByText(loginLocators.errorMessage);
+    this.validationMessages = page.locator(
+      loginLocators.validationMessages.css,
+    );
+    this.forgotPasswordButton = page.getByText(
+      loginLocators.forgotPasswordButton.text,
+      { exact: loginLocators.forgotPasswordButton.exact },
+    );
   }
 
   async visitPage(): Promise<void> {

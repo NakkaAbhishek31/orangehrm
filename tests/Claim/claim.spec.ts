@@ -2,6 +2,11 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import claimData from "../../test-data/claim.data.json";
 import { routes } from "../../utils/routes";
+import {
+  employeeClaimsHeading,
+  requiredValidationForText,
+  requiredValidationMessages,
+} from "../../locators/test/claimTestLocators";
 
 test.describe("Claim - Assign Claim", () => {
   test.beforeEach(async ({ page, navigationPage, claimPage }) => {
@@ -40,7 +45,7 @@ test.describe("Claim - Assign Claim", () => {
   test("TC_CLAIM_418 - Cancel should close a request with unsaved employee text @positive @cancel @regression", async ({ claimPage, page }) => {
     await claimPage.employeeNameInput.fill(claimData.TC_CLAIM_418.employeeName);
     await claimPage.cancelButton.click();
-    await expect(page.getByRole("heading", { name: "Employee Claims" })).toBeVisible();
+    await expect(employeeClaimsHeading(page)).toBeVisible();
     await expect(claimPage.heading).toBeHidden();
   });
 
@@ -87,7 +92,7 @@ test.describe("Claim - Assign Claim", () => {
 
   test("TC_CLAIM_427 - Empty Create submission should show required validation @negative @validation @regression", async ({ page, claimPage }) => {
     await claimPage.createButton.click();
-    await expect(page.locator(".oxd-input-field-error-message").filter({ hasText: claimData.TC_CLAIM_427.requiredMessage }).first()).toBeVisible();
+    await expect(requiredValidationForText(page, claimData.TC_CLAIM_427.requiredMessage)).toBeVisible();
     await expect(claimPage.heading).toBeVisible();
   });
 
@@ -126,10 +131,10 @@ test.describe("Claim - Assign Claim", () => {
 
   test("TC_CLAIM_432 - Cancel after validation should allow a fresh request @negative @validation @cancel @regression", async ({ page, claimPage }) => {
     await claimPage.createButton.click();
-    await expect(page.locator(".oxd-input-field-error-message").first()).toBeVisible();
+    await expect(requiredValidationMessages(page).first()).toBeVisible();
     await claimPage.cancelButton.click();
     await claimPage.gotoAssignClaim();
-    await expect(page.locator(".oxd-input-field-error-message")).toHaveCount(0);
+    await expect(requiredValidationMessages(page)).toHaveCount(0);
     await expect(claimPage.createButton).toBeEnabled();
   });
 
@@ -154,7 +159,7 @@ test.describe("Claim - Assign Claim", () => {
 
   test("TC_CLAIM_437 - Cancel should return to Employee Claims @positive @cancel @navigation @regression", async ({ page, claimPage }) => {
     await claimPage.cancelButton.click();
-    await expect(page.getByRole("heading", { name: claimData.TC_CLAIM_437.pageHeading })).toBeVisible();
+    await expect(employeeClaimsHeading(page, claimData.TC_CLAIM_437.pageHeading)).toBeVisible();
   });
 
   test("TC_CLAIM_438 - Assign Claim should reopen after cancellation @positive @cancel @navigation @regression", async ({ claimPage }) => {
@@ -323,9 +328,7 @@ test.describe("Claim - Assign Claim", () => {
     await claimPage.createButton.click();
     await expect(claimPage.validationMessages.first()).toBeVisible();
     await claimPage.cancelButton.click();
-    await expect(page.getByRole("heading", {
-      name: claimData.TC_CLAIM_459.pageHeading,
-    })).toBeVisible();
+    await expect(employeeClaimsHeading(page, claimData.TC_CLAIM_459.pageHeading)).toBeVisible();
   });
 
   test("TC_CLAIM_460 - Reopened form should clear previous required validation @negative @validation @navigation @regression", async ({ claimPage }) => {
@@ -619,9 +622,7 @@ test.describe("Claim - Assign Claim", () => {
     const data = claimData.TC_CLAIM_490;
     await claimPage.remarksInput.fill(data.remarks);
     await claimPage.cancelButton.click();
-    await expect(page.getByRole("heading", {
-      name: data.pageHeading,
-    })).toBeVisible();
+    await expect(employeeClaimsHeading(page, data.pageHeading)).toBeVisible();
   });
 
   test("TC_CLAIM_491 - Reopened form should clear unsaved multiline Remarks @positive @form @navigation @regression", async ({ claimPage }) => {

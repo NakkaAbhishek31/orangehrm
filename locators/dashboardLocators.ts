@@ -1,0 +1,20 @@
+/** Stable selector details for DashboardPage. */
+export const dashboardLocators = {
+  profileMenu: "li.oxd-userdropdown",
+  logoutLink: { text: "Logout", exact: true },
+  heading: { role: "heading", name: "Dashboard", exact: true },
+  widgets: ".orangehrm-dashboard-widget",
+  quickLaunchText: { text: "Quick Launch", exact: true },
+  sidebarSearchPlaceholder: "Search",
+  sidebarMenuLinks: ".oxd-main-menu-item",
+  activeSidebarLink: ".oxd-main-menu-item.active",
+  brandLogo: ".oxd-brand-banner img",
+  profileImage: ".oxd-userdropdown-img",
+  profileName: ".oxd-userdropdown-name",
+  topbarHeader: ".oxd-topbar-header-breadcrumb",
+  sidebarToggleButton: ".oxd-main-menu-button",
+  aboutDialogRole: "dialog",
+  aboutDialogCloseButton: ".oxd-dialog-close-button",
+  linkRole: "link",
+  exact: true,
+} as const;
