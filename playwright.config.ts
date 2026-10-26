@@ -1,7 +1,4 @@
 import { defineConfig, devices } from '@playwright/test';
-import { environment } from './config/environment';
-
-const adminAuthFile = 'playwright/.auth/admin.json';
 
 /**
  * Read environment variables from file.
@@ -15,55 +12,22 @@ const adminAuthFile = 'playwright/.auth/admin.json';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-    timeout: 120_000,
-
-  expect: {
-    timeout: 20_000,
-  },
-  fullyParallel: true,
-  workers: environment.workers,
   testDir: './tests',
   /* Run tests in files in parallel */
-  //fullyParallel: true,
+  fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  //retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  // workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [
-  ['line'],
-  ['html', { open: 'never' }],
-  ['./support/ai/FailureAnalysisReporter.ts', { outputDir: 'ai-results' }],
-  [
-      'allure-playwright',
-      {
-        outputFolder:
-          'allure-results',
-        detail: true,
-        suiteTitle: false,
-      },
-    ],
-],
+  reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
-    baseURL: environment.baseUrl,
-      locale: 'en-US',
-      actionTimeout: environment.actionTimeoutMs,
-    navigationTimeout: environment.navigationTimeoutMs,
 
-    
-  extraHTTPHeaders: {
-    'Accept-Language': 'en-US,en;q=0.9',
-  },
-
-  launchOptions: {
-    args: ['--lang=en-US'],
-  },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
@@ -71,17 +35,8 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
-    },
-    {
       name: 'chromium',
-      testIgnore: /.*\.setup\.ts/,
-      use: {
-        ...devices['Desktop Chrome'],
-        storageState: adminAuthFile,
-      },
-      dependencies: ['setup'],
+      use: { ...devices['Desktop Chrome'] },
     },
 
     // {

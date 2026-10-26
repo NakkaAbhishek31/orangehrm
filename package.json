@@ -11,13 +11,11 @@
     "test:performance": "playwright test tests/Performance",
     "test:claim": "playwright test tests/Claim",
     "test:ai-analysis": "node scripts/run-ai-analysis.js",
-
     "test:admin": "playwright test tests/Admin",
     "test:pim": "playwright test tests/PIM",
     "test:leave": "playwright test tests/Leave",
     "test:recruitment": "playwright test tests/Recruitment",
     "test:time": "playwright test tests/Time",
-
     "test:smoke": "playwright test --grep @smoke",
     "test:regression": "playwright test --grep @regression",
     "test:positive": "playwright test --grep @positive",
@@ -39,46 +37,42 @@
     "test:selection": "playwright test --grep @selection",
     "test:details": "playwright test --grep @details",
     "test:autocomplete": "playwright test --grep @autocomplete",
-
     "test:admin:smoke": "playwright test tests/Admin --grep @smoke",
     "test:admin:regression": "playwright test tests/Admin --grep @regression",
     "test:pim:smoke": "playwright test tests/PIM --grep @smoke",
     "test:pim:regression": "playwright test tests/PIM --grep @regression",
     "test:pim:positive": "playwright test tests/PIM --grep @positive",
     "test:pim:negative": "playwright test tests/PIM --grep @negative",
-
     "test:chromium": "playwright test --project=chromium",
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
-
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "test:ui": "playwright test --ui",
-
     "test:ci": "playwright test --project=chromium",
     "test:ci:smoke": "playwright test --project=chromium --grep @smoke",
     "test:ci:regression": "playwright test --project=chromium --grep @regression",
-
     "test:list": "playwright test --list",
     "test:last-failed": "playwright test --last-failed",
-
     "report": "playwright show-report",
     "report:open": "playwright show-report playwright-report",
-
     "install:browsers": "playwright install",
     "install:chromium": "playwright install chromium",
     "codegen": "playwright codegen",
     "clean:reports": "node scripts/clean-reports.js"
   },
-  "keywords": ["playwright", "typescript", "e2e", "api", "orangehrm"],
+  "keywords": [
+    "playwright",
+    "typescript",
+    "e2e",
+    "api",
+    "orangehrm"
+  ],
   "type": "commonjs",
   "devDependencies": {
-    "@playwright/test": "^1.62.0",
-    "@types/node": "^26.2.0",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5",
     "allure-commandline": "^2.43.0",
     "allure-playwright": "^3.10.2"
   }
-
-
-  
 }
