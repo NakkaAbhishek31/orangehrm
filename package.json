@@ -59,7 +59,10 @@
     "install:browsers": "playwright install",
     "install:chromium": "playwright install chromium",
     "codegen": "playwright codegen",
-    "clean:reports": "node scripts/clean-reports.js"
+    "clean:reports": "node scripts/clean-reports.js",
+    "allure:generate": "allure generate allure-results --clean -o allure-report",
+    "allure:open": "allure open allure-report",
+    "report:allure": "npm run allure:generate && npm run allure:open"
   },
   "keywords": [
     "playwright",
