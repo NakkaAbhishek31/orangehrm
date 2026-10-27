@@ -32,9 +32,9 @@ pipeline {
         choice(
             name: 'WORKERS',
             choices: [
-                '1','2','3','4','5','6','7','8'
+                '7','1','2','3','4','5','6'
             ],
-            description: 'Use 1 or 2 workers to avoid overloading the shared OrangeHRM demo'
+            description: 'Number of Playwright workers (default: 7)'
         )
     }
 
@@ -194,7 +194,7 @@ pipeline {
                         )
                     }
 
-                    def workerCount = Math.min((params.WORKERS ?: '1') as Integer, 2)
+                    def workerCount = Math.min((params.WORKERS ?: '7') as Integer, 7)
 
                     def testCommand =
                         'call npx.cmd playwright test ' +
