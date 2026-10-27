@@ -1,7 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import claimData from "../../test-data/claim.data.json";
-import { routes } from "../../utils/routes";
 import {
   employeeClaimsHeading,
   requiredValidationForText,
@@ -9,8 +8,7 @@ import {
 } from "../../locators/test/claimTestLocators";
 
 test.describe("Claim - Assign Claim", () => {
-  test.beforeEach(async ({ page, navigationPage, claimPage }) => {
-    await page.goto(routes.dashboard);
+  test.beforeEach(async ({ navigationPage, claimPage }) => {
     await navigationPage.gotoClaim();
     await claimPage.gotoAssignClaim();
   });

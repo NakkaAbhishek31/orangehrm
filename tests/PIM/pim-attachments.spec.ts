@@ -1,6 +1,5 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
-import { routes } from "../../utils/routes";
 
 test("TC_PIM_011 - Admin should upload an employee attachment @positive @upload @regression", async ({
   page,
@@ -14,8 +13,6 @@ test("TC_PIM_011 - Admin should upload an employee attachment @positive @upload 
   const profilePicturePath = "test-data/OIP.jpg";
   const pdfAttachement = "test-data/employee-handbook-template.pdf";
   const attachmentComment = "Attachment PDF";
-  await page.goto(routes.dashboard);
-
   await navigationPage.gotoPIM();
   await pimPage.gotoAddEmployee();
 
@@ -68,8 +65,6 @@ test("TC_PIM_012 - Admin should download an employee attachment @positive @downl
   const profilePicturePath = "test-data/OIP.jpg";
   const pdfAttachement = "test-data/employee-handbook-template.pdf";
   const attachmentComment = "Attachment PDF";
-  await page.goto(routes.dashboard);
-
   await navigationPage.gotoPIM();
   await pimPage.gotoAddEmployee();
 

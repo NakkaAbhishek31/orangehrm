@@ -2,13 +2,8 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import performanceData from "../../test-data/performance.data.json";
 import { performanceEmployeeCells } from "../../locators/test/performanceTestLocators";
-import { routes } from "../../utils/routes";
 
 test.describe("Performance - Employee Reviews", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(routes.dashboard);
-  });
-
   test("TC_PERFORMANCE_201 - Admin should navigate to the Employee Reviews page @smoke @navigation @regression", async ({
     page,
     navigationPage,

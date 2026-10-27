@@ -1,7 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import adminData from "../../test-data/admin.data.json";
-import { routes } from "../../utils/routes";
 import {
   adminAutocompleteText,
   adminRowCheckbox,
@@ -16,10 +15,6 @@ import {
 } from "../../utils/testData";
 
 test.describe("Admin - System Users", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(routes.dashboard);
-  });
-
   test("TC_ADMIN_041 - Admin should navigate to the System Users page @smoke @navigation @regression", async ({
     page,
     navigationPage,

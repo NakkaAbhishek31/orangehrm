@@ -3,7 +3,6 @@ import { test } from "../../fixtures/baseTest";
 import path from "node:path";
 import loginData from "../../test-data/login.data.json";
 import pimData from "../../test-data/pimEmployee.data.json";
-import { routes } from "../../utils/routes";
 import { environment } from "../../config/environment";
 import { LoginPage } from "../../pages/LoginPage";
 import {
@@ -12,10 +11,6 @@ import {
 } from "../../utils/testData";
 
 test.describe("PIM Employee", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(routes.dashboard);
-  });
-
   test("TC_PIM_001 - Admin should add a new employee successfully @positive @regression", async ({
     page,
     navigationPage,

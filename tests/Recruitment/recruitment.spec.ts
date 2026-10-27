@@ -2,7 +2,6 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import recruitmentData from "../../test-data/recruitment.data.json";
 import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
-import { routes } from "../../utils/routes";
 import {
   interviewValue,
   recruitmentTableCell,
@@ -12,10 +11,6 @@ import {
 } from "../../locators/test/recruitmentTestLocators";
 
 test.describe("Recruitment - Candidates", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(routes.dashboard);
-  });
-
   test("TC_RECRUITMENT_133 - Admin should navigate to the Candidates page @smoke @navigation @regression", async ({
     page,
     navigationPage,

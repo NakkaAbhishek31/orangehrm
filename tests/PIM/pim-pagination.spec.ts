@@ -1,11 +1,8 @@
 import { expect } from '@playwright/test';
 import{test} from '../../fixtures/baseTest';
-import { routes } from '../../utils/routes';
 
 test('TC_PIM_010 - Admin should navigate through Employee List pages @pagination @regression',
   async ({ page, navigationPage, pimPage }) => {
-
-    await page.goto(routes.dashboard);
 
     await navigationPage.gotoPIM();
     await pimPage.gotoEmployeeList();

@@ -1,14 +1,9 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import dashboardData from "../../test-data/dashboard.data.json";
-import { routes } from "../../utils/routes";
 import { quickLaunchCards } from "../../locators/test/dashboardTestLocators";
 
 test.describe("Dashboard - Quick Launch", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(routes.dashboard);
-  });
-
   test("TC_DASHBOARD_266 - Admin should navigate to the Dashboard page @smoke @navigation @regression", async ({
     page,
     dashboardPage,

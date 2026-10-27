@@ -2,7 +2,6 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import timeData from "../../test-data/time.data.json";
 import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
-import { routes } from "../../utils/routes";
 import {
   editProjectHeading,
   confirmDeleteButton,
@@ -16,10 +15,6 @@ import {
 } from "../../locators/test/timeTestLocators";
 
 test.describe("Time - Timesheets, Attendance and Reports", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(routes.dashboard);
-  });
-
   test("TC_TIME_166 - Admin should navigate to the Employee Timesheets page @smoke @navigation @regression", async ({
     page,
     navigationPage,

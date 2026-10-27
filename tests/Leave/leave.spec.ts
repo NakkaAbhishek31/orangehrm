@@ -2,7 +2,6 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import leaveData from "../../test-data/leave.data.json";
 import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
-import { routes } from "../../utils/routes";
 import { createUniqueEmployee as employeeFrom } from "../../utils/testData";
 import {
   leaveDropdownOption,
@@ -13,10 +12,6 @@ import {
 } from "../../locators/test/leaveTestLocators";
 
 test.describe("Leaves - leaves for  Users", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(routes.dashboard);
-  });
-
   test("TC_LEAVE_109 - Admin should navigate to the Leave List page @smoke @navigation @regression", async ({
     page,
     loginPage,

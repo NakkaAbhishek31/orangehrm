@@ -32,9 +32,9 @@ pipeline {
         choice(
             name: 'WORKERS',
             choices: [
-                '1','2','3','4','5','6'
+                '1','2'
             ],
-            description: 'Serialized for the shared OrangeHRM demo'
+            description: 'Use 1 or 2 workers to avoid overloading the shared OrangeHRM demo'
         )
     }
 
@@ -194,11 +194,13 @@ pipeline {
                         )
                     }
 
+                    def workerCount = Math.min((params.WORKERS ?: '1') as Integer, 2)
+
                     def testCommand =
                         'call npx.cmd playwright test ' +
                         "\"${testTarget}\" " +
                         "--project=${params.BROWSER} " +
-                        "--workers=${params.WORKERS} " +
+                        "--workers=${workerCount} " +
                         '--retries=1'
 
                     if (testName) {
@@ -235,6 +237,19 @@ pipeline {
                 } else {
                     echo 'No Allure results were generated'
                 }
+            }
+
+            if (fileExists('playwright-report/index.html')) {
+                publishHTML(target: [
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'playwright-report',
+                    reportFiles: 'index.html',
+                    reportName: 'Playwright HTML Report'
+                ])
+            } else {
+                echo 'Playwright HTML report was not generated'
             }
 
             archiveArtifacts(
