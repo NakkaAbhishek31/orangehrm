@@ -220,25 +220,9 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            script {
-                if (fileExists('allure-results')) {
-                    echo 'Publishing fresh Allure report'
-
-                    allure([
-                        includeProperties: false,
-                        jdk: '',
-                        commandline: 'Allure',
-                        results: [[
-                            path: 'allure-results'
-                        ]]
-                    ])
-                } else {
-                    echo 'No Allure results were generated'
-                }
-            }
-
+ post {
+    always {
+        script {
             if (fileExists('playwright-report/index.html')) {
                 publishHTML(target: [
                     allowMissing: true,
@@ -251,29 +235,13 @@ pipeline {
             } else {
                 echo 'Playwright HTML report was not generated'
             }
-
-            archiveArtifacts(
-                artifacts:
-                    'allure-results/**, ' +
-                    'allure-report/**, ' +
-                    'playwright-report/**, ' +
-                    'test-results/**, ' +
-                    'ai-results/**',
-                allowEmptyArchive: true,
-                fingerprint: true
-            )
         }
 
-        success {
-            echo 'All Playwright tests passed'
-        }
-
-        unsuccessful {
-            echo 'One or more Playwright tests failed or the build was interrupted'
-        }
-
-        cleanup {
-            echo 'Jenkins pipeline completed'
-        }
+        archiveArtifacts(
+            artifacts: 'allure-results/**, allure-report/**, playwright-report/**, test-results/**, ai-results/**',
+            allowEmptyArchive: true,
+            fingerprint: true
+        )
     }
+}
 }
