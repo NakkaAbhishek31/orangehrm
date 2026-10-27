@@ -220,28 +220,14 @@ pipeline {
         }
     }
 
- post {
-    always {
-        script {
-            if (fileExists('playwright-report/index.html')) {
-                publishHTML(target: [
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'playwright-report',
-                    reportFiles: 'index.html',
-                    reportName: 'Playwright HTML Report'
-                ])
-            } else {
-                echo 'Playwright HTML report was not generated'
-            }
+    post {
+        always {
+            archiveArtifacts(
+                artifacts: 'allure-results/**, allure-report/**, playwright-report/**, test-results/**, ai-results/**',
+                allowEmptyArchive: true,
+                fingerprint: true
+            )
+            echo 'Test reports and artifacts archived when available'
         }
-
-        archiveArtifacts(
-            artifacts: 'allure-results/**, allure-report/**, playwright-report/**, test-results/**, ai-results/**',
-            allowEmptyArchive: true,
-            fingerprint: true
-        )
     }
-}
 }
