@@ -223,7 +223,31 @@ pipeline {
     post {
         always {
             archiveArtifacts(
-                artifacts: 'allure-results/**, allure-report/**, playwright-report/**, test-results/**, ai-results/**',
+                artifacts: 'allure-results/**, playwright-report/**, test-results/**, ai-results/**',
+                allowEmptyArchive: true,
+                fingerprint: true
+            )
+
+            script {
+                if (fileExists('allure-results')) {
+                    echo 'Generating and publishing the Allure report'
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        allure([
+                            includeProperties: false,
+                            jdk: '',
+                            commandline: 'Allure',
+                            results: [[
+                                path: 'allure-results'
+                            ]]
+                        ])
+                    }
+                } else {
+                    echo 'No Allure results were generated; skipping the Allure report'
+                }
+            }
+
+            archiveArtifacts(
+                artifacts: 'allure-report/**',
                 allowEmptyArchive: true,
                 fingerprint: true
             )

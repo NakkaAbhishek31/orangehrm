@@ -15,8 +15,8 @@ import { environment } from './config/environment';
  */
 export default defineConfig({
   testDir: '.',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
+  /* Keep tests within each spec sequential in CI; spec files can still use the configured workers. */
+  fullyParallel: !process.env.CI,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
