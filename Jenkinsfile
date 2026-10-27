@@ -32,7 +32,7 @@ pipeline {
         choice(
             name: 'WORKERS',
             choices: [
-                '1','2'
+                '1','2','3','4','5','6','7','8'
             ],
             description: 'Use 1 or 2 workers to avoid overloading the shared OrangeHRM demo'
         )
