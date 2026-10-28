@@ -26,6 +26,9 @@ export function createPimLocators(page: Page) {
     filterSearchButton: page.getByRole("button", { name: /Search/i }),
     loadingSpinner: page.locator(".oxd-loading-spinner").first(),
     employeeRows,
+    noRecordsFound: page
+      .locator(".orangehrm-paper-container")
+      .getByText("No Records Found", { exact: true }),
     employeeNameFilterInput: page.locator(
       "//div[@class='oxd-grid-4 orangehrm-full-width-grid']//div[1]//div[1]//div[2]//div[1]//div[1]//input[1]",
     ),

@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { waitForListResult } from "../components/ListResult";
 
 const DEFAULT_TIMEOUT = 15_000;
 const API_TIMEOUT = 20_000;
@@ -555,6 +556,11 @@ this.workflowCancelButton = page
     await this.candidateLink.click();
     await expect(this.page).toHaveURL(/recruitment\/viewCandidates/);
     await expect(this.candidatePageHeading).toBeVisible();
+    await waitForListResult(
+      this.loadingSpinner,
+      this.candidateRows,
+      this.noRecordsFound,
+    );
   }
 
   async searchCandidates(): Promise<void> {
@@ -1008,48 +1014,42 @@ this.workflowCancelButton = page
   }
 
   async selectFirstAvailableInterviewer(
-  searchText: string
-): Promise<string> {
-  await this.interviewerInput.fill(
-    searchText
-  );
+    searchText: string,
+  ): Promise<string> {
+    await this.interviewerInput.fill(searchText);
 
-  await expect(
-    this.interviewerDropdown
-  ).toBeVisible({
-    timeout: 15_000,
-  });
-
-  const validOptions =
-    this.interviewerOptions.filter({
-      hasNotText:
-        /Searching|No Records Found/i,
+    await expect(this.interviewerDropdown).toBeVisible({
+      timeout: 15_000,
     });
 
-  const optionCount =
-    await validOptions.count();
+    const validOptions = this.interviewerOptions.filter({
+      hasNotText: /Searching|No Records Found/i,
+    });
 
-  if (optionCount === 0) {
-    throw new Error(
-      `No interviewer found for: ${searchText}`
-    );
+    await expect
+      .poll(
+        async () =>
+          (await validOptions.count()) > 0 ||
+          (await this.interviewerNoRecords.isVisible()),
+        {
+          timeout: 30_000,
+          message: `Expected interviewer results for: ${searchText}`,
+        },
+      )
+      .toBe(true);
+
+    if ((await validOptions.count()) === 0) {
+      throw new Error(`No interviewer found for: ${searchText}`);
+    }
+
+    const firstOption = validOptions.first();
+    const interviewerName = (await firstOption.innerText()).trim();
+
+    await firstOption.click();
+    await expect(this.interviewerInput).toHaveValue(interviewerName);
+
+    return interviewerName;
   }
-
-  const firstOption =
-    validOptions.first();
-
-  const interviewerName = (
-    await firstOption.innerText()
-  ).trim();
-
-  await firstOption.click();
-
-  await expect(
-    this.interviewerInput
-  ).toHaveValue(interviewerName);
-
-  return interviewerName;
-}
 
 
 private async completeCandidateWorkflowAction(

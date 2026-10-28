@@ -75,6 +75,8 @@ private readonly employeeAutocomplete: Autocomplete;
   await expect(
     this.employeeNameInput
   ).toBeVisible();
+
+  await this.waitForReviewResults();
 }
 
 async selectDropdownOption(

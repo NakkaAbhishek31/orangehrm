@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { waitForListResult } from "../components/ListResult";
 import { generateEmployeeId } from "../utils/testData";
 import { createPimLocators } from "../locators/pimLocators";
 
@@ -53,6 +54,7 @@ export class PIMPage {
   readonly filterSearchButton!: Locator;
   readonly loadingSpinner!: Locator;
   readonly employeeRows!: Locator;
+  readonly noRecordsFound!: Locator;
   readonly employeeNameFilterInput!: Locator;
   readonly autocompleteOptions!: Locator;
   readonly middlenameUpateInput!: Locator;
@@ -240,6 +242,12 @@ export class PIMPage {
 
   async gotoEmployeeList(): Promise<void> {
     await this.employeeListLink.click();
+    await expect(this.employeeIdFilterInput).toBeVisible();
+    await waitForListResult(
+      this.loadingSpinner,
+      this.employeeRows,
+      this.noRecordsFound,
+    );
   }
 
   async filterEmployeeList(filters: EmployeeFilters): Promise<void> {

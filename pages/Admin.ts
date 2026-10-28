@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
+import { waitForListResult } from "../components/ListResult";
 import { createAdminLocators } from "../locators/adminLocators";
 
 export interface SystemUserFilters {
@@ -68,6 +69,12 @@ export class AdminPage {
   async gotoUserManagementUsers(): Promise<void> {
     await this.userManagementMenu.click();
     await this.usersMenuItem.click();
+    await expect(this.systemUsersHeading).toBeVisible();
+    await waitForListResult(
+      this.loadingSpinner,
+      this.userRows,
+      this.noRecordsFound,
+    );
   }
 
   private async selectDropdownOption(

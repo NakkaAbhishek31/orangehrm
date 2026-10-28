@@ -72,12 +72,13 @@ test.describe("Admin - System Users", () => {
     await navigationPage.gotoAdmin();
     await adminPage.gotoUserManagementUsers();
     await adminPage.searchSystemUsers({ userRole: data.userRole });
-    const count = await adminPage.userRows.count();
-    expect(count).toBeGreaterThan(0);
-    for (let i = 0; i < count; i++)
-      await expect(
-        adminTableCell(adminPage.userRows.nth(i), 2),
-      ).toHaveText(data.userRole);
+    const roles = (
+      await adminPage.userRows
+        .locator(".oxd-table-cell:nth-child(3)")
+        .allTextContents()
+    ).map((role) => role.trim());
+    expect(roles.length).toBeGreaterThan(0);
+    expect(roles.every((role) => role === data.userRole)).toBe(true);
     await adminPage.resetSystemUserFilters();
     await expect(adminPage.userRoleDropdown).toContainText(
       data.defaultDropdownValue,
@@ -92,12 +93,13 @@ test.describe("Admin - System Users", () => {
     await navigationPage.gotoAdmin();
     await adminPage.gotoUserManagementUsers();
     await adminPage.searchSystemUsers({ status: data.status });
-    const count = await adminPage.userRows.count();
-    expect(count).toBeGreaterThan(0);
-    for (let i = 0; i < count; i++)
-      await expect(
-        adminTableCell(adminPage.userRows.nth(i), 4),
-      ).toHaveText(data.status);
+    const statuses = (
+      await adminPage.userRows
+        .locator(".oxd-table-cell:nth-child(5)")
+        .allTextContents()
+    ).map((status) => status.trim());
+    expect(statuses.length).toBeGreaterThan(0);
+    expect(statuses.every((status) => status === data.status)).toBe(true);
     await adminPage.resetSystemUserFilters();
     await expect(adminPage.statusDropdown).toContainText(
       data.defaultDropdownValue,
