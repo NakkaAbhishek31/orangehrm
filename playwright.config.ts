@@ -2,6 +2,8 @@
 import { defineConfig, devices } from '@playwright/test';
 import { environment } from './config/environment';
 
+const adminAuthFile = 'playwright/.auth/admin.json';
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -17,6 +19,11 @@ export default defineConfig({
   testDir: '.',
   /* Keep tests within each spec sequential in CI; spec files can still use the configured workers. */
   fullyParallel: !process.env.CI,
+  /* Shared demo responses can be slow during large CI runs. */
+  timeout: process.env.CI ? 120_000 : 30_000,
+  expect: {
+    timeout: process.env.CI ? 10_000 : 5_000,
+  },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -36,6 +43,8 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: environment.baseUrl,
+    actionTimeout: environment.actionTimeoutMs,
+    navigationTimeout: environment.navigationTimeoutMs,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -44,8 +53,16 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'setup',
+      testMatch: /auth\.setup\.ts/,
+    },
+    {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      dependencies: ['setup'],
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: adminAuthFile,
+      },
     },
 
     // {

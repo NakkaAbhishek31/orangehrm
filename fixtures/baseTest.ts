@@ -115,7 +115,7 @@ export const test = appTest.extend<{ authenticatedSession: void }>({
       // dashboard navigation has resolved. Wait for the rendered final state
       // instead of making a one-time URL check while that redirect is pending.
       await expect(dashboardReady.or(loginReady)).toBeVisible({
-        timeout: 30_000,
+        timeout: 60_000,
       });
 
       if (await loginReady.isVisible()) {
@@ -125,7 +125,7 @@ export const test = appTest.extend<{ authenticatedSession: void }>({
       }
 
       await expect(dashboardReady).toBeVisible({
-        timeout: 30_000,
+        timeout: 60_000,
       });
       await expect(page).toHaveURL(/\/dashboard\/index$/, {
         timeout: 30_000,
