@@ -20,7 +20,12 @@ export class Autocomplete {
 
     const selectedText = (await option.innerText()).trim();
     await option.click();
-    await expect(this.input).toHaveValue(selectedText);
+    // OrangeHRM can insert repeated spaces between a first and last name in
+    // the input even though the autocomplete option renders normalized text.
+    const normalizeWhitespace = (value: string) => value.replace(/\s+/g, " ").trim();
+    await expect
+      .poll(async () => normalizeWhitespace(await this.input.inputValue()))
+      .toBe(normalizeWhitespace(selectedText));
     return selectedText;
   }
 }

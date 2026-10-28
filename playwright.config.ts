@@ -17,10 +17,11 @@ const adminAuthFile = 'playwright/.auth/admin.json';
  */
 export default defineConfig({
   testDir: '.',
-  /* Keep tests within each spec sequential in CI; spec files can still use the configured workers. */
-  fullyParallel: !process.env.CI,
+  /* Tests share a mutable OrangeHRM account, so avoid concurrent data changes. */
+  fullyParallel: false,
   /* Shared demo responses can be slow during large CI runs. */
-  timeout: process.env.CI ? 120_000 : 30_000,
+  /* Keep the test timeout above the authentication fixture's 60s recovery wait. */
+  timeout: process.env.CI ? 120_000 : 90_000,
   expect: {
     timeout: process.env.CI ? 10_000 : 5_000,
   },

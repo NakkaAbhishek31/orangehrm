@@ -9,7 +9,10 @@ export const environment = {
     "https://opensource-demo.orangehrmlive.com",
   adminUsername: process.env.ORANGEHRM_ADMIN_USERNAME ?? "Admin",
   adminPassword: process.env.ORANGEHRM_ADMIN_PASSWORD ?? "admin123",
-  workers: positiveInteger(process.env.PLAYWRIGHT_WORKERS, 2),
+  // The public OrangeHRM demo shares mutable data and sessions across tests.
+  // Run serially by default; opt into parallelism explicitly when using an
+  // isolated test instance.
+  workers: positiveInteger(process.env.PLAYWRIGHT_WORKERS, 1),
   actionTimeoutMs: positiveInteger(process.env.ACTION_TIMEOUT_MS, 70_000),
   navigationTimeoutMs: positiveInteger(
     process.env.NAVIGATION_TIMEOUT_MS,
