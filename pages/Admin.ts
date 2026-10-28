@@ -129,9 +129,7 @@ export class AdminPage {
     await expect(this.userRows.first()).toBeVisible();
 
     const matchingRow = expected.username
-      ? this.userRows.filter({
-          has: this.locators.userRow(expected.username),
-        })
+      ? this.locators.userRow(expected.username)
       : this.userRows.first();
 
     await expect(matchingRow).toHaveCount(1);

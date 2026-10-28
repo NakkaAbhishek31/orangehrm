@@ -1,4 +1,4 @@
-import { expect, test as base } from "@playwright/test";
+import { expect, test as base, type Page } from "@playwright/test";
 import { AdminPage } from "../pages/Admin";
 import { DashboardPage } from "../pages/DashboardPage";
 import { DirectoryPage } from "../pages/DirectoryPage";
@@ -73,6 +73,32 @@ const appTest = base.extend<AppFixtures>({
   },
 });
 
+async function openDashboardWithRetry(page: Page): Promise<void> {
+  const maxAttempts = 3;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      await page.goto(routes.dashboard, {
+        waitUntil: "domcontentloaded",
+        timeout: environment.navigationTimeoutMs,
+      });
+      return;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const isTransientNavigationError =
+        /net::ERR_(?:ABORTED|NETWORK_CHANGED|CONNECTION_RESET|TIMED_OUT)|Navigation interrupted/i.test(
+          message,
+        );
+
+      if (!isTransientNavigationError || attempt === maxAttempts) {
+        throw error;
+      }
+
+      await page.waitForTimeout(attempt * 1_000);
+    }
+  }
+}
+
 /** Use only for login, access-control, and other deliberately anonymous tests. */
 export const unauthenticatedTest = appTest;
 
@@ -80,7 +106,7 @@ export const unauthenticatedTest = appTest;
 export const test = appTest.extend<{ authenticatedSession: void }>({
   authenticatedSession: [
     async ({ page }, use) => {
-      await page.goto(routes.dashboard, { waitUntil: "domcontentloaded" });
+      await openDashboardWithRetry(page);
 
       const dashboardReady = page.locator("li.oxd-userdropdown");
       const loginReady = page.getByPlaceholder("Username");
