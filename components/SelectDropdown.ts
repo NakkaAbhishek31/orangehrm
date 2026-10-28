@@ -6,7 +6,6 @@ const NON_SELECTABLE_OPTION =
 
 /** Reusable adapter for OrangeHRM's custom select control. */
 export class SelectDropdown {
-  private readonly page: Page;
   constructor(private readonly page: Page) {}
 
   async select(dropdown: Locator, optionText: string): Promise<void> {

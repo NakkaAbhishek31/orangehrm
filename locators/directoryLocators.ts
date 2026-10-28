@@ -7,7 +7,7 @@ export const directoryLocators = {
     jobTitle: "Job Title",
     location: "Location",
   },
-  heading: { role: "heading", name: "Directory", exact: true },
+  heading: { role: "heading", name: "Directory", exact: true, level: 5 },
   input: "input",
   select: ".oxd-select-text",
   searchButton: { role: "button", name: "Search", exact: true },

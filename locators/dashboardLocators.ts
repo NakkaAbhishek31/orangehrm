@@ -3,7 +3,7 @@ export const dashboardLocators = {
   profileMenu: "li.oxd-userdropdown",
   logoutLink: { text: "Logout", exact: true },
   heading: { role: "heading", name: "Dashboard", exact: true },
-  widgets: ".orangehrm-dashboard-widget",
+  widgets: ".oxd-sheet.orangehrm-dashboard-widget",
   quickLaunchText: { text: "Quick Launch", exact: true },
   sidebarSearchPlaceholder: "Search",
   sidebarMenuLinks: ".oxd-main-menu-item",

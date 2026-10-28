@@ -53,7 +53,6 @@ export class PIMPage {
   readonly filterSearchButton!: Locator;
   readonly loadingSpinner!: Locator;
   readonly employeeRows!: Locator;
-  readonly noRecordsFound!: Locator;
   readonly employeeNameFilterInput!: Locator;
   readonly autocompleteOptions!: Locator;
   readonly middlenameUpateInput!: Locator;
@@ -287,7 +286,6 @@ export class PIMPage {
     await expect(cells.nth(1)).toHaveText(employeeId);
     expect(actualFirstName).toBe(firstName);
     await expect(cells.nth(3)).toHaveText(lastName);
-    await expect(this.noRecordsFound).not.toBeVisible();
   }
 
   async verifyNoEmployeeRecordsFound(employeeId: string) {

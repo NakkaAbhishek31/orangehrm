@@ -31,6 +31,7 @@ export class DirectoryPage {
     this.heading = page.getByRole(directoryLocators.heading.role, {
       name: directoryLocators.heading.name,
       exact: directoryLocators.heading.exact,
+      level: directoryLocators.heading.level,
     });
     this.employeeNameInput = inputGroup(directoryLocators.labels.employeeName)
       .locator(directoryLocators.input);
