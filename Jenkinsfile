@@ -197,8 +197,13 @@ pipeline {
                     def requestedWorkerCount = Math.min((params.WORKERS ?: '1') as Integer, 7)
                     def configuredBaseUrl = (env.ORANGEHRM_BASE_URL ?:
                         'https://opensource-demo.orangehrmlive.com').trim().toLowerCase()
-                    def isSharedPublicDemo = configuredBaseUrl ==~
-                        /https?:\/\/opensource-demo\.orangehrmlive\.com\/?/
+                    def normalizedBaseUrl = configuredBaseUrl.endsWith('/') ?
+                        configuredBaseUrl.substring(0, configuredBaseUrl.length() - 1) :
+                        configuredBaseUrl
+                    def isSharedPublicDemo = normalizedBaseUrl in [
+                        'https://opensource-demo.orangehrmlive.com',
+                        'http://opensource-demo.orangehrmlive.com'
+                    ]
                     def workerCount = isSharedPublicDemo ? 1 : requestedWorkerCount
 
                     if (isSharedPublicDemo && requestedWorkerCount > 1) {
