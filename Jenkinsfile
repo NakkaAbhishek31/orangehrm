@@ -32,9 +32,9 @@ pipeline {
         choice(
             name: 'WORKERS',
             choices: [
-                '7','1','2','3','4','5','6'
+                '1','2','3','4','5','6','7'
             ],
-            description: 'Number of Playwright workers (default: 7)'
+            description: 'Workers for an isolated OrangeHRM instance; shared public demo is forced to 1'
         )
     }
 
@@ -194,7 +194,16 @@ pipeline {
                         )
                     }
 
-                    def workerCount = Math.min((params.WORKERS ?: '7') as Integer, 7)
+                    def requestedWorkerCount = Math.min((params.WORKERS ?: '1') as Integer, 7)
+                    def configuredBaseUrl = (env.ORANGEHRM_BASE_URL ?:
+                        'https://opensource-demo.orangehrmlive.com').trim().toLowerCase()
+                    def isSharedPublicDemo = configuredBaseUrl ==~
+                        /https?:\/\/opensource-demo\.orangehrmlive\.com\/?/
+                    def workerCount = isSharedPublicDemo ? 1 : requestedWorkerCount
+
+                    if (isSharedPublicDemo && requestedWorkerCount > 1) {
+                        echo "The shared public OrangeHRM demo cannot safely run concurrent tests; using 1 worker instead of ${requestedWorkerCount}. Set ORANGEHRM_BASE_URL to an isolated instance to enable parallel workers."
+                    }
 
                     def testCommand =
                         'call npx.cmd playwright test ' +

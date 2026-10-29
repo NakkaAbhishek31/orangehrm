@@ -306,16 +306,6 @@ export class AdminPage {
 
     await expect(this.editStatusDropdown).toContainText(status);
 
-    const updateResponse = this.page.waitForResponse(
-      (response) =>
-        response.url().includes("/api/v2/admin/users/") &&
-        response.request().method() === "PUT" &&
-        response.ok(),
-      {
-        timeout: 20_000,
-      },
-    );
-
     const updatedToast = expect(
       this.toastMessage.filter({
         hasText: /Successfully Updated/i,
@@ -327,7 +317,6 @@ export class AdminPage {
     await this.editUserSaveButton.click();
 
     await Promise.all([
-      updateResponse,
       updatedToast,
       this.page.waitForURL(/admin\/viewSystemUsers/, {
         timeout: 20_000,

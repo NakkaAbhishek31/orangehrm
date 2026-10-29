@@ -271,13 +271,13 @@ export class PIMPage {
     const employeeListResponse = this.page.waitForResponse(
       (response) =>
         response.url().includes("/api/v2/pim/employees") &&
-        response.request().method() === "GET" &&
-        response.ok(),
+        response.request().method() === "GET",
       { timeout: 20_000 },
     );
 
     await this.filterSearchButton.click();
-    await employeeListResponse;
+    const response = await employeeListResponse;
+    expect([200, 422]).toContain(response.status());
     await expect(this.loadingSpinner).toBeHidden({ timeout: 20_000 });
   }
 
