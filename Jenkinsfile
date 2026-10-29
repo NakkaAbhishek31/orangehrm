@@ -78,6 +78,12 @@ pipeline {
             }
         }
 
+        stage('Check OrangeHRM Availability') {
+            steps {
+                bat 'call node scripts/check-app-availability.js'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 bat 'call npm.cmd ci'

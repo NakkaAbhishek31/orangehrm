@@ -38,9 +38,13 @@ export class LoginPage {
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
         await this.page.goto(routes.login, {
-          waitUntil: "domcontentloaded",
+          // The public demo can leave page resources pending even after the
+          // document is available. Wait for the response, then verify the
+          // rendered login form instead of waiting for every resource event.
+          waitUntil: "commit",
           timeout: 60_000,
         });
+        await expect(this.usernameInput).toBeVisible({ timeout: 30_000 });
         return;
       } catch (error) {
         if (attempt === 2) {
