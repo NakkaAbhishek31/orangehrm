@@ -10,6 +10,7 @@
     "test:directory": "playwright test tests/Directory",
     "test:performance": "playwright test tests/Performance",
     "test:claim": "playwright test tests/Claim",
+    "test:buzz": "playwright test tests/Buzz",
     "test:ai-analysis": "node scripts/run-ai-analysis.js",
     "test:admin": "playwright test tests/Admin",
     "test:pim": "playwright test tests/PIM",

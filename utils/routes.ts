@@ -10,4 +10,5 @@ export const routes = {
     '/web/index.php/performance/searchEvaluatePerformanceReview',
   directory: '/web/index.php/directory/viewDirectory',
   assignClaim: '/web/index.php/claim/viewAssignClaim',
+  buzz: '/web/index.php/buzz/viewBuzz',
 } as const;

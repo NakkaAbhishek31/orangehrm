@@ -10,5 +10,6 @@ export const navigationLocators = {
     performance: "Performance",
     directory: "Directory",
     claim: "Claim",
+    buzz: "Buzz",
   },
 } as const;

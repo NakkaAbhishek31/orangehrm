@@ -12,6 +12,7 @@ export class NavigationPage {
   readonly performanceLink: Locator;
   readonly directoryLink: Locator;
   readonly claimLink: Locator;
+  readonly buzzLink: Locator;
 
   private readonly page: Page;
 
@@ -24,6 +25,7 @@ export class NavigationPage {
     this.performanceLink = this.link(navigationLocators.links.performance);
     this.directoryLink = this.link(navigationLocators.links.directory);
     this.claimLink = this.link(navigationLocators.links.claim);
+    this.buzzLink = this.link(navigationLocators.links.buzz);
   }
 
   /** @deprecated Use pimLink. Retained for existing tests. */
@@ -94,5 +96,9 @@ export class NavigationPage {
 
   async gotoClaim(): Promise<void> {
     await this.navigate(this.claimLink, routes.assignClaim);
+  }
+
+  async gotoBuzz(): Promise<void> {
+    await this.navigate(this.buzzLink, routes.buzz);
   }
 }

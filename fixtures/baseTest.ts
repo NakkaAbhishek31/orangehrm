@@ -12,6 +12,7 @@ import { PIMPage } from "../pages/PimPage";
 import { RecruitmentPage } from "../pages/RecruitmentPage";
 import { TimePage } from "../pages/TimePage";
 import { ClaimPage } from "../pages/ClaimPage";
+import { BuzzPage } from "../pages/BuzzPage";
 import { environment } from "../config/environment";
 import { routes } from "../utils/routes";
 
@@ -29,6 +30,7 @@ export type AppFixtures = {
   performancePage: PerformancePage;
   directoryPage: DirectoryPage;
   claimPage: ClaimPage;
+  buzzPage: BuzzPage;
 };
 
 const appTest = base.extend<AppFixtures>({
@@ -70,6 +72,9 @@ const appTest = base.extend<AppFixtures>({
   },
   claimPage: async ({ page }, use) => {
     await use(new ClaimPage(page));
+  },
+  buzzPage: async ({ page }, use) => {
+    await use(new BuzzPage(page));
   },
 });
 

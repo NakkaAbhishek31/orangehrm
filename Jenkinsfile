@@ -34,7 +34,7 @@ pipeline {
             choices: [
                 '1','2','3','4','5','6','7'
             ],
-            description: 'Workers for an isolated OrangeHRM instance; shared public demo is forced to 1'
+            description: 'Number of Playwright workers (choose 1 to 7; default: 1)'
         )
     }
 
@@ -197,17 +197,13 @@ pipeline {
                     def requestedWorkerCount = Math.min((params.WORKERS ?: '1') as Integer, 7)
                     def configuredBaseUrl = (env.ORANGEHRM_BASE_URL ?:
                         'https://opensource-demo.orangehrmlive.com').trim().toLowerCase()
-                    def normalizedBaseUrl = configuredBaseUrl.endsWith('/') ?
-                        configuredBaseUrl.substring(0, configuredBaseUrl.length() - 1) :
-                        configuredBaseUrl
-                    def isSharedPublicDemo = normalizedBaseUrl in [
-                        'https://opensource-demo.orangehrmlive.com',
-                        'http://opensource-demo.orangehrmlive.com'
-                    ]
-                    def workerCount = isSharedPublicDemo ? 1 : requestedWorkerCount
+                    def isSharedPublicDemo = configuredBaseUrl.contains(
+                        'opensource-demo.orangehrmlive.com'
+                    )
+                    def workerCount = requestedWorkerCount
 
-                    if (isSharedPublicDemo && requestedWorkerCount > 1) {
-                        echo "The shared public OrangeHRM demo cannot safely run concurrent tests; using 1 worker instead of ${requestedWorkerCount}. Set ORANGEHRM_BASE_URL to an isolated instance to enable parallel workers."
+                    if (isSharedPublicDemo && workerCount > 1) {
+                        echo "Running the shared public OrangeHRM demo with ${workerCount} workers as selected. Concurrent tests may encounter shared-data conflicts or intermittent failures."
                     }
 
                     def testCommand =
