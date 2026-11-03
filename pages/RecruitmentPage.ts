@@ -789,9 +789,17 @@ this.workflowCancelButton = page
 
   private async ensureWorkflowVacancyAvailable(): Promise<void> {
     await this.addCandidateVacancyDropdown.click();
-    const options = this.page
-      .locator(".oxd-select-dropdown:visible .oxd-select-option")
+    const dropdownOptions = this.page.locator(
+      ".oxd-select-dropdown:visible .oxd-select-option",
+    );
+    const options = dropdownOptions
       .filter({ hasNotText: /-- Select --|No Records Found|Searching/i });
+    const noVacanciesOption = dropdownOptions.filter({
+      hasText: /No Records Found/i,
+    });
+    await expect(options.first().or(noVacanciesOption)).toBeVisible({
+      timeout: DEFAULT_TIMEOUT,
+    });
     const hasAvailableVacancy = (await options.count()) > 0;
     await this.page.keyboard.press("Escape");
 
