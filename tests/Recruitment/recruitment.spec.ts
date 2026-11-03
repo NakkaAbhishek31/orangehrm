@@ -124,7 +124,7 @@ test.describe("Recruitment - Candidates", () => {
     await expect(recruitmentPage.toDateInput).toHaveValue(toDate);
 
     // Click Search.
-    await recruitmentPage.searchCandidates();
+    await recruitmentPage.searchButton.click();
     // Verify the To Date validation message appears.
     await expect(recruitmentPage.toDateValidation).toBeVisible();
     await expect(recruitmentPage.toDateValidation).toHaveText(
@@ -1616,6 +1616,7 @@ test.describe("Recruitment - Candidates", () => {
     await recruitmentPage.addCandidateButton.click();
 
     const createdCandidate = await recruitmentPage.createCandidate({
+      requireWorkflowVacancy: true,
       firstName,
       middleName: data.middleName,
       lastName: data.lastName,
@@ -1756,6 +1757,7 @@ await recruitmentPage.navigateToCandidate();
     await recruitmentPage.addCandidateButton.click();
     const createdCandidate =
       await recruitmentPage.createCandidate({
+        requireWorkflowVacancy: true,
         firstName,
         middleName: data.middleName,
         lastName: data.lastName,
@@ -2030,6 +2032,7 @@ test('TC_RECRUITMENT_158 - Required validation should appear when scheduling an 
   await recruitmentPage.navigateToCandidate();
     await recruitmentPage.addCandidateButton.click();
     await recruitmentPage.createCandidate({
+      requireWorkflowVacancy: true,
       firstName,
       middleName: data.middleName,
       lastName: data.lastName,
@@ -2106,6 +2109,7 @@ test('TC_RECRUITMENT_159 - Admin should cancel scheduling an interview @negative
     await recruitmentPage.addCandidateButton.click();
     const created =
       await recruitmentPage.createCandidate({
+        requireWorkflowVacancy: true,
         firstName,
         middleName: data.middleName,
         lastName: data.lastName,
@@ -2170,6 +2174,7 @@ test('TC_RECRUITMENT_160 - Admin should mark a candidate interview as passed @po
    await recruitmentPage.navigateToCandidate();
     await recruitmentPage.addCandidateButton.click();
     await recruitmentPage.createCandidate({
+      requireWorkflowVacancy: true,
       firstName,
       middleName: data.middleName,
       lastName: data.lastName,
@@ -2233,6 +2238,7 @@ test('TC_RECRUITMENT_161 - Admin should mark a candidate interview as failed @ne
     await recruitmentPage.addCandidateButton.click();
 
     await recruitmentPage.createCandidate({
+      requireWorkflowVacancy: true,
       firstName,
       middleName: data.middleName,
       lastName: data.lastName,
@@ -2295,6 +2301,7 @@ test('TC_RECRUITMENT_162 - Admin should offer a job to a candidate who passed th
     await recruitmentPage.addCandidateButton.click();
 
     await recruitmentPage.createCandidate({
+      requireWorkflowVacancy: true,
       firstName,
       middleName: data.middleName,
       lastName: data.lastName,
@@ -2360,6 +2367,7 @@ test('TC_RECRUITMENT_163 - Admin should hire a candidate after offering the job 
     await recruitmentPage.addCandidateButton.click();
 
     await recruitmentPage.createCandidate({
+      requireWorkflowVacancy: true,
       firstName,
       middleName: data.middleName,
       lastName: data.lastName,
@@ -2454,6 +2462,7 @@ test('TC_RECRUITMENT_164 - Admin should reject an existing candidate successfull
     await recruitmentPage.addCandidateButton.click();
 
     await recruitmentPage.createCandidate({
+      requireWorkflowVacancy: true,
       firstName,
       middleName: data.middleName,
       lastName: data.lastName,
@@ -2549,6 +2558,7 @@ test('TC_RECRUITMENT_165 - Admin should cancel rejecting a candidate @negative @
 
     const createdCandidate =
       await recruitmentPage.createCandidate({
+        requireWorkflowVacancy: true,
         firstName,
         middleName: data.middleName,
         lastName: data.lastName,

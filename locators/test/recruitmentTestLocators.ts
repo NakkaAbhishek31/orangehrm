@@ -12,4 +12,4 @@ export const recruitmentTableCell = (row: Locator, index: number) =>
 export const recruitmentTableColumn = (rows: Locator, selector: string) =>
   rows.locator(selector);
 export const recruitmentViewButton = (row: Locator) =>
-  row.getByRole("button").filter({ has: row.locator("i.bi-eye-fill") });
+  row.locator("button:has(i.bi-eye-fill)");

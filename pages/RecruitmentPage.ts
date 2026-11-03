@@ -13,6 +13,7 @@ export interface CandidateDetails {
   middleName?: string;
   lastName: string;
   email: string;
+  requireWorkflowVacancy?: boolean;
   contactNumber?: string;
   keywords?: string;
   notes?: string;
@@ -709,6 +710,10 @@ this.workflowCancelButton = page
   }
 
   async createCandidate(details: CandidateDetails): Promise<CreatedCandidate> {
+    if (details.requireWorkflowVacancy) {
+      await this.ensureWorkflowVacancyAvailable();
+    }
+
     await this.firstNameInput.fill(details.firstName);
 
     if (details.middleName !== undefined) {
@@ -718,6 +723,9 @@ this.workflowCancelButton = page
     await this.lastNameInput.fill(details.lastName);
 
     const vacancy = await this.selectFirstAvailableAddCandidateVacancy();
+    if (details.requireWorkflowVacancy && vacancy === null) {
+      throw new Error("A vacancy is required to exercise the candidate workflow");
+    }
 
     await this.emailInput.fill(details.email);
 
@@ -777,6 +785,93 @@ this.workflowCancelButton = page
       candidateId,
       vacancy,
     };
+  }
+
+  private async ensureWorkflowVacancyAvailable(): Promise<void> {
+    await this.addCandidateVacancyDropdown.click();
+    const options = this.page
+      .locator(".oxd-select-dropdown:visible .oxd-select-option")
+      .filter({ hasNotText: /-- Select --|No Records Found|Searching/i });
+    const hasAvailableVacancy = (await options.count()) > 0;
+    await this.page.keyboard.press("Escape");
+
+    if (hasAvailableVacancy) {
+      return;
+    }
+
+    await this.page.getByRole("link", { name: "Vacancies", exact: true }).click();
+    await expect(this.page).toHaveURL(/recruitment\/viewJobVacancy/);
+    await this.page
+      .locator(".orangehrm-header-container")
+      .getByRole("button", { name: /Add/i })
+      .click();
+    await expect(
+      this.page.getByRole("heading", { name: "Add Vacancy", exact: true }),
+    ).toBeVisible();
+
+    const vacancyName = `Automation Workflow Vacancy ${Date.now()}`;
+    await this.inputGroupByLabel("Vacancy Name").locator("input").fill(vacancyName);
+    await this.selectFirstAvailableDropdownOption(
+      this.dropdownByLabel("Job Title"),
+    );
+
+    const hiringManagerInput = this.inputGroupByLabel("Hiring Manager").locator("input");
+    const hiringManagerName = (
+      await this.page.locator(".oxd-userdropdown-name").innerText()
+    ).trim();
+    const hiringManagerSearchText = hiringManagerName.split(/\s+/)[0];
+    await hiringManagerInput.fill(hiringManagerSearchText);
+    const hiringManagerOptions = this.page.locator(
+      ".oxd-autocomplete-dropdown:visible .oxd-autocomplete-option",
+    ).filter({ hasNotText: /Searching|No Records Found/i });
+    await expect(hiringManagerOptions.first()).toBeVisible({
+      timeout: DEFAULT_TIMEOUT,
+    });
+    const hiringManagerOption = hiringManagerOptions.first();
+    const selectedHiringManager = (await hiringManagerOption.innerText()).trim();
+    await hiringManagerOption.click();
+    await expect(hiringManagerInput).toHaveValue(selectedHiringManager);
+
+    await this.inputGroupByLabel("Number of Positions").locator("input").fill("1");
+
+    const activeCheckbox = this.page.getByRole("checkbox", {
+      name: "Active",
+      exact: true,
+    });
+    if (await activeCheckbox.count()) {
+      await activeCheckbox.check();
+    }
+
+    const vacancyResponsePromise = this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/recruitment/vacancies") &&
+        response.request().method() === "POST",
+      { timeout: 30_000 },
+    );
+    await this.page.getByRole("button", { name: "Save", exact: true }).click();
+    const vacancyResponse = await vacancyResponsePromise;
+    expect(
+      vacancyResponse.ok(),
+      `Creating workflow vacancy failed with ${vacancyResponse.status()}`,
+    ).toBeTruthy();
+
+    await this.page.waitForURL(/recruitment\/addJobVacancy\/\d+$/);
+    await expect(this.inputGroupByLabel("Vacancy Name").locator("input")).toHaveValue(
+      vacancyName,
+    );
+    await this.candidateLink.click();
+    await expect(this.candidatePageHeading).toBeVisible();
+    await this.page.reload();
+    await expect(this.candidatePageHeading).toBeVisible();
+    await this.addCandidateButton.click();
+    await expect(this.addCandidateHeading).toBeVisible();
+    await this.addCandidateVacancyDropdown.click();
+    await expect(
+      this.page
+        .locator(".oxd-select-dropdown:visible .oxd-select-option")
+        .filter({ hasText: vacancyName }),
+    ).toBeVisible({ timeout: DEFAULT_TIMEOUT });
+    await this.page.keyboard.press("Escape");
   }
   async deleteCandidateByName(candidateName: string): Promise<void> {
     const selectedCandidate =
