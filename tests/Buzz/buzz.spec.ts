@@ -57,4 +57,22 @@ test.describe("Buzz - Newsfeed", () => {
     await expect(buzzPage.anniversaryYearsLabels.first()).toBeVisible();
     await expect(buzzPage.anniversaryDates.first()).toBeVisible();
   });
+
+  test("TC_BUZZ_506 - Admin should create and delete a Buzz post @create @delete @regression", async ({
+    buzzPage,
+  }) => {
+    const message = `MCP system are working great ${Date.now()}`;
+
+    await buzzPage.createPost(message);
+
+    const createdPost = buzzPage.postByMessage(message);
+    await expect(createdPost).toBeVisible();
+
+    await buzzPage.openPostMenu(createdPost);
+    await buzzPage.selectDeletePost();
+
+    await expect(buzzPage.deletePostConfirmation).toBeVisible();
+    await buzzPage.confirmDeletePost();
+    await expect(createdPost).toHaveCount(0);
+  });
 });

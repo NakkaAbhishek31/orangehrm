@@ -12,6 +12,10 @@ export class BuzzPage {
   readonly likedSortButton!: Locator;
   readonly commentedSortButton!: Locator;
   readonly feedPosts!: Locator;
+  readonly postMenuButton!: (post: Locator) => Locator;
+  readonly deletePostMenuItem!: Locator;
+  readonly deletePostConfirmation!: Locator;
+  readonly confirmDeletePostButton!: Locator;
   readonly upcomingAnniversariesHeading!: Locator;
   readonly anniversaryYearsLabels!: Locator;
   readonly anniversaryDates!: Locator;
@@ -27,6 +31,43 @@ export class BuzzPage {
 
   async verifyFeedHasPosts(): Promise<void> {
     await expect(this.feedPosts.first()).toBeVisible({ timeout: 20_000 });
+  }
+
+  postByMessage(message: string): Locator {
+    return this.feedPosts.filter({ hasText: message });
+  }
+
+  async createPost(message: string): Promise<void> {
+    await this.postComposer.fill(message);
+
+    const createResponse = this.page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        response.url().includes("/api/v2/buzz/posts"),
+    );
+    await this.postButton.click();
+
+    expect((await createResponse).ok()).toBeTruthy();
+
+    const feedResponse = this.page.waitForResponse(
+      (response) =>
+        response.request().method() === "GET" &&
+        response.url().includes("/api/v2/buzz/feed"),
+    );
+    await this.page.reload({ waitUntil: "domcontentloaded" });
+    expect((await feedResponse).ok()).toBeTruthy();
+  }
+
+  async openPostMenu(post: Locator): Promise<void> {
+    await this.postMenuButton(post).click();
+  }
+
+  async selectDeletePost(): Promise<void> {
+    await this.deletePostMenuItem.click();
+  }
+
+  async confirmDeletePost(): Promise<void> {
+    await this.confirmDeletePostButton.click();
   }
 
   async verifySortReloadsFeed(

@@ -42,6 +42,7 @@ test.describe("Claim - Assign Claim", () => {
 
   test("TC_CLAIM_418 - Cancel should close a request with unsaved employee text @positive @cancel @regression", async ({ claimPage, page }) => {
     await claimPage.employeeNameInput.fill(claimData.TC_CLAIM_418.employeeName);
+    await page.keyboard.press("Escape");
     await claimPage.cancelButton.click();
     await expect(employeeClaimsHeading(page)).toBeVisible();
     await expect(claimPage.heading).toBeHidden();

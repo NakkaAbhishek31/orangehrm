@@ -33,7 +33,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : environment.workers,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],['list'], ['blob'],
     ['allure-playwright', {
       resultsDir: 'allure-results',
       detail: true,
@@ -77,9 +77,9 @@ export default defineConfig({
     // },
 
     /* Test against mobile viewports. */
-    // {
+    //  {
     //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
+    //   use: { ...devices['iPhone 15']},
     // },
     // {
     //   name: 'Mobile Safari',

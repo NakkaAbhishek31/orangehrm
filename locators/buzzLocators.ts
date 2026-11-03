@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 
 export const createBuzzLocators = (page: Page) => ({
   heading: page.getByRole("heading", { name: "Buzz", level: 6 }),
@@ -12,7 +12,13 @@ export const createBuzzLocators = (page: Page) => ({
   commentedSortButton: page.getByRole("button", {
     name: /Most Commented Posts/,
   }),
-  feedPosts: page.locator(".orangehrm-buzz-post"),
+  feedPosts: page.locator(".orangehrm-buzz"),
+  postMenuButton: (post: Locator) => post.getByRole("button").first(),
+  deletePostMenuItem: page.getByText("Delete Post", { exact: true }),
+  deletePostConfirmation: page.getByRole("dialog"),
+  confirmDeletePostButton: page
+    .getByRole("dialog")
+    .getByRole("button", { name: /Yes, Delete/ }),
   upcomingAnniversariesHeading: page.getByText("Upcoming Anniversaries", {
     exact: true,
   }),

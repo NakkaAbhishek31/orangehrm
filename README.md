@@ -39,7 +39,20 @@ npm run test:directory
 npm run test:claim
 ```
 
-The worker count defaults to six and can be overridden with `PLAYWRIGHT_WORKERS`. Jenkins passes its `WORKERS` parameter to Playwright.
+The worker count defaults to one because the public OrangeHRM demo uses shared data. For an isolated test environment, choose a worker count per run:
+
+```powershell
+npx playwright test --workers=6
+```
+
+Or set `PLAYWRIGHT_WORKERS` for the current PowerShell session before running the usual command:
+
+```powershell
+$env:PLAYWRIGHT_WORKERS = "7"
+npm test
+```
+
+Any positive worker count is accepted. Avoid increasing workers against the shared public demo because concurrent data changes can cause conflicts. Jenkins uses its `WORKERS` parameter.
 
 ## Reports
 
