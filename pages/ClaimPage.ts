@@ -50,7 +50,11 @@ export class ClaimPage {
   }
 
   async selectFirstCurrency(): Promise<string> {
-    return this.selectDropdown.selectFirstAvailable(this.currencyDropdown);
+    const selectedCurrency = await this.selectDropdown.selectFirstAvailable(
+      this.currencyDropdown,
+    );
+    await expect(this.currencyDropdown).toHaveText(selectedCurrency);
+    return selectedCurrency;
   }
 
   async selectEmployee(searchText: string): Promise<string> {
