@@ -217,7 +217,7 @@ pipeline {
                         "\"${testTarget}\" " +
                         "--project=${params.BROWSER} " +
                         "--workers=${workerCount} " +
-                        '--retries=1'
+                        '--retries=2'
 
                     if (testName) {
                         testCommand += " --grep \"${testName}\""

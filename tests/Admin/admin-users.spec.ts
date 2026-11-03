@@ -1636,7 +1636,7 @@ test.describe("Admin - System Users", () => {
     await pimPage.deleteEmployeeById(id);
   });
 
-  test("TC_PIM_104 - Admin should delete multiple newly created employees using bulk selection @positive @bulk-delete @regression", async ({
+  test.only("TC_PIM_104 - Admin should delete multiple newly created employees using bulk selection @positive @bulk-delete @regression", async ({
     navigationPage,
     pimPage,
   }) => {

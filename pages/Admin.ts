@@ -306,22 +306,23 @@ export class AdminPage {
 
     await expect(this.editStatusDropdown).toContainText(status);
 
-    const updatedToast = expect(
-      this.toastMessage.filter({
-        hasText: /Successfully Updated/i,
-      }),
-    ).toBeVisible({
-      timeout: 20_000,
-    });
+    const updateUserResponse = this.page.waitForResponse(
+      (response) =>
+        /\/api\/v2\/admin\/users\/\d+$/.test(response.url()) &&
+        response.request().method() === "PUT",
+      { timeout: 20_000 },
+    );
 
     await this.editUserSaveButton.click();
 
-    await Promise.all([
-      updatedToast,
+    const [response] = await Promise.all([
+      updateUserResponse,
       this.page.waitForURL(/admin\/viewSystemUsers/, {
         timeout: 20_000,
       }),
     ]);
+    expect(response.ok()).toBe(true);
+    await expect(this.systemUsersHeading).toBeVisible();
   }
 
   async cancelSystemUserDeletion(username: string): Promise<void> {

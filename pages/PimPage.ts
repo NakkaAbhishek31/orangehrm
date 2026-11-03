@@ -241,7 +241,16 @@ export class PIMPage {
   }
 
   async gotoEmployeeList(): Promise<void> {
+    const employeeListResponse = this.page.waitForResponse(
+      (response) =>
+        new URL(response.url()).pathname.endsWith("/api/v2/pim/employees") &&
+        response.request().method() === "GET",
+      { timeout: 20_000 },
+    );
+
     await this.employeeListLink.click();
+    const response = await employeeListResponse;
+    expect(response.ok()).toBe(true);
     await expect(this.employeeIdFilterInput).toBeVisible();
     await waitForListResult(
       this.loadingSpinner,
@@ -268,10 +277,16 @@ export class PIMPage {
   }
 
   async clickOnFilterSearch(): Promise<void> {
+    const employeeId = await this.employeeIdFilterInput.inputValue();
     const employeeListResponse = this.page.waitForResponse(
-      (response) =>
-        response.url().includes("/api/v2/pim/employees") &&
-        response.request().method() === "GET",
+      (response) => {
+        const url = new URL(response.url());
+        return (
+          url.pathname.endsWith("/api/v2/pim/employees") &&
+          response.request().method() === "GET" &&
+          (!employeeId || url.searchParams.get("employeeId") === employeeId)
+        );
+      },
       { timeout: 20_000 },
     );
 
