@@ -3,7 +3,6 @@ import { test } from "../../fixtures/baseTest";
 import recruitmentData from "../../test-data/recruitment.data.json";
 import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
 import {
-  interviewValue,
   recruitmentTableCell,
   recruitmentTableCells,
   recruitmentTableColumn,
@@ -1889,9 +1888,13 @@ await recruitmentPage.navigateToCandidate();
       recruitmentPage.interviewTitleInput
     ).toHaveValue(interviewTitle);
 
-    await expect(
-      recruitmentPage.interviewerInput
-    ).toHaveValue(selectedInterviewer);
+    await expect
+      .poll(async () =>
+        (await recruitmentPage.interviewerInput.inputValue())
+          .replace(/\s+/g, " ")
+          .trim(),
+      )
+      .toBe(selectedInterviewer.replace(/\s+/g, " ").trim());
 
     await expect(
       recruitmentPage.interviewDateInput
@@ -1958,14 +1961,12 @@ await recruitmentPage.navigateToCandidate();
       }
     );
 
-    // Verify scheduled interview information.
-    await expect(
-      interviewValue(page, interviewTitle)
-    ).toBeVisible();
-
-    await expect(
-      interviewValue(page, selectedInterviewer).first()
-    ).toBeVisible();
+    // Interview details are displayed together in the Candidate History row.
+    const scheduledInterviewRow = page
+      .getByRole("row")
+      .filter({ hasText: interviewTitle });
+    await expect(scheduledInterviewRow).toBeVisible();
+    await expect(scheduledInterviewRow).toContainText(selectedInterviewer);
 
     // Verify status from Candidate List.
     await navigationPage.gotoRecruitment();
@@ -2029,7 +2030,7 @@ test('TC_RECRUITMENT_158 - Required validation should appear when scheduling an 
       data.emailDomain;
 
     await navigationPage.gotoRecruitment();
-  await recruitmentPage.navigateToCandidate();
+    await recruitmentPage.navigateToCandidate();
     await recruitmentPage.addCandidateButton.click();
     await recruitmentPage.createCandidate({
       requireWorkflowVacancy: true,
@@ -2038,11 +2039,6 @@ test('TC_RECRUITMENT_158 - Required validation should appear when scheduling an 
       lastName: data.lastName,
       email,
     });
-
-    await navigationPage.gotoRecruitment();
-    await recruitmentPage.openCandidateProfile(
-      firstName
-    );
 
     await recruitmentPage.shortlistCurrentCandidate(
       data.shortlistNotes

@@ -32,9 +32,9 @@ pipeline {
         choice(
             name: 'WORKERS',
             choices: [
-                '1','2','3','4','5','6','7'
+                '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'
             ],
-            description: 'Number of Playwright workers (choose 1 to 7; default: 1)'
+            description: 'Number of Playwright workers (choose 1 to 15; default: 1)'
         )
     }
 
@@ -42,8 +42,7 @@ pipeline {
         skipDefaultCheckout(true)
         timestamps()
         disableConcurrentBuilds()
-   timeout(time: 3, unit: 'HOURS')
-
+   timeout(time: 4, unit: 'HOURS')
 
         buildDiscarder(
             logRotator(
@@ -200,7 +199,7 @@ pipeline {
                         )
                     }
 
-                    def requestedWorkerCount = Math.min((params.WORKERS ?: '1') as Integer, 7)
+                    def requestedWorkerCount = Math.min((params.WORKERS ?: '1') as Integer, 15)
                     def configuredBaseUrl = (env.ORANGEHRM_BASE_URL ?:
                         'https://opensource-demo.orangehrmlive.com').trim().toLowerCase()
                     def isSharedPublicDemo = configuredBaseUrl.contains(

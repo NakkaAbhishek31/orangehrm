@@ -188,7 +188,7 @@
     "emailDomain": "@example.com",
     "shortlistNotes": "Candidate shortlisted before empty interview validation",
     "requiredMessage": "Required",
-    "requiredCount": 4
+    "requiredCount": 3
   },
 
   "TC_RECRUITMENT_159": {

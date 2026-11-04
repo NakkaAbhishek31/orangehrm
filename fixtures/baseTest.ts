@@ -1,4 +1,9 @@
-import { expect, test as base, type Page } from "@playwright/test";
+import {
+  expect,
+  test as base,
+  type BrowserContext,
+  type Page,
+} from "@playwright/test";
 import { AdminPage } from "../pages/Admin";
 import { DashboardPage } from "../pages/DashboardPage";
 import { DirectoryPage } from "../pages/DirectoryPage";
@@ -31,6 +36,10 @@ export type AppFixtures = {
   directoryPage: DirectoryPage;
   claimPage: ClaimPage;
   buzzPage: BuzzPage;
+};
+
+type WorkerFixtures = {
+  workerStorageState: Awaited<ReturnType<BrowserContext["storageState"]>>;
 };
 
 const appTest = base.extend<AppFixtures>({
@@ -107,8 +116,37 @@ async function openDashboardWithRetry(page: Page): Promise<void> {
 /** Use only for login, access-control, and other deliberately anonymous tests. */
 export const unauthenticatedTest = appTest;
 
-/** Default test fixture. It repairs expired demo sessions per browser context. */
-export const test = appTest.extend<{ authenticatedSession: void }>({
+/** Keep parallel workers on separate server sessions. */
+export const test = appTest.extend<
+  { authenticatedSession: void },
+  WorkerFixtures
+>({
+  storageState: async ({ workerStorageState }, use) => {
+    await use(workerStorageState);
+  },
+  workerStorageState: [
+    async ({ browser }, use) => {
+      const context = await browser.newContext({
+        baseURL: environment.baseUrl,
+        locale: "en-US",
+      });
+
+      try {
+        const page = await context.newPage();
+        const loginPage = new LoginPage(page);
+        await loginPage.visitPage();
+        await loginPage.login(
+          environment.adminUsername,
+          environment.adminPassword,
+        );
+        await loginPage.verifyLoginSuccessful();
+        await use(await context.storageState());
+      } finally {
+        await context.close();
+      }
+    },
+    { scope: "worker" },
+  ],
   authenticatedSession: [
     async ({ page }, use) => {
       await openDashboardWithRetry(page);

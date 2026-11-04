@@ -838,7 +838,10 @@ this.workflowCancelButton = page
     const hiringManagerOption = hiringManagerOptions.first();
     const selectedHiringManager = (await hiringManagerOption.innerText()).trim();
     await hiringManagerOption.click();
-    await expect(hiringManagerInput).toHaveValue(selectedHiringManager);
+    const normalizeWhitespace = (value: string) => value.replace(/\s+/g, " ").trim();
+    await expect
+      .poll(async () => normalizeWhitespace(await hiringManagerInput.inputValue()))
+      .toBe(normalizeWhitespace(selectedHiringManager));
 
     await this.inputGroupByLabel("Number of Positions").locator("input").fill("1");
 
@@ -1149,7 +1152,10 @@ this.workflowCancelButton = page
     const interviewerName = (await firstOption.innerText()).trim();
 
     await firstOption.click();
-    await expect(this.interviewerInput).toHaveValue(interviewerName);
+    const normalizeWhitespace = (value: string) => value.replace(/\s+/g, " ").trim();
+    await expect
+      .poll(async () => normalizeWhitespace(await this.interviewerInput.inputValue()))
+      .toBe(normalizeWhitespace(interviewerName));
 
     return interviewerName;
   }
