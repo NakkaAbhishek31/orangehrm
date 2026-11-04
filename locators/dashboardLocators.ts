@@ -6,6 +6,7 @@ export const dashboardLocators = {
   widgets: ".oxd-sheet.orangehrm-dashboard-widget",
   quickLaunchText: { text: "Quick Launch", exact: true },
   sidebarSearchPlaceholder: "Search",
+  sidebarPanel: ".oxd-sidepanel",
   sidebarMenuLinks: ".oxd-main-menu-item",
   activeSidebarLink: ".oxd-main-menu-item.active",
   brandLogo: ".oxd-brand-banner img",

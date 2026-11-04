@@ -10,6 +10,7 @@ export class DashboardPage {
   readonly quickLaunchWidget!: Locator;
   readonly quickLaunchHeading!: Locator;
   readonly sidebarSearchInput!: Locator;
+  readonly sidebarPanel!: Locator;
   readonly sidebarMenuLinks!: Locator;
   readonly activeSidebarLink!: Locator;
   readonly brandLogo!: Locator;
@@ -44,6 +45,7 @@ export class DashboardPage {
     this.sidebarSearchInput = page.getByPlaceholder(
       dashboardLocators.sidebarSearchPlaceholder,
     );
+    this.sidebarPanel = page.locator(dashboardLocators.sidebarPanel);
     this.sidebarMenuLinks = page.locator(dashboardLocators.sidebarMenuLinks);
     this.activeSidebarLink = page.locator(dashboardLocators.activeSidebarLink);
     this.brandLogo = page.locator(dashboardLocators.brandLogo);
@@ -60,7 +62,10 @@ export class DashboardPage {
   }
 
   quickLaunchAction(name: string): Locator {
-    return this.quickLaunchWidget.getByText(name, { exact: true });
+    return this.quickLaunchWidget.getByRole("button", {
+      name,
+      exact: true,
+    });
   }
 
   sidebarLink(name: string): Locator {
@@ -71,7 +76,10 @@ export class DashboardPage {
   }
 
   userMenuItem(name: string): Locator {
-    return this.page.getByText(name, { exact: true });
+    return this.page.getByRole("button", {
+      name,
+      exact: true,
+    });;
   }
 
   async openUserMenu(): Promise<void> {

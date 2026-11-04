@@ -362,7 +362,7 @@
   "TC_DASHBOARD_372": { "profileImageAlt": "profile picture" },
   "TC_DASHBOARD_373": { "profileNamePattern": "\\S+" },
   "TC_DASHBOARD_374": { "topbarText": "Dashboard" },
-  "TC_DASHBOARD_375": { "collapsedWidth": "0px" },
+  "TC_DASHBOARD_375": { "collapsedClass": "toggled" },
   "TC_DASHBOARD_376": { "searchPlaceholder": "Search" },
   "TC_DASHBOARD_377": { "menuItem": "About" },
   "TC_DASHBOARD_378": { "menuItem": "About" },

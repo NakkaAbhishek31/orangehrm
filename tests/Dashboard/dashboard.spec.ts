@@ -456,9 +456,8 @@ test.describe("Dashboard - Quick Launch", () => {
 
     await dashboardPage.toggleSidebar();
 
-    await expect(dashboardPage.sidebarSearchInput).toHaveCSS(
-      "width",
-      data.collapsedWidth,
+    await expect(dashboardPage.sidebarPanel).toHaveClass(
+      new RegExp(data.collapsedClass),
     );
   });
 
