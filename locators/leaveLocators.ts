@@ -75,6 +75,8 @@ export function createLeaveLocators(page: Page) {
     selectedStatus: (statusField: Locator, status: string) =>
       statusField.getByText(status, { exact: true }),
     statusRemoveButton: (statusElement: Locator) =>
-      statusElement.locator("xpath=following::i[contains(@class,'bi-x')][1]"),
+      statusElement
+        .locator("xpath=ancestor::span[contains(@class,'oxd-chip')][1]")
+        .locator("i.bi-x.--clear"),
   };
 }

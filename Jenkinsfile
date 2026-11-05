@@ -7,6 +7,18 @@ pipeline {
     }
 
     parameters {
+        booleanParam(
+            name: 'SPLIT_TESTS',
+            defaultValue: false,
+            description: 'Split the selected tests across parallel Playwright shards'
+        )
+
+        choice(
+            name: 'SHARD_COUNT',
+            choices: ['2', '3', '4'],
+            description: 'Parallel shards when splitting is enabled; requires the same number of free Jenkins executors'
+        )
+
         choice(
             name: 'BROWSER',
             choices: [
@@ -34,7 +46,7 @@ pipeline {
             choices: [
                 '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','30','50','100','500','1000'
             ],
-            description: 'Number of Playwright workers (choose 1 to 1000; default: 1)'
+            description: 'Number of Playwright workers per run (per shard when split; choose 1 to 1000; default: 1)'
         )
     }
 
@@ -211,24 +223,121 @@ pipeline {
                         echo "Running the shared public OrangeHRM demo with ${workerCount} workers as selected. Concurrent tests may encounter shared-data conflicts or intermittent failures."
                     }
 
-                    def testCommand =
-                        'call npx.cmd playwright test ' +
-                        "\"${testTarget}\" " +
-                        "--project=${params.BROWSER} " +
-                        "--workers=${workerCount} " +
-                        '--retries=1'
+                    if (params.SPLIT_TESTS) {
+                        def shardCount = params.SHARD_COUNT as Integer
 
-                    if (testName) {
-                        testCommand += " --grep \"${testName}\""
-                    }
+                        if (isSharedPublicDemo) {
+                            echo "Splitting tests into ${shardCount} shards against the shared public demo. Parallel shards can conflict when tests modify shared data."
+                        }
 
-                    echo "Running: ${testCommand}"
+                        echo 'Preparing the shared authentication state before starting shards'
+                        bat 'call npx.cmd playwright test --project=setup --workers=1 --reporter=line'
+                        stash(
+                            name: 'playwright-auth-state',
+                            includes: 'playwright/.auth/admin.json'
+                        )
 
-                    catchError(
-                        buildResult: 'FAILURE',
-                        stageResult: 'FAILURE'
-                    ) {
-                        bat testCommand
+                        def shardStages = [:]
+                        for (int shardNumber = 1; shardNumber <= shardCount; shardNumber++) {
+                            def currentShard = shardNumber
+                            shardStages["Shard ${currentShard}/${shardCount}"] = {
+                                node(env.NODE_NAME) {
+                                    nodejs(nodeJSInstallationName: 'nodejs') {
+                                        checkout scm
+                                        bat 'call npm.cmd ci'
+                                        bat "call npx.cmd playwright install ${params.BROWSER}"
+                                        unstash 'playwright-auth-state'
+
+                                        def testCommand =
+                                            'call npx.cmd playwright test ' +
+                                            "\"${testTarget}\" " +
+                                            "--project=${params.BROWSER} " +
+                                            '--no-deps ' +
+                                            "--shard=${currentShard}/${shardCount} " +
+                                            "--workers=${workerCount} " +
+                                            '--retries=1'
+
+                                        if (testName) {
+                                            testCommand += " --grep \"${testName}\""
+                                        }
+
+                                        echo "Running: ${testCommand}"
+
+                                        catchError(
+                                            buildResult: 'FAILURE',
+                                            stageResult: 'FAILURE'
+                                        ) {
+                                            bat testCommand
+                                        }
+
+                                        dir('allure-results') {
+                                            stash(
+                                                name: "allure-results-${currentShard}",
+                                                includes: '**/*',
+                                                allowEmpty: true
+                                            )
+                                        }
+                                        dir('playwright-report') {
+                                            stash(
+                                                name: "playwright-report-${currentShard}",
+                                                includes: '**/*',
+                                                allowEmpty: true
+                                            )
+                                        }
+                                        dir('blob-report') {
+                                            stash(
+                                                name: "blob-report-${currentShard}",
+                                                includes: '**/*',
+                                                allowEmpty: true
+                                            )
+                                        }
+                                        dir('test-results') {
+                                            stash(
+                                                name: "test-results-${currentShard}",
+                                                includes: '**/*',
+                                                allowEmpty: true
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        parallel shardStages
+
+                        for (int shardNumber = 1; shardNumber <= shardCount; shardNumber++) {
+                            dir("allure-results/shard-${shardNumber}") {
+                                unstash "allure-results-${shardNumber}"
+                            }
+                            dir("playwright-report/shard-${shardNumber}") {
+                                unstash "playwright-report-${shardNumber}"
+                            }
+                            dir("blob-report/shard-${shardNumber}") {
+                                unstash "blob-report-${shardNumber}"
+                            }
+                            dir("test-results/shard-${shardNumber}") {
+                                unstash "test-results-${shardNumber}"
+                            }
+                        }
+                    } else {
+                        def testCommand =
+                            'call npx.cmd playwright test ' +
+                            "\"${testTarget}\" " +
+                            "--project=${params.BROWSER} " +
+                            "--workers=${workerCount} " +
+                            '--retries=1'
+
+                        if (testName) {
+                            testCommand += " --grep \"${testName}\""
+                        }
+
+                        echo "Running: ${testCommand}"
+
+                        catchError(
+                            buildResult: 'FAILURE',
+                            stageResult: 'FAILURE'
+                        ) {
+                            bat testCommand
+                        }
                     }
                 }
             }
@@ -238,7 +347,7 @@ pipeline {
     post {
         always {
             archiveArtifacts(
-                artifacts: 'allure-results/**, playwright-report/**, test-results/**, ai-results/**',
+                artifacts: 'allure-results/**, playwright-report/**, blob-report/**, test-results/**, ai-results/**',
                 allowEmptyArchive: true,
                 fingerprint: true
             )
@@ -251,9 +360,11 @@ pipeline {
                             includeProperties: false,
                             jdk: '',
                             commandline: 'Allure',
-                            results: [[
-                                path: 'allure-results'
-                            ]]
+                            results: params.SPLIT_TESTS
+                                ? (1..(params.SHARD_COUNT as Integer)).collect {
+                                    shard -> [path: "allure-results/shard-${shard}"]
+                                }
+                                : [[path: 'allure-results']]
                         ])
                     }
                 } else {
