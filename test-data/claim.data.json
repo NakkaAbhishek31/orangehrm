@@ -5,7 +5,7 @@
     "employeeNamePrefix": "UnknownClaimEmployee",
     "noRecordsMessage": "No Records Found"
   },
-  "TC_CLAIM_418": { "employeeName": "Temporary Employee" },
+  "TC_CLAIM_418": { "employeeName": "test" },
   "TC_CLAIM_421": { "remarks": "Automation claim verification remarks" },
   "TC_CLAIM_422": { "remarks": "Unsaved claim remarks" },
   "TC_CLAIM_424": { "defaultDropdownValue": "-- Select --" },
