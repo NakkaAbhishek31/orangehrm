@@ -32,9 +32,9 @@ pipeline {
         choice(
             name: 'WORKERS',
             choices: [
-                '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'
+                '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','30','50','100','500','1000'
             ],
-            description: 'Number of Playwright workers (choose 1 to 15; default: 1)'
+            description: 'Number of Playwright workers (choose 1 to 1000; default: 1)'
         )
     }
 
@@ -199,7 +199,7 @@ pipeline {
                         )
                     }
 
-                    def requestedWorkerCount = Math.min((params.WORKERS ?: '1') as Integer, 15)
+                    def requestedWorkerCount = Math.min((params.WORKERS ?: '1') as Integer, 1000)
                     def configuredBaseUrl = (env.ORANGEHRM_BASE_URL ?:
                         'https://opensource-demo.orangehrmlive.com').trim().toLowerCase()
                     def isSharedPublicDemo = configuredBaseUrl.contains(
