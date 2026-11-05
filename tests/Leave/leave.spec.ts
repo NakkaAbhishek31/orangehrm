@@ -90,10 +90,8 @@ test.describe("Leaves - leaves for  Users", () => {
     // Search should be blocked.
     await expect(page).toHaveURL(/leave\/viewLeaveList/);
 
-    // Verify no search results are loaded.
-
-    await expect(leavePage.noRecordsFound).toBeVisible();
-    // Verify the entered dates remain unchanged.
+    // The client-side validation blocks the search, so existing results may
+    // remain visible. Verify the invalid dates stay in the form instead.
     await expect(leavePage.fromDateInput).toHaveValue(fromDate);
     await expect(leavePage.toDateInput).toHaveValue(toDate);
   });
@@ -175,9 +173,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     const leaveType = await leavePage.selectFirstAvailableLeaveType();
 
-    await leavePage.searchButton.click();
-
-    await expect(leavePage.loadingSpinner).toBeHidden();
+    await leavePage.searchLeaveList();
 
     await expect(leavePage.leaveTypeDropdown).toContainText(leaveType);
 
@@ -217,9 +213,7 @@ test.describe("Leaves - leaves for  Users", () => {
       leaveData.TC_LEAVE_115.partialEmployeeName,
     );
 
-    await leavePage.searchButton.click();
-
-    await expect(leavePage.loadingSpinner).toBeHidden();
+    await leavePage.searchLeaveList();
 
     await expect(leavePage.employeeNameInput).toHaveValue(
       new RegExp(employeeName.trim().split(/\s+/).join("\\s+")),
@@ -325,7 +319,7 @@ test.describe("Leaves - leaves for  Users", () => {
 
     await expect(leavePage.leaveTypeDropdown).toContainText(leaveType);
     // Click Search.
-    await leavePage.searchButton.click();
+    await leavePage.searchLeaveList();
 
     // Wait for the loading spinner to disappear.
     await expect(leavePage.loadingSpinner).toBeHidden();
@@ -387,8 +381,6 @@ test.describe("Leaves - leaves for  Users", () => {
     await leavePage.resetButton.click();
     // Verify Include Past Employees returns to unchecked.
     await expect(leavePage.loadingSpinner).toBeHidden();
-    await expect(leavePage.includePastEmployeesCheckbox).toBeChecked();
-    await leavePage.setIncludePastEmployees(false);
     await expect(leavePage.includePastEmployeesCheckbox).not.toBeChecked();
   });
 

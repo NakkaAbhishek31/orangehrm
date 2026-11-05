@@ -1,5 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { waitForListResult } from "../components/ListResult";
+
 import { routes } from "../utils/routes";
 import { navigationLocators } from "../locators/navigationLocators";
 
@@ -68,14 +68,9 @@ export class NavigationPage {
 
   async gotoLeave(): Promise<void> {
     await this.navigate(this.link("Leave"), routes.leaveList);
-    await waitForListResult(
-      this.page.locator(".oxd-loading-spinner"),
-      this.page.locator(".oxd-table-body .oxd-table-card"),
-      this.page
-        .locator(".orangehrm-container span.oxd-text--span")
-        .filter({ hasText: /^No Records Found$/ })
-        .first(),
-    );
+    await expect(
+      this.page.getByRole("heading", { name: "Leave List", exact: true }),
+    ).toBeVisible();
   }
 
   async gotoRecruitment(): Promise<void> {

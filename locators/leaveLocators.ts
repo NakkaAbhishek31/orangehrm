@@ -65,7 +65,12 @@ export function createLeaveLocators(page: Page) {
     leaveStatusOption: (dropdown: Locator, status: string) =>
       dropdown
         .locator(".oxd-select-option")
-        .filter({ hasText: new RegExp(`^\\s*${status}\\s*$`, "i") })
+        .filter({
+          hasText: new RegExp(
+            `^\\s*${status.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s*\\(\\d+(?:\\.\\d+)?\\))?\\s*$`,
+            "i",
+          ),
+        })
         .first(),
     selectedStatus: (statusField: Locator, status: string) =>
       statusField.getByText(status, { exact: true }),
