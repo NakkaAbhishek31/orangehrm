@@ -27,6 +27,17 @@ npm run install:chromium
 
 Copy the values from `.env.example` into the CI environment or local shell. Credentials are read from `ORANGEHRM_ADMIN_USERNAME` and `ORANGEHRM_ADMIN_PASSWORD`; generated authentication state is ignored by Git.
 
+## Run tests with Docker
+
+Install and start Docker Desktop, then run these commands from the repository root:
+
+```powershell
+docker compose build
+docker compose run --rm playwright
+```
+
+The first command builds the Playwright test image. The second runs the tests in a container and saves the HTML report, test results, Allure results, and AI analysis under the corresponding folders in the repository. Docker Compose uses the public demo URL and demo credentials by default. To use another OrangeHRM instance, create a local `.env` file from `.env.example` and set its URL and credentials; do not commit real credentials.
+
 ## Run tests
 
 ```powershell
@@ -52,7 +63,7 @@ $env:PLAYWRIGHT_WORKERS = "7"
 npm test
 ```
 
-Any positive worker count is accepted. Avoid increasing workers against the shared public demo because concurrent data changes can cause conflicts. Jenkins uses its `WORKERS` parameter.
+Any positive worker count is accepted. Avoid increasing workers against the shared public demo because concurrent data changes can cause conflicts. Jenkins provides an `ORANGEHRM_BASE_URL` build parameter and automatically limits the shared public demo to one worker, rejecting test sharding for that shared site. For an isolated OrangeHRM instance, enter its URL and select the desired `WORKERS` count; configured worker counts and sharding are available for that instance.
 
 ## Reports
 

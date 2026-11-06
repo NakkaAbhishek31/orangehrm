@@ -41,12 +41,18 @@ pipeline {
             description: 'Optional test-case ID, for example: TC_ADMIN_063'
         )
 
+        string(
+            name: 'ORANGEHRM_BASE_URL',
+            defaultValue: 'https://opensource-demo.orangehrmlive.com',
+            description: 'OrangeHRM instance URL. Use an isolated instance to run multiple workers safely.'
+        )
+
         choice(
             name: 'WORKERS',
             choices: [
                 '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'
             ],
-            description: 'Number of Playwright workers per run (per shard when split; choose 1 to 15; default: 1)'
+            description: 'Number of Playwright workers per run (per shard when split; shared public demo is limited to 1; choose 1 to 15; default: 1)'
         )
     }
 
@@ -65,6 +71,7 @@ pipeline {
 
     environment {
         CI = 'true'
+        ORANGEHRM_BASE_URL = "${params.ORANGEHRM_BASE_URL}"
     }
 
     stages {
@@ -220,15 +227,16 @@ pipeline {
                     def workerCount = requestedWorkerCount
 
                     if (isSharedPublicDemo && workerCount > 1) {
-                        echo "Running the shared public OrangeHRM demo with ${workerCount} workers as selected. Concurrent tests may encounter shared-data conflicts or intermittent failures."
+                        workerCount = 1
+                        echo "The shared public OrangeHRM demo is used by many test runs. Limiting workers from ${requestedWorkerCount} to 1 to reduce shared-data conflicts."
+                    }
+
+                    if (isSharedPublicDemo && params.SPLIT_TESTS) {
+                        error('SPLIT_TESTS is not supported against the shared public OrangeHRM demo because parallel shards can conflict over shared data. Disable splitting or configure an isolated OrangeHRM instance.')
                     }
 
                     if (params.SPLIT_TESTS) {
                         def shardCount = params.SHARD_COUNT as Integer
-
-                        if (isSharedPublicDemo) {
-                            echo "Splitting tests into ${shardCount} shards against the shared public demo. Parallel shards can conflict when tests modify shared data."
-                        }
 
                         echo 'Preparing the shared authentication state before starting shards'
                         bat 'call npx.cmd playwright test --project=setup --workers=1 --reporter=line'
