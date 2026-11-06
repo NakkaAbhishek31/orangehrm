@@ -14,6 +14,18 @@ import {
   timeRowCell,
 } from "../../locators/test/timeTestLocators";
 
+const dateForInputPlaceholder = (
+  isoDate: string,
+  placeholder: string | null,
+): string => {
+  if (placeholder?.toLowerCase() !== "yyyy-dd-mm") {
+    return isoDate;
+  }
+
+  const [year, month, day] = isoDate.split("-");
+  return `${year}-${day}-${month}`;
+};
+
 test.describe("Time - Timesheets, Attendance and Reports", () => {
   test("TC_TIME_166 - Admin should navigate to the Employee Timesheets page @smoke @navigation @regression", async ({
     page,
@@ -359,7 +371,13 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
       selectedEmployee,
     );
 
-    await expect(timePage.attendanceDateInput).toHaveValue(attendanceDate);
+    const displayedAttendanceDate = dateForInputPlaceholder(
+      attendanceDate,
+      await timePage.attendanceDateInput.getAttribute("placeholder"),
+    );
+    await expect(timePage.attendanceDateInput).toHaveValue(
+      displayedAttendanceDate,
+    );
 
     // A newly created employee normally has
     // no attendance records.
@@ -451,7 +469,13 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
       selectedEmployee,
     );
 
-    await expect(timePage.attendanceDateInput).toHaveValue(attendanceDate);
+    const displayedAttendanceDate = dateForInputPlaceholder(
+      attendanceDate,
+      await timePage.attendanceDateInput.getAttribute("placeholder"),
+    );
+    await expect(timePage.attendanceDateInput).toHaveValue(
+      displayedAttendanceDate,
+    );
 
     await expect(
       timePage.attendanceRows.first().or(timePage.attendanceNoRecords),
@@ -529,7 +553,13 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
       timeout: 20_000,
     });
 
-    await expect(timePage.myAttendanceDateInput).toHaveValue(attendanceDate);
+    const displayedAttendanceDate = dateForInputPlaceholder(
+      attendanceDate,
+      await timePage.myAttendanceDateInput.getAttribute("placeholder"),
+    );
+    await expect(timePage.myAttendanceDateInput).toHaveValue(
+      displayedAttendanceDate,
+    );
 
     // Either records or No Records Found
     // can appear for the selected date.

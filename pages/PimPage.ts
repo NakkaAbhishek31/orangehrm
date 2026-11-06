@@ -630,7 +630,13 @@ export class PIMPage {
   }
 
   async selectEmployeeById(employeeId: string): Promise<void> {
-    const employeeRow = this.locators.employeeRow(employeeId);
+    let employeeRow = this.locators.employeeRow(employeeId);
+
+    if (await employeeRow.count() === 0) {
+      await this.filterEmployeeList({ employeeId });
+      await this.clickOnFilterSearch();
+      employeeRow = this.locators.employeeRow(employeeId);
+    }
 
     await expect(employeeRow).toHaveCount(1);
 

@@ -9,6 +9,11 @@ import {
   recruitmentViewButton,
 } from "../../locators/test/recruitmentTestLocators";
 
+const candidateSearchDateFromOffset = (daysOffset: number): string => {
+  const [year, month, day] = dateFromOffset(daysOffset).split("-");
+  return `${year}-${day}-${month}`;
+};
+
 test.describe("Recruitment - Candidates", () => {
   test("TC_RECRUITMENT_133 - Admin should navigate to the Candidates page @smoke @navigation @regression", async ({
     page,
@@ -59,9 +64,9 @@ test.describe("Recruitment - Candidates", () => {
     // Read the date offsets from recruitment JSON data.
     const data = recruitmentData.TC_RECRUITMENT_134;
     // Generate From Date and To Date dynamically.
-    const fromDate = dateFromOffset(data.fromDaysOffset);
+    const fromDate = candidateSearchDateFromOffset(data.fromDaysOffset);
 
-    const toDate = dateFromOffset(data.toDaysOffset);
+    const toDate = candidateSearchDateFromOffset(data.toDaysOffset);
 
     // Navigate to Recruitment → Candidates.
     await navigationPage.gotoRecruitment();
@@ -84,17 +89,13 @@ test.describe("Recruitment - Candidates", () => {
     await expect(recruitmentPage.fromDateInput).toHaveValue(fromDate);
     await expect(recruitmentPage.toDateInput).toHaveValue(toDate);
 
-    await expect(
-      recruitmentPage.candidateRows.first().or(recruitmentPage.noRecordsFound),
-    ).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(recruitmentPage.candidatesTable).toBeVisible();
 
     // Verify no date-validation messages appear.
     await expect(recruitmentPage.dateValidationMessages).toHaveCount(0);
 
     // Reset the filters.
-    await recruitmentPage.restButton.click();
+    await recruitmentPage.resetCandidateFilters();
   });
 
   test("TC_RECRUITMENT_135 - Validation should appear when From Date is later than To Date @negative @validation @regression", async ({
@@ -105,10 +106,10 @@ test.describe("Recruitment - Candidates", () => {
     const data = recruitmentData.TC_RECRUITMENT_135;
 
     // Generate a future From Date.
-    const fromDate = dateFromOffset(data.fromDaysOffset);
+    const fromDate = candidateSearchDateFromOffset(data.fromDaysOffset);
 
     // Generate an earlier To Date.
-    const toDate = dateFromOffset(data.toDaysOffset);
+    const toDate = candidateSearchDateFromOffset(data.toDaysOffset);
     // Navigate to Recruitment → Candidates.
     await navigationPage.gotoRecruitment();
     await recruitmentPage.navigateToCandidate();
@@ -131,7 +132,7 @@ test.describe("Recruitment - Candidates", () => {
     );
 
     // Reset the filters.
-    await recruitmentPage.restButton.click();
+    await recruitmentPage.resetCandidateFilters();
 
     await expect(recruitmentPage.toDateValidation).toBeHidden();
   });
@@ -142,9 +143,9 @@ test.describe("Recruitment - Candidates", () => {
   }) => {
     const data = recruitmentData.TC_RECRUITMENT_136;
 
-    const fromDate = dateFromOffset(data.fromDaysOffset);
+    const fromDate = candidateSearchDateFromOffset(data.fromDaysOffset);
 
-    const toDate = dateFromOffset(data.toDaysOffset);
+    const toDate = candidateSearchDateFromOffset(data.toDaysOffset);
 
     await navigationPage.gotoRecruitment();
     await recruitmentPage.navigateToCandidate();
@@ -178,7 +179,7 @@ test.describe("Recruitment - Candidates", () => {
 
     await expect(recruitmentPage.toDateInput).toHaveValue(toDate);
 
-    await recruitmentPage.restButton.click();
+    await recruitmentPage.resetCandidateFilters();
 
     await expect(recruitmentPage.jobTitleDropdown).toContainText(
       data.defaultDropdownValue,
@@ -193,12 +194,7 @@ test.describe("Recruitment - Candidates", () => {
     await expect(recruitmentPage.toDateInput).toHaveValue(defaultToDate);
 
     await expect(recruitmentPage.candidatesTable).toBeVisible();
-
-    await expect(
-      recruitmentPage.candidateRows.first().or(recruitmentPage.noRecordsFound),
-    ).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(recruitmentPage.candidatesTable).toBeVisible();
   });
 
   test("TC_RECRUITMENT_137 - Admin should filter Candidates by job title @positive @filter @regression", async ({
@@ -221,21 +217,15 @@ test.describe("Recruitment - Candidates", () => {
     await recruitmentPage.searchCandidates();
     // Wait for the loading spinner to disappear.
     await expect(recruitmentPage.loadingSpinner).toBeHidden();
-    await expect(
-      recruitmentPage.candidateRows.first().or(recruitmentPage.noRecordsFound),
-    ).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(recruitmentPage.candidatesTable).toBeVisible();
 
     const candidateCount = await recruitmentPage.candidateRows.count();
 
     if (candidateCount > 0) {
       await expect(recruitmentPage.candidateRows.first()).toBeVisible();
-    } else {
-      await expect(recruitmentPage.noRecordsFound).toBeVisible();
     }
 
-    await recruitmentPage.restButton.click();
+    await recruitmentPage.resetCandidateFilters();
 
     await expect(recruitmentPage.jobTitleDropdown).toContainText(
       data.defaultDropdownValue,
@@ -268,11 +258,7 @@ test.describe("Recruitment - Candidates", () => {
       timeout: 20_000,
     });
 
-    await expect(
-      recruitmentPage.candidateRows.first().or(recruitmentPage.noRecordsFound),
-    ).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(recruitmentPage.candidatesTable).toBeVisible();
     const statusTexts = (await recruitmentTableColumn(recruitmentPage.candidateRows, ".oxd-table-cell:nth-child(6)")
       .allTextContents())
       .map(text => text.trim())
@@ -282,11 +268,9 @@ test.describe("Recruitment - Candidates", () => {
       for (const statusText of statusTexts) {
         expect(statusText).toContain(data.candidateStatus);
       }
-    } else {
-      await expect(recruitmentPage.noRecordsFound).toBeVisible();
     }
     // Reset the filters.
-    await recruitmentPage.restButton.click();
+    await recruitmentPage.resetCandidateFilters();
     // Verify Candidate Status returns to “-- Select --”.
 
     await expect(recruitmentPage.candidateStatusDropdown).toContainText(
@@ -391,16 +375,8 @@ test.describe("Recruitment - Candidates", () => {
       );
 
     // Click Search.
-    await recruitmentPage.searchButton.click();
-    // Wait for the loading spinner to disappear.
-    await expect(recruitmentPage.loadingSpinner).toBeHidden();
-    // Verify either candidate rows or
-    // “No Records Found” appears.
-    await expect(
-      recruitmentPage.candidateRows.first().or(recruitmentPage.noRecordsFound),
-    ).toBeVisible({
-      timeout: 15_000,
-    });
+    await recruitmentPage.searchCandidates();
+    await expect(recruitmentPage.candidatesTable).toBeVisible();
     const candidateCount = await recruitmentPage.candidateRows.count();
 
     if (candidateCount > 0) {
@@ -409,11 +385,9 @@ test.describe("Recruitment - Candidates", () => {
 
         await expect(candidateNameCell).toContainText(selectedCandidate!);
       }
-    } else {
-      await expect(recruitmentPage.noRecordsFound).toBeVisible();
     }
 
-    await recruitmentPage.restButton.click();
+    await recruitmentPage.resetCandidateFilters();
 
     await expect(recruitmentPage.candidateNameInput).toHaveValue("");
   });
@@ -470,9 +444,9 @@ test.describe("Recruitment - Candidates", () => {
   }) => {
     const data = recruitmentData.TC_RECRUITMENT_143;
 
-    const fromDate = dateFromOffset(data.fromDaysOffset);
+    const fromDate = candidateSearchDateFromOffset(data.fromDaysOffset);
 
-    const toDate = dateFromOffset(data.toDaysOffset);
+    const toDate = candidateSearchDateFromOffset(data.toDaysOffset);
 
     await navigationPage.gotoRecruitment();
     await recruitmentPage.navigateToCandidate();

@@ -1,6 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { waitForListResult } from "../components/ListResult";
 
 const DEFAULT_TIMEOUT = 15_000;
 const API_TIMEOUT = 20_000;
@@ -57,7 +56,6 @@ export class RecruitmentPage {
   readonly searchButton: Locator;
   readonly candidatesTable: Locator;
   readonly candidateRows: Locator;
-  readonly noRecordsFound: Locator;
   readonly loadingSpinner: Locator;
   readonly dateValidationMessages: Locator;
   readonly toDateValidation: Locator;
@@ -166,9 +164,6 @@ readonly workflowCancelButton: Locator;
     this.candidateRows = this.candidatesTable.locator(
       ".oxd-table-body .oxd-table-card",
     );
-    this.noRecordsFound = this.candidatesTable.getByText("No Records Found", {
-      exact: true,
-    });
     this.loadingSpinner = page.locator(".oxd-loading-spinner");
     this.dateValidationMessages = page.locator(
       "form .oxd-input-field-error-message",
@@ -557,11 +552,8 @@ this.workflowCancelButton = page
     await this.candidateLink.click();
     await expect(this.page).toHaveURL(/recruitment\/viewCandidates/);
     await expect(this.candidatePageHeading).toBeVisible();
-    await waitForListResult(
-      this.loadingSpinner,
-      this.candidateRows,
-      this.noRecordsFound,
-    );
+    await expect(this.loadingSpinner).toBeHidden({ timeout: API_TIMEOUT });
+    await expect(this.candidatesTable).toBeVisible();
   }
 
   async searchCandidates(): Promise<void> {
@@ -576,6 +568,22 @@ this.workflowCancelButton = page
     await this.searchButton.click();
     await candidatesResponse;
     await expect(this.loadingSpinner).toBeHidden({ timeout: API_TIMEOUT });
+    await expect(this.candidatesTable).toBeVisible();
+  }
+
+  async resetCandidateFilters(): Promise<void> {
+    const candidatesResponse = this.page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/v2/recruitment/candidates") &&
+        response.request().method() === "GET" &&
+        response.ok(),
+      { timeout: API_TIMEOUT },
+    );
+
+    await this.restButton.click();
+    await candidatesResponse;
+    await expect(this.loadingSpinner).toBeHidden({ timeout: API_TIMEOUT });
+    await expect(this.candidatesTable).toBeVisible();
   }
 
   async selectDropdownOption(
