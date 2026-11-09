@@ -102,7 +102,7 @@ test.describe("Buzz - Newsfeed", () => {
       }
     }
   });
-  test.only("TC_BUZZ_508 - Admin should comment on their own post @positive @comment @regression", async ({
+  test("TC_BUZZ_508 - Admin should comment on their own post @positive @comment @regression", async ({
     buzzPage,
   }) => {
     const message = `MCP system are working great ${Date.now()}`;
