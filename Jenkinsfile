@@ -224,15 +224,17 @@ pipeline {
                     def isSharedPublicDemo = configuredBaseUrl.contains(
                         'opensource-demo.orangehrmlive.com'
                     )
+
+                    def workerCount = requestedWorkerCount
+
+                    if (isSharedPublicDemo && workerCount > 1) {
+                        workerCount = 1
+                        echo "The shared public OrangeHRM demo is used by many test runs. Limiting workers from ${requestedWorkerCount} to 1 to reduce shared-data conflicts."
+                    }
+
                     if (isSharedPublicDemo && params.SPLIT_TESTS) {
                         error('SPLIT_TESTS is not supported against the shared public OrangeHRM demo because parallel shards can conflict over shared data. Disable splitting or configure an isolated OrangeHRM instance.')
                     }
-
-                    if (isSharedPublicDemo && requestedWorkerCount > 1) {
-                        error("WORKERS=${requestedWorkerCount} cannot be used against the shared public OrangeHRM demo. Select 1 worker or configure an isolated OrangeHRM instance with ORANGEHRM_BASE_URL.")
-                    }
-
-                    def workerCount = requestedWorkerCount
 
                     if (params.SPLIT_TESTS) {
                         def shardCount = params.SHARD_COUNT as Integer
