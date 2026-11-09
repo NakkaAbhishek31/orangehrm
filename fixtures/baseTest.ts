@@ -11,6 +11,7 @@ import { EmployeeAttachmentsPage } from "../pages/EmployeeAttachmentsPage";
 import { ForgotPasswordPage } from "../pages/ForgotPasswordPage";
 import { LeavePage } from "../pages/LeavesPage";
 import { LoginPage } from "../pages/LoginPage";
+import { MaintenancePage } from "../pages/MaintenancePage";
 import { NavigationPage } from "../pages/NavigationPage";
 import { PerformancePage } from "../pages/PerformancePage";
 import { PIMPage } from "../pages/PimPage";
@@ -23,6 +24,7 @@ import { routes } from "../utils/routes";
 
 export type AppFixtures = {
   loginPage: LoginPage;
+  maintenancePage: MaintenancePage;
   forgotPage: ForgotPasswordPage;
   dashboardPage: DashboardPage;
   navigationPage: NavigationPage;
@@ -45,6 +47,9 @@ type WorkerFixtures = {
 const appTest = base.extend<AppFixtures>({
   loginPage: async ({ page }, use) => {
     await use(new LoginPage(page));
+  },
+  maintenancePage: async ({ page }, use) => {
+    await use(new MaintenancePage(page));
   },
   forgotPage: async ({ page }, use) => {
     await use(new ForgotPasswordPage(page));

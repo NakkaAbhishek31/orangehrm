@@ -75,4 +75,63 @@ test.describe("Buzz - Newsfeed", () => {
     await buzzPage.confirmDeletePost();
     await expect(createdPost).toHaveCount(0);
   });
+  test("TC_BUZZ_507 - Admin should like and unlike a Buzz post @positive @interaction @regression", async ({
+    buzzPage,
+  }) => {
+    const message = `MCP system are working great ${Date.now()}`;
+
+    await buzzPage.createPost(message);
+
+    const createdPost = buzzPage.postByMessage(message);
+    try {
+      await expect(createdPost).toBeVisible();
+      await expect(buzzPage.postLikeCount(createdPost)).toHaveText("0 Likes");
+
+      await buzzPage.togglePostLike(createdPost);
+      await expect(buzzPage.postLikeCount(createdPost)).toHaveText("1 Like");
+
+      await buzzPage.togglePostLike(createdPost);
+      await expect(buzzPage.postLikeCount(createdPost)).toHaveText("0 Likes");
+    } finally {
+      if (await createdPost.count()) {
+        await buzzPage.openPostMenu(createdPost);
+        await buzzPage.selectDeletePost();
+        await expect(buzzPage.deletePostConfirmation).toBeVisible();
+        await buzzPage.confirmDeletePost();
+        await expect(createdPost).toHaveCount(0);
+      }
+    }
+  });
+  test.only("TC_BUZZ_508 - Admin should comment on their own post @positive @comment @regression", async ({
+    buzzPage,
+  }) => {
+    const message = `MCP system are working great ${Date.now()}`;
+    const comment = `Automated Buzz comment ${Date.now()}`;
+
+    await buzzPage.createPost(message);
+
+    const createdPost = buzzPage.postByMessage(message);
+    try {
+      await expect(createdPost).toBeVisible();
+      await expect(buzzPage.postCommentCount(createdPost)).toHaveText(
+        "0 Comments",
+      );
+
+      await buzzPage.openPostComments(createdPost);
+      await buzzPage.addPostComment(createdPost, comment);
+
+      await expect(buzzPage.postCommentCount(createdPost)).toHaveText(
+        "1 Comment",
+      );
+      await expect(buzzPage.postCommentByText(createdPost, comment)).toBeVisible();
+    } finally {
+      if (await createdPost.count()) {
+        await buzzPage.openPostMenu(createdPost);
+        await buzzPage.selectDeletePost();
+        await expect(buzzPage.deletePostConfirmation).toBeVisible();
+        await buzzPage.confirmDeletePost();
+        await expect(createdPost).toHaveCount(0);
+      }
+    }
+  });
 });

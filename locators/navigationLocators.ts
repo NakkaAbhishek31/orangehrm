@@ -11,5 +11,6 @@ export const navigationLocators = {
     directory: "Directory",
     claim: "Claim",
     buzz: "Buzz",
+    maintenance: "Maintenance",
   },
 } as const;

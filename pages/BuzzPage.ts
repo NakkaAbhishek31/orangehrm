@@ -13,6 +13,12 @@ export class BuzzPage {
   readonly commentedSortButton!: Locator;
   readonly feedPosts!: Locator;
   readonly postMenuButton!: (post: Locator) => Locator;
+  readonly postLikeToggle!: (post: Locator) => Locator;
+  readonly postLikeCount!: (post: Locator) => Locator;
+  readonly postCommentButton!: (post: Locator) => Locator;
+  readonly postCommentInput!: (post: Locator) => Locator;
+  readonly postCommentCount!: (post: Locator) => Locator;
+  readonly postCommentByText!: (post: Locator, comment: string) => Locator;
   readonly deletePostMenuItem!: Locator;
   readonly deletePostConfirmation!: Locator;
   readonly confirmDeletePostButton!: Locator;
@@ -84,5 +90,29 @@ export class BuzzPage {
     const response = await feedResponse;
     expect(response.ok()).toBeTruthy();
     await this.verifyFeedHasPosts();
+  }
+  async togglePostLike(post: Locator): Promise<void> {
+    await this.postLikeToggle(post).click();
+  }
+
+  async openPostComments(post: Locator): Promise<void> {
+    await this.postCommentButton(post).click();
+  }
+
+  async addPostComment(post: Locator, comment: string): Promise<void> {
+    const commentResponse = this.page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        /\/api\/v2\/buzz\/shares\/\d+\/comments/.test(response.url()),
+    );
+
+    await this.postCommentInput(post).fill(comment);
+    await this.postCommentInput(post).press("Enter");
+
+    const response = await commentResponse;
+    expect(
+      response.ok(),
+      `Creating Buzz comment failed with ${response.status()}`,
+    ).toBeTruthy();
   }
 }

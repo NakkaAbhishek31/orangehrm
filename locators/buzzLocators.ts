@@ -14,6 +14,24 @@ export const createBuzzLocators = (page: Page) => ({
   }),
   feedPosts: page.locator(".orangehrm-buzz"),
   postMenuButton: (post: Locator) => post.getByRole("button").first(),
+  postLikeToggle: (post: Locator) => post.locator(".orangehrm-heart-icon"),
+
+  postLikeCount: (post: Locator) =>
+    post.locator(".orangehrm-buzz-stats").getByText(/^\d+ Likes?$/, {
+      exact: true,
+    }),
+  postCommentButton: (post: Locator) =>
+    post.locator("button:has(.bi-chat-text-fill)"),
+  postCommentInput: (post: Locator) =>
+    post.getByPlaceholder("Write your comment...", { exact: true }),
+  postCommentCount: (post: Locator) =>
+    post.locator(".orangehrm-buzz-stats").getByText(/^\d+ Comments?$/, {
+      exact: true,
+    }),
+  postCommentByText: (post: Locator, comment: string) =>
+    post.locator(".orangehrm-buzz-comment").getByText(comment, {
+      exact: true,
+    }),
   deletePostMenuItem: page.getByText("Delete Post", { exact: true }),
   deletePostConfirmation: page.getByRole("dialog"),
   confirmDeletePostButton: page

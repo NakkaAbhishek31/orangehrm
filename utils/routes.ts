@@ -11,4 +11,5 @@ export const routes = {
   directory: '/web/index.php/directory/viewDirectory',
   assignClaim: '/web/index.php/claim/viewAssignClaim',
   buzz: '/web/index.php/buzz/viewBuzz',
+  maintenance: '/web/index.php/maintenance/purgeEmployee',
 } as const;
