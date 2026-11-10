@@ -16,7 +16,7 @@ pipeline {
         choice(
             name: 'SHARD_COUNT',
             choices: ['2', '3', '4'],
-            description: 'Parallel shards when splitting is enabled; requires the same number of free Jenkins executors'
+            description: 'Parallel Playwright processes on the current agent, each with a separate workspace; total worker capacity = shards x WORKERS'
         )
 
         choice(
@@ -44,7 +44,7 @@ pipeline {
         string(
             name: 'ORANGEHRM_BASE_URL',
             defaultValue: 'https://opensource-demo.orangehrmlive.com',
-            description: 'OrangeHRM instance URL. Use an isolated instance to run multiple workers safely.'
+            description: 'OrangeHRM instance URL. Parallel execution is allowed; an isolated instance reduces shared-data conflicts.'
         )
 
         choice(
@@ -52,7 +52,7 @@ pipeline {
             choices: [
                 '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'
             ],
-            description: 'Number of Playwright workers per run (per shard when split; shared public demo is limited to 1; choose 1 to 15; default: 1)'
+            description: 'Maximum Playwright workers per run, or per shard when split; choose 1 to 15; default: 1'
         )
     }
 
@@ -60,7 +60,7 @@ pipeline {
         skipDefaultCheckout(true)
         timestamps()
         disableConcurrentBuilds()
-   timeout(time: 4, unit: 'HOURS')
+        timeout(time: 4, unit: 'HOURS')
 
         buildDiscarder(
             logRotator(
@@ -129,6 +129,7 @@ pipeline {
                     if exist allure-report rmdir /s /q allure-report
                     if exist playwright-report rmdir /s /q playwright-report
                     if exist test-results rmdir /s /q test-results
+                    if exist blob-report rmdir /s /q blob-report
                     if exist ai-results rmdir /s /q ai-results
                 '''
             }
@@ -218,26 +219,29 @@ pipeline {
                         )
                     }
 
-                    def requestedWorkerCount = Math.min((params.WORKERS ?: '1') as Integer, 15)
+                    def workerCount = (params.WORKERS ?: '1') as Integer
+                    if (workerCount < 1 || workerCount > 15) {
+                        error('WORKERS must be between 1 and 15')
+                    }
                     def configuredBaseUrl = (env.ORANGEHRM_BASE_URL ?:
                         'https://opensource-demo.orangehrmlive.com').trim().toLowerCase()
                     def isSharedPublicDemo = configuredBaseUrl.contains(
                         'opensource-demo.orangehrmlive.com'
                     )
 
-                    def workerCount = requestedWorkerCount
-
-                    if (isSharedPublicDemo && workerCount > 1) {
-                        workerCount = 1
-                        echo "The shared public OrangeHRM demo is used by many test runs. Limiting workers from ${requestedWorkerCount} to 1 to reduce shared-data conflicts."
+                    if (isSharedPublicDemo && (workerCount > 1 || params.SPLIT_TESTS)) {
+                        echo 'Parallel execution is enabled against the shared public demo. Tests can conflict over shared records or sessions; use an isolated instance for reliable mutation testing.'
                     }
 
-                    if (isSharedPublicDemo && params.SPLIT_TESTS) {
-                        error('SPLIT_TESTS is not supported against the shared public OrangeHRM demo because parallel shards can conflict over shared data. Disable splitting or configure an isolated OrangeHRM instance.')
-                    }
+                    echo "Execution settings: browser=${params.BROWSER}, workers per process=${workerCount}, splitting=${params.SPLIT_TESTS}"
 
                     if (params.SPLIT_TESTS) {
                         def shardCount = params.SHARD_COUNT as Integer
+                        if (!(shardCount in [2, 3, 4])) {
+                            error('SHARD_COUNT must be 2, 3, or 4')
+                        }
+                        def shardWorkspaceRoot = env.WORKSPACE
+                        echo "Starting ${shardCount} shards with up to ${workerCount} workers each (${shardCount * workerCount} total worker capacity) on the current agent"
 
                         echo 'Preparing the shared authentication state before starting shards'
                         bat 'call npx.cmd playwright test --project=setup --workers=1 --reporter=line'
@@ -250,8 +254,11 @@ pipeline {
                         for (int shardNumber = 1; shardNumber <= shardCount; shardNumber++) {
                             def currentShard = shardNumber
                             shardStages["Shard ${currentShard}/${shardCount}"] = {
-                                node(env.NODE_NAME) {
+                                // Reuse the allocated agent rather than queue nested
+                                // node blocks that can deadlock a single-executor agent.
+                                ws("${shardWorkspaceRoot}@shard-${currentShard}") {
                                     nodejs(nodeJSInstallationName: 'nodejs') {
+                                        deleteDir()
                                         checkout scm
                                         bat 'call npm.cmd ci'
                                         bat "call npx.cmd playwright install ${params.BROWSER}"

@@ -1,6 +1,8 @@
 
-# Playwright
+# Dependencies
 node_modules/
+
+# Generated test results and reports
 /test-results/
 /playwright-report/
 /blob-report/
@@ -9,8 +11,39 @@ node_modules/
 /allure-results/
 /allure-report/
 /ai-results/
+
+# Local environment files (keep the shared example)
 /.env
 /.env.*
 !/.env.example
 *.log
+
+# Local browser automation artifacts
 /.playwright-mcp/
+
+# Existing local documentation and generated deliverables
+/docs/
+/docs/TESTING_STANDARDS.md
+/tmp/
+/output/
+
+# Build caches and coverage
+/.cache/
+/coverage/
+/.nyc_output/
+*.tsbuildinfo
+
+# Temporary documentation discovery output
+/.documentation-*.json
+/test-inventory.json
+
+# Empty generator placeholder outside the configured tests directory
+/seed.spec.ts
+
+# OS and editor temporary files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+~$*

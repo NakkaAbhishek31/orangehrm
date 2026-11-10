@@ -4,6 +4,10 @@ Production-style UI and REST API automation for OrangeHRM using Playwright, Type
 
 The framework also includes an AI-ready failure triage reporter. It performs local, deterministic failure classification and prepares a reviewable debugging prompt without sending test data to an external service.
 
+## Project documentation
+
+See [work completed so far](docs/PROJECT_DOCUMENTATION.md) for the platforms and tools used, basic and advanced concepts, module coverage, Jenkins/Allure integration, commands, and current limitations. The [complete test inventory](docs/TEST_CASE_INVENTORY.md) lists 533 discovered scenarios plus one authentication setup entry. Discovery does not verify passing execution.
+
 ## Structure
 
 ```text
@@ -63,7 +67,9 @@ $env:PLAYWRIGHT_WORKERS = "7"
 npm test
 ```
 
-Any positive worker count is accepted. Avoid increasing workers against the shared public demo because concurrent data changes can cause conflicts. Jenkins provides an `ORANGEHRM_BASE_URL` build parameter and automatically limits the shared public demo to one worker, rejecting test sharding for that shared site. For an isolated OrangeHRM instance, enter its URL and select the desired `WORKERS` count; configured worker counts and sharding are available for that instance.
+Any positive worker count is accepted by the Playwright configuration, including in CI. Jenkins accepts `WORKERS` from 1 to 15 and honors that value for every target URL. Parallel execution against the shared public demo logs a warning because concurrent data changes can cause conflicts; an isolated instance is recommended.
+
+To run two workers in Jenkins, select `WORKERS=2` and leave `SPLIT_TESTS` unchecked. To run two shards with two workers each, enable `SPLIT_TESTS`, choose `SHARD_COUNT=2`, and select `WORKERS=2`. Each shard runs in a separate workspace on the current agent, without requesting extra Jenkins executors. This allows up to four concurrent test workers and requires sufficient CPU and memory on that agent. With `fullyParallel: false`, tests are distributed by file; selecting a single file may not use every worker or shard.
 
 ## Reports
 
@@ -76,13 +82,13 @@ See [automation standards](docs/TESTING_STANDARDS.md) before adding pages, reusa
 
 ## AI-ready failure analysis
 
-Every Playwright run writes the following ignored artifacts to `ai-results/`:
+The custom reporter in `support/ai/FailureAnalysisReporter.ts` can write the following ignored artifacts to `ai-results/` once registered in `playwright.config.ts`. It is not currently in the active reporter list:
 
 - `failure-summary.md` — categorized failures with source locations and errors.
 - `failures.json` — machine-readable failure records for CI or dashboards.
 - `ai-debug-prompt.md` — a ready-to-review prompt for root-cause analysis.
 
-The reporter never calls an external AI service and does not require an API key. Review the generated prompt before sharing it with any model. To rerun only Playwright's last failures and regenerate the analysis:
+The reporter never calls an external AI service and does not require an API key. Review a generated prompt before sharing it with any model. The following command reruns only Playwright's last failures; producing the analysis additionally requires registering the custom reporter:
 
 ```powershell
 npm run test:ai-analysis

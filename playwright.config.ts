@@ -1,8 +1,8 @@
 /// <reference types="node" />
-import { defineConfig, devices } from '@playwright/test';
-import { environment } from './config/environment';
+import { defineConfig, devices } from "@playwright/test";
+import { environment } from "./config/environment";
 
-const adminAuthFile = 'playwright/.auth/admin.json';
+const adminAuthFile = "playwright/.auth/admin.json";
 
 /**
  * Read environment variables from file.
@@ -16,7 +16,7 @@ const adminAuthFile = 'playwright/.auth/admin.json';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: '.',
+  testDir: "tests",
   /* Tests share a mutable OrangeHRM account, so avoid concurrent data changes. */
   fullyParallel: false,
   /* Shared demo responses can be slow during large CI runs. */
@@ -29,16 +29,22 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : environment.workers,
+  /* Default to one worker; honor PLAYWRIGHT_WORKERS in local and CI runs.
+     Jenkins passes --workers explicitly for each run/shard. */
+  workers: environment.workers,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],['list'], ['blob'],
-    ['allure-playwright', {
-      resultsDir: 'allure-results',
-      detail: true,
-      suiteTitle: false,
-    }],
+    ["html", { outputFolder: "playwright-report", open: "never" }],
+    ["list"],
+    ["blob"],
+    [
+      "allure-playwright",
+      {
+        resultsDir: "allure-results",
+        detail: true,
+        suiteTitle: false,
+      },
+    ],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -48,21 +54,21 @@ export default defineConfig({
     navigationTimeout: environment.navigationTimeoutMs,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
     locale: "en-US",
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'setup',
+      name: "setup",
       testMatch: /auth\.setup\.ts/,
     },
     {
-      name: 'chromium',
-      dependencies: ['setup'],
+      name: "chromium",
+      dependencies: ["setup"],
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
         storageState: adminAuthFile,
       },
     },
