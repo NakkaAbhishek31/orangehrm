@@ -17,7 +17,21 @@ test.describe("Buzz - Newsfeed", () => {
   test("TC_BUZZ_502 - Newsfeed should display posts @smoke @feed @regression", async ({
     buzzPage,
   }) => {
-    await buzzPage.verifyFeedHasPosts();
+    const message = `Buzz feed verification ${Date.now()}`;
+    await buzzPage.createPost(message);
+
+    const createdPost = buzzPage.postByMessage(message);
+    try {
+      await expect(createdPost).toBeVisible();
+    } finally {
+      if (await createdPost.count()) {
+        await buzzPage.openPostMenu(createdPost);
+        await buzzPage.selectDeletePost();
+        await expect(buzzPage.deletePostConfirmation).toBeVisible();
+        await buzzPage.confirmDeletePost();
+        await expect(createdPost).toHaveCount(0);
+      }
+    }
   });
 
   test("TC_BUZZ_503 - Newsfeed controls should be visible and enabled @smoke @controls @regression", async ({
@@ -36,18 +50,36 @@ test.describe("Buzz - Newsfeed", () => {
   test("TC_BUZZ_504 - Feed sort options should reload posts by selected sort @positive @sort @regression", async ({
     buzzPage,
   }) => {
-    await buzzPage.verifySortReloadsFeed(
-      buzzPage.recentSortButton,
-      "share.createdAtUtc",
-    );
-    await buzzPage.verifySortReloadsFeed(
-      buzzPage.likedSortButton,
-      "share.numOfLikes",
-    );
-    await buzzPage.verifySortReloadsFeed(
-      buzzPage.commentedSortButton,
-      "share.numOfComments",
-    );
+    const message = `Buzz sorting verification ${Date.now()}`;
+    await buzzPage.createPost(message);
+
+    const createdPost = buzzPage.postByMessage(message);
+    try {
+      await expect(createdPost).toBeVisible();
+      await buzzPage.verifySortReloadsFeed(
+        buzzPage.likedSortButton,
+        "share.numOfLikes",
+      );
+      await expect(createdPost).toBeVisible();
+      await buzzPage.verifySortReloadsFeed(
+        buzzPage.commentedSortButton,
+        "share.numOfComments",
+      );
+      await expect(createdPost).toBeVisible();
+      await buzzPage.verifySortReloadsFeed(
+        buzzPage.recentSortButton,
+        "share.createdAtUtc",
+      );
+      await expect(createdPost).toBeVisible();
+    } finally {
+      if (await createdPost.count()) {
+        await buzzPage.openPostMenu(createdPost);
+        await buzzPage.selectDeletePost();
+        await expect(buzzPage.deletePostConfirmation).toBeVisible();
+        await buzzPage.confirmDeletePost();
+        await expect(createdPost).toHaveCount(0);
+      }
+    }
   });
 
   test("TC_BUZZ_505 - Upcoming anniversaries should show service years and dates @smoke @anniversary @regression", async ({

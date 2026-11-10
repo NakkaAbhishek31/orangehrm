@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import timeData from "../../test-data/time.data.json";
 import { orangeHrmDateFromOffset as dateFromOffset } from "../../utils/dates";
+import { generateEmployeeId } from "../../utils/testData";
 import {
   editProjectHeading,
   confirmDeleteButton,
@@ -13,18 +14,6 @@ import {
   timeTableCells,
   timeRowCell,
 } from "../../locators/test/timeTestLocators";
-
-const dateForInputPlaceholder = (
-  isoDate: string,
-  placeholder: string | null,
-): string => {
-  if (placeholder?.toLowerCase() !== "yyyy-dd-mm") {
-    return isoDate;
-  }
-
-  const [year, month, day] = isoDate.split("-");
-  return `${year}-${day}-${month}`;
-};
 
 test.describe("Time - Timesheets, Attendance and Reports", () => {
   test("TC_TIME_166 - Admin should navigate to the Employee Timesheets page @smoke @navigation @regression", async ({
@@ -326,87 +315,88 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
 
     const data = timeData.TC_TIME_175;
 
+    const employeeId = generateEmployeeId();
     const firstName = `${data.firstNamePrefix}${Date.now()}`;
 
     const employee = {
       firstName,
       middleName: data.middleName,
       lastName: data.lastName,
+      employeeId,
     };
 
-    // Create a temporary employee.
-    await navigationPage.gotoPIM();
+    try {
+      // Create a temporary employee.
+      await navigationPage.gotoPIM();
 
-    await pimPage.gotoAddEmployee();
+      await pimPage.gotoAddEmployee();
 
-    const employeeId = await pimPage.addEmployee(employee);
+      const createdEmployeeId = await pimPage.addEmployee(employee);
 
-    expect(employeeId).not.toBe("");
+      expect(createdEmployeeId).toBe(employeeId);
 
-    // Navigate to Attendance Records.
-    await navigationPage.gotoTime();
+      // Navigate to Attendance Records.
+      await navigationPage.gotoTime();
 
-    await timePage.gotoEmployeeAttendanceRecords();
+      await timePage.gotoEmployeeAttendanceRecords();
 
-    const selectedEmployee =
-      await timePage.selectAttendanceEmployeeFromAutocomplete(firstName);
+      const selectedEmployee =
+        await timePage.selectAttendanceEmployeeFromAutocomplete(firstName);
 
-    await expect(timePage.attendanceEmployeeInput).toHaveValue(
-      selectedEmployee,
-    );
+      await expect(timePage.attendanceEmployeeInput).toHaveValue(
+        selectedEmployee,
+      );
 
-    const attendanceDate = await timePage.attendanceDateInput.inputValue();
+      const attendanceDate = await timePage.attendanceDateInput.inputValue();
 
-    expect(attendanceDate).not.toBe("");
+      expect(attendanceDate).not.toBe("");
 
-    await timePage.attendanceViewButton.click();
+      await timePage.attendanceViewButton.click();
 
-    await expect(timePage.loadingSpinner).toBeHidden({
-      timeout: 20_000,
-    });
+      await expect(timePage.loadingSpinner).toBeHidden({
+        timeout: 20_000,
+      });
 
-    await expect(page).toHaveURL(new RegExp(data.expectedUrlPath));
+      await expect(page).toHaveURL(new RegExp(data.expectedUrlPath));
 
-    await expect(timePage.attendanceEmployeeInput).toHaveValue(
-      selectedEmployee,
-    );
+      await expect(timePage.attendanceEmployeeInput).toHaveValue(
+        selectedEmployee,
+      );
 
-    const displayedAttendanceDate = dateForInputPlaceholder(
-      attendanceDate,
-      await timePage.attendanceDateInput.getAttribute("placeholder"),
-    );
-    await expect(timePage.attendanceDateInput).toHaveValue(
-      displayedAttendanceDate,
-    );
+      await expect(timePage.attendanceDateInput).toHaveValue(
+        attendanceDate,
+      );
 
-    // A newly created employee normally has
-    // no attendance records.
-    await expect(
-      timePage.attendanceRows.first().or(timePage.attendanceNoRecords),
-    ).toBeVisible({
-      timeout: 20_000,
-    });
+      // A newly created employee normally has
+      // no attendance records.
+      await expect(
+        timePage.attendanceRows.first().or(timePage.attendanceNoRecords),
+      ).toBeVisible({
+        timeout: 20_000,
+      });
 
-    const rowCount = await timePage.attendanceRows.count();
+      const rowCount = await timePage.attendanceRows.count();
 
-    if (rowCount > 0) {
-      await expect(timePage.attendanceRows.first()).toBeVisible();
-    } else {
-      await expect(timePage.attendanceNoRecords).toBeVisible();
+      if (rowCount > 0) {
+        await expect(timePage.attendanceRows.first()).toBeVisible();
+      } else {
+        await expect(timePage.attendanceNoRecords).toBeVisible();
+      }
+    } finally {
+      await navigationPage.gotoPIM();
+      await pimPage.gotoEmployeeList();
+      await pimPage.filterEmployeeList({ employeeId });
+      await pimPage.clickOnFilterSearch();
+
+      const matchingEmployee = pimPage.employeeRows.filter({
+        hasText: employeeId,
+      });
+      const matchingEmployeeCount = await matchingEmployee.count();
+      expect(matchingEmployeeCount).toBeLessThanOrEqual(1);
+      if (matchingEmployeeCount === 1) {
+        await pimPage.deleteEmployeeById(employeeId);
+      }
     }
-
-    // Cleanup.
-    await navigationPage.gotoPIM();
-
-    await pimPage.gotoEmployeeList();
-
-    await pimPage.filterEmployeeList({
-      employeeId,
-    });
-
-    await pimPage.clickOnFilterSearch();
-
-    await pimPage.deleteEmployeeById(employeeId);
   });
 
   test("TC_TIME_176 - Admin should change the attendance date while viewing employee records @positive @attendance @date @regression", async ({
@@ -421,88 +411,89 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
 
     const data = timeData.TC_TIME_176;
 
+    const employeeId = generateEmployeeId();
     const firstName = `${data.firstNamePrefix}${Date.now()}`;
 
     const employee = {
       firstName,
       middleName: data.middleName,
       lastName: data.lastName,
+      employeeId,
     };
 
     const attendanceDate = dateFromOffset(data.attendanceDaysOffset);
 
-    // Create a temporary employee.
-    await navigationPage.gotoPIM();
+    try {
+      // Create a temporary employee.
+      await navigationPage.gotoPIM();
 
-    await pimPage.gotoAddEmployee();
+      await pimPage.gotoAddEmployee();
 
-    const employeeId = await pimPage.addEmployee(employee);
+      const createdEmployeeId = await pimPage.addEmployee(employee);
 
-    expect(employeeId).not.toBe("");
+      expect(createdEmployeeId).toBe(employeeId);
 
-    // Navigate to Employee Attendance Records.
-    await navigationPage.gotoTime();
+      // Navigate to Employee Attendance Records.
+      await navigationPage.gotoTime();
 
-    await timePage.gotoEmployeeAttendanceRecords();
+      await timePage.gotoEmployeeAttendanceRecords();
 
-    const selectedEmployee =
-      await timePage.selectAttendanceEmployeeFromAutocomplete(firstName);
+      const selectedEmployee =
+        await timePage.selectAttendanceEmployeeFromAutocomplete(firstName);
 
-    await expect(timePage.attendanceEmployeeInput).toHaveValue(
-      selectedEmployee,
-    );
+      await expect(timePage.attendanceEmployeeInput).toHaveValue(
+        selectedEmployee,
+      );
 
-    // Change the attendance date.
-    await timePage.attendanceDateInput.fill(attendanceDate);
+      // Change the attendance date.
+      await timePage.attendanceDateInput.fill(attendanceDate);
 
-    await expect(timePage.attendanceDateInput).toHaveValue(attendanceDate);
+      await expect(timePage.attendanceDateInput).toHaveValue(attendanceDate);
 
-    await timePage.attendanceViewButton.click();
+      await timePage.attendanceViewButton.click();
 
-    await expect(timePage.loadingSpinner).toBeHidden({
-      timeout: 20_000,
-    });
+      await expect(timePage.loadingSpinner).toBeHidden({
+        timeout: 20_000,
+      });
 
-    await expect(page).toHaveURL(new RegExp(data.expectedUrlPath));
+      await expect(page).toHaveURL(new RegExp(data.expectedUrlPath));
 
-    await expect(timePage.attendanceEmployeeInput).toHaveValue(
-      selectedEmployee,
-    );
+      await expect(timePage.attendanceEmployeeInput).toHaveValue(
+        selectedEmployee,
+      );
 
-    const displayedAttendanceDate = dateForInputPlaceholder(
-      attendanceDate,
-      await timePage.attendanceDateInput.getAttribute("placeholder"),
-    );
-    await expect(timePage.attendanceDateInput).toHaveValue(
-      displayedAttendanceDate,
-    );
+      await expect(timePage.attendanceDateInput).toHaveValue(
+        attendanceDate,
+      );
 
-    await expect(
-      timePage.attendanceRows.first().or(timePage.attendanceNoRecords),
-    ).toBeVisible({
-      timeout: 20_000,
-    });
+      await expect(
+        timePage.attendanceRows.first().or(timePage.attendanceNoRecords),
+      ).toBeVisible({
+        timeout: 20_000,
+      });
 
-    const rowCount = await timePage.attendanceRows.count();
+      const rowCount = await timePage.attendanceRows.count();
 
-    if (rowCount > 0) {
-      await expect(timePage.attendanceRows.first()).toBeVisible();
-    } else {
-      await expect(timePage.attendanceNoRecords).toBeVisible();
+      if (rowCount > 0) {
+        await expect(timePage.attendanceRows.first()).toBeVisible();
+      } else {
+        await expect(timePage.attendanceNoRecords).toBeVisible();
+      }
+    } finally {
+      await navigationPage.gotoPIM();
+      await pimPage.gotoEmployeeList();
+      await pimPage.filterEmployeeList({ employeeId });
+      await pimPage.clickOnFilterSearch();
+
+      const matchingEmployee = pimPage.employeeRows.filter({
+        hasText: employeeId,
+      });
+      const matchingEmployeeCount = await matchingEmployee.count();
+      expect(matchingEmployeeCount).toBeLessThanOrEqual(1);
+      if (matchingEmployeeCount === 1) {
+        await pimPage.deleteEmployeeById(employeeId);
+      }
     }
-
-    // Cleanup.
-    await navigationPage.gotoPIM();
-
-    await pimPage.gotoEmployeeList();
-
-    await pimPage.filterEmployeeList({
-      employeeId,
-    });
-
-    await pimPage.clickOnFilterSearch();
-
-    await pimPage.deleteEmployeeById(employeeId);
   });
 
   test("TC_TIME_177 - Admin should navigate to My Attendance Records @smoke @navigation @attendance @regression", async ({
@@ -553,12 +544,8 @@ test.describe("Time - Timesheets, Attendance and Reports", () => {
       timeout: 20_000,
     });
 
-    const displayedAttendanceDate = dateForInputPlaceholder(
-      attendanceDate,
-      await timePage.myAttendanceDateInput.getAttribute("placeholder"),
-    );
     await expect(timePage.myAttendanceDateInput).toHaveValue(
-      displayedAttendanceDate,
+      attendanceDate,
     );
 
     // Either records or No Records Found

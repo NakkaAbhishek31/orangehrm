@@ -1,7 +1,10 @@
 import { expect } from "@playwright/test";
 import { test } from "../../fixtures/baseTest";
 import employeeListData from "../../test-data/pimEmployeeList.data.json";
-import { createUniqueEmployee as createEmployee } from "../../utils/testData";
+import {
+  createUniqueEmployee as createEmployee,
+  generateEmployeeId,
+} from "../../utils/testData";
 
 test.describe("PIM Employee List", () => {
   test("TC_PIM_002 - Admin should search for an employee by employee ID @positive @regression", async ({
@@ -9,25 +12,46 @@ test.describe("PIM Employee List", () => {
     pimPage,
   }) => {
     const data = employeeListData.TC_PIM_002;
-    const employee = createEmployee(data.employee);
-
-    await navigationPage.gotoPIM();
-    await pimPage.gotoAddEmployee();
-    const employeeId = await pimPage.addEmployee(employee);
-
-    await expect(pimPage.personalDetailsHeading).toBeVisible();
-    await expect(pimPage.firstnameInput).toHaveValue(employee.firstName);
-    await expect(pimPage.middlenameInput).toHaveValue(employee.middleName);
-    await expect(pimPage.lastnameInput).toHaveValue(employee.lastName);
-
-    await pimPage.gotoEmployeeList();
-    await pimPage.filterEmployeeList({ employeeId });
-    await pimPage.clickOnFilterSearch();
-    await pimPage.verifyEmployeeSearchResult(
+    const employeeId = generateEmployeeId();
+    const employee = {
+      ...createEmployee(data.employee),
       employeeId,
-      employee.firstName,
-      employee.lastName,
-    );
+    };
+
+    try {
+      await navigationPage.gotoPIM();
+      await pimPage.gotoAddEmployee();
+      const createdEmployeeId = await pimPage.addEmployee(employee);
+
+      expect(createdEmployeeId).toBe(employeeId);
+      await expect(pimPage.personalDetailsHeading).toBeVisible();
+      await expect(pimPage.firstnameInput).toHaveValue(employee.firstName);
+      await expect(pimPage.middlenameInput).toHaveValue(employee.middleName);
+      await expect(pimPage.lastnameInput).toHaveValue(employee.lastName);
+
+      await pimPage.gotoEmployeeList();
+      await pimPage.filterEmployeeList({ employeeId });
+      await pimPage.clickOnFilterSearch();
+      await pimPage.verifyEmployeeSearchResult(
+        employeeId,
+        employee.firstName,
+        employee.lastName,
+      );
+    } finally {
+      await navigationPage.gotoPIM();
+      await pimPage.gotoEmployeeList();
+      await pimPage.filterEmployeeList({ employeeId });
+      await pimPage.clickOnFilterSearch();
+
+      const matchingEmployee = pimPage.employeeRows.filter({
+        hasText: employeeId,
+      });
+      const matchingEmployeeCount = await matchingEmployee.count();
+      expect(matchingEmployeeCount).toBeLessThanOrEqual(1);
+      if (matchingEmployeeCount === 1) {
+        await pimPage.deleteEmployeeById(employeeId);
+      }
+    }
   });
 
   test("TC_PIM_003 - No records should appear for a nonexistent employee ID @negative @regression", async ({

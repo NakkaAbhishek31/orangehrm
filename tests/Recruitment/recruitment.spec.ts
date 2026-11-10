@@ -1720,10 +1720,9 @@ test( 'TC_RECRUITMENT_157 - Admin should schedule an interview for a shortlisted
     const interviewTitle =
       `${data.interviewTitlePrefix} ${uniqueValue}`;
 
-    const interviewDate =
-      dateFromOffset(
-        data.interviewDaysOffset
-      );
+    const interviewDate = candidateSearchDateFromOffset(
+      data.interviewDaysOffset,
+    );
 
     await navigationPage.gotoRecruitment();
 await recruitmentPage.navigateToCandidate();
@@ -2165,7 +2164,7 @@ test('TC_RECRUITMENT_160 - Admin should mark a candidate interview as passed @po
         `${data.interviewTitlePrefix}${uniqueValue}`,
       interviewerSearchText:
         data.interviewerSearchText,
-      date: dateFromOffset(
+      date: candidateSearchDateFromOffset(
         data.interviewDaysOffset
       ),
       time: data.interviewTime,
@@ -2229,7 +2228,7 @@ test('TC_RECRUITMENT_161 - Admin should mark a candidate interview as failed @ne
         `${data.interviewTitlePrefix}${uniqueValue}`,
       interviewerSearchText:
         data.interviewerSearchText,
-      date: dateFromOffset(
+      date: candidateSearchDateFromOffset(
         data.interviewDaysOffset
       ),
       time: data.interviewTime,
@@ -2292,7 +2291,7 @@ test('TC_RECRUITMENT_162 - Admin should offer a job to a candidate who passed th
         `${data.interviewTitlePrefix}${uniqueValue}`,
       interviewerSearchText:
         data.interviewerSearchText,
-      date: dateFromOffset(
+      date: candidateSearchDateFromOffset(
         data.interviewDaysOffset
       ),
       time: data.interviewTime,
@@ -2358,7 +2357,7 @@ test('TC_RECRUITMENT_163 - Admin should hire a candidate after offering the job 
         `${data.interviewTitlePrefix}${uniqueValue}`,
       interviewerSearchText:
         data.interviewerSearchText,
-      date: dateFromOffset(
+      date: candidateSearchDateFromOffset(
         data.interviewDaysOffset
       ),
       time: data.interviewTime,
