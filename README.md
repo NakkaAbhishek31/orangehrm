@@ -75,8 +75,14 @@ To run two workers in Jenkins, select `WORKERS=2` and leave `SPLIT_TESTS` unchec
 
 ```powershell
 npm run report
+npm run allure:generate
+npm run allure:open
 npm run clean:reports
 ```
+
+Allure reports use the Node.js-based Allure 3 CLI installed by `npm ci`. The existing `allure-playwright` reporter writes compatible results to `allure-results`.
+
+Jenkins requires an Allure Report plugin version supporting `allureVersion: '3'` (update it under Manage Jenkins > Plugins). The pipeline adds the workspace's `node_modules/.bin` to PATH for report publication; the old Allure 2 global tool is no longer required. Both single runs and sharded runs publish through the Allure plugin.
 
 See [automation standards](docs/TESTING_STANDARDS.md) before adding pages, reusable components, data, or tests.
 

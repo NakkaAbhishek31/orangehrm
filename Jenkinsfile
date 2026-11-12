@@ -3,7 +3,6 @@ pipeline {
 
     tools {
         nodejs 'nodejs'
-        allure 'Allure'
     }
 
     parameters {
@@ -29,10 +28,37 @@ pipeline {
             description: 'Choose the Playwright browser'
         )
 
-        string(
+        choice(
             name: 'TEST_TARGET',
-            defaultValue: 'tests',
-            description: 'Spec file or directory, for example: tests/Admin/admin-users.spec.ts'
+            choices: [
+                'tests',
+                'tests/Admin/admin-users.spec.ts',
+                'tests/API/api.spec.ts',
+                'tests/authenticated-session.spec.ts',
+                'tests/Buzz/buzz.spec.ts',
+                'tests/Claim/claim.spec.ts',
+                'tests/Dashboard/dashboard.spec.ts',
+                'tests/Directory/directory.spec.ts',
+                'tests/Leave/leave.spec.ts',
+                'tests/login.spec.ts',
+                'tests/Maintenance/accessEmployeeData.spec.ts',
+                'tests/Maintenance/purgeCandidateData.spec.ts',
+                'tests/Maintenance/purgeEmployee.spec.ts',
+                'tests/Performance/performance.spec.ts',
+                'tests/PIM/pim-attachments.spec.ts',
+                'tests/PIM/pim-employee-list.spec.ts',
+                'tests/PIM/pim-employee.spec.ts',
+                'tests/PIM/pim-pagination.spec.ts',
+                'tests/Recruitment/recruitment.spec.ts',
+                'tests/Time/time.spec.ts'
+            ],
+            description: 'Select all tests or one test file. Used when TEST_TARGET_CUSTOM is blank.'
+        )
+
+        string(
+            name: 'TEST_TARGET_CUSTOM',
+            defaultValue: '',
+            description: 'Optional file or directory, for example tests/PIM or tests/Admin/admin-users.spec.ts. Overrides the TEST_TARGET dropdown when filled in.'
         )
 
         string(
@@ -111,6 +137,7 @@ pipeline {
         stage('Verify Playwright') {
             steps {
                 bat 'call npx.cmd playwright --version'
+                bat 'call npx.cmd --no-install allure --version'
             }
         }
 
@@ -138,7 +165,7 @@ pipeline {
         stage('Discover Tests') {
             steps {
                 script {
-                    def testTarget = params.TEST_TARGET?.trim() ?: 'tests'
+                    def testTarget = params.TEST_TARGET_CUSTOM?.trim() ?: params.TEST_TARGET?.trim() ?: 'tests'
                     def testName = params.TEST_NAME?.trim()
 
                     testTarget = testTarget.replace('\\', '/')
@@ -178,7 +205,7 @@ pipeline {
         stage('Run Playwright Tests') {
             steps {
                 script {
-                    def testTarget = params.TEST_TARGET?.trim()
+                    def testTarget = params.TEST_TARGET_CUSTOM?.trim() ?: params.TEST_TARGET?.trim()
                     def testName = params.TEST_NAME?.trim()
 
                     if (!testTarget) {
@@ -370,18 +397,20 @@ pipeline {
 
             script {
                 if (fileExists('allure-results')) {
-                    echo 'Generating and publishing the Allure report'
+                    echo 'Generating and publishing the Allure 3 report'
                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                        allure([
-                            includeProperties: false,
-                            jdk: '',
-                            commandline: 'Allure',
-                            results: params.SPLIT_TESTS
-                                ? (1..(params.SHARD_COUNT as Integer)).collect {
-                                    shard -> [path: "allure-results/shard-${shard}"]
-                                }
-                                : [[path: 'allure-results']]
-                        ])
+                        // Allure 3 resolves its npm-installed CLI from PATH.
+                        withEnv(["PATH+ALLURE=${env.WORKSPACE}\\node_modules\\.bin"]) {
+                            allure([
+                                allureVersion: '3',
+                                includeProperties: false,
+                                results: params.SPLIT_TESTS
+                                    ? (1..(params.SHARD_COUNT as Integer)).collect {
+                                        shard -> [path: "allure-results/shard-${shard}"]
+                                    }
+                                    : [[path: 'allure-results']]
+                            ])
+                        }
                     }
                 } else {
                     echo 'No Allure results were generated; skipping the Allure report'
