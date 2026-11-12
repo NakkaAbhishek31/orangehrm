@@ -397,20 +397,16 @@ pipeline {
 
             script {
                 if (fileExists('allure-results')) {
-                    echo 'Generating and publishing the Allure 3 report'
+                    echo 'Generating the Allure 3 report with the project-local CLI'
                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                        // Allure 3 resolves its npm-installed CLI from PATH.
-                        withEnv(["PATH+ALLURE=${env.WORKSPACE}\\node_modules\\.bin"]) {
-                            allure([
-                                allureVersion: '3',
-                                includeProperties: false,
-                                results: params.SPLIT_TESTS
-                                    ? (1..(params.SHARD_COUNT as Integer)).collect {
-                                        shard -> [path: "allure-results/shard-${shard}"]
-                                    }
-                                    : [[path: 'allure-results']]
-                            ])
-                        }
+                        // npm resolves the local CLI on Windows, including paths with spaces.
+                        def resultPaths = params.SPLIT_TESTS
+                            ? (1..(params.SHARD_COUNT as Integer)).collect {
+                                shard -> "allure-results/shard-${shard}"
+                            }
+                            : ['allure-results']
+                        def quotedPaths = resultPaths.collect { path -> "\"${path}\"" }.join(' ')
+                        bat "call npm.cmd run allure:generate -- ${quotedPaths}"
                     }
                 } else {
                     echo 'No Allure results were generated; skipping the Allure report'
