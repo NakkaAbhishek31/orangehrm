@@ -82,7 +82,7 @@ npm run clean:reports
 
 Allure reports use the Node.js-based Allure 3 CLI installed by `npm ci`. The existing `allure-playwright` reporter writes compatible results to `allure-results`.
 
-Jenkins generates Allure reports through `npm run allure:generate`, using the project-local CLI installed by `npm ci`. This avoids the Windows plugin error `Cannot run program allure.cmd`. Single runs and sharded runs archive `allure-report/**` under Build > Artifacts. Download the report folder and run `npm run allure:open` locally to view it. This pipeline does not add the Allure plugin sidebar or trend view.
+Jenkins publishes an **Allure Report** link on each build using the Allure Report plugin and a managed tool named `Allure`. Install/update Allure Report plugin to 3.x (requires Jenkins 2.541.3 or newer), then open **Manage Jenkins > Tools > Allure Commandline**, add an installation named **Allure**, enable automatic installation, and choose **Recommended Allure 3**. Do not use the legacy Allure 3-from-PATH option: it caused the Windows `Cannot run program allure.cmd` failure. Save the tool configuration, push this Jenkinsfile, and rerun the job. Open the build and click **Allure Report** to view results. Single and sharded runs use the same publisher, including failed test runs. Generated files are also archived under Build > Artifacts.
 
 See [automation standards](docs/TESTING_STANDARDS.md) before adding pages, reusable components, data, or tests.
 

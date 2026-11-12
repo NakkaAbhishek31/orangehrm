@@ -397,16 +397,22 @@ pipeline {
 
             script {
                 if (fileExists('allure-results')) {
-                    echo 'Generating the Allure 3 report with the project-local CLI'
+                    echo 'Publishing the Allure report in Jenkins'
                     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                        // npm resolves the local CLI on Windows, including paths with spaces.
-                        def resultPaths = params.SPLIT_TESTS
-                            ? (1..(params.SHARD_COUNT as Integer)).collect {
-                                shard -> "allure-results/shard-${shard}"
-                            }
-                            : ['allure-results']
-                        def quotedPaths = resultPaths.collect { path -> "\"${path}\"" }.join(' ')
-                        bat "call npm.cmd run allure:generate -- ${quotedPaths}"
+                        // Configure a managed tool named Allure in Manage Jenkins > Tools.
+                        // Use Allure Report plugin 3.x with Recommended Allure 3.
+                        // Do not select the legacy Allure 3-from-PATH installation.
+                        allure([
+                            commandline: 'Allure',
+                            includeProperties: false,
+                            reportBuildPolicy: 'ALWAYS',
+                            report: 'allure-report',
+                            results: params.SPLIT_TESTS
+                                ? (1..(params.SHARD_COUNT as Integer)).collect {
+                                    shard -> [path: "allure-results/shard-${shard}"]
+                                }
+                                : [[path: 'allure-results']]
+                        ])
                     }
                 } else {
                     echo 'No Allure results were generated; skipping the Allure report'
